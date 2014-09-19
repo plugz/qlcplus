@@ -139,7 +139,7 @@ VCCueList::VCCueList(QWidget* parent, Doc* doc) : VCWidget(parent, doc)
     m_tree = new QTreeWidget(this);
     grid->addWidget(m_tree, 0, 2, 3, 1);
     m_tree->setSelectionMode(QAbstractItemView::SingleSelection);
-    //m_tree->setAlternatingRowColors(true);
+    m_tree->setAlternatingRowColors(true);
     m_tree->setAllColumnsShowFocus(true);
     m_tree->setRootIsDecorated(false);
     m_tree->setItemsExpandable(false);
@@ -160,6 +160,8 @@ VCCueList::VCCueList(QWidget* parent, Doc* doc) : VCWidget(parent, doc)
     m_tree->setItemDelegateForColumn(COL_DURATION, new NoEditDelegate(this));
 
     connect(m_tree, SIGNAL(itemActivated(QTreeWidgetItem*,int)),
+            this, SLOT(slotItemActivated(QTreeWidgetItem*)));
+    connect(m_tree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
             this, SLOT(slotItemActivated(QTreeWidgetItem*)));
     connect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
             this, SLOT(slotItemChanged(QTreeWidgetItem*,int)));
