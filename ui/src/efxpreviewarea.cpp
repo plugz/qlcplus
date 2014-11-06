@@ -22,11 +22,14 @@
 #include <QDebug>
 #include <QPen>
 
+#include <math.h>
+
 #include "efxpreviewarea.h"
 #include "qlcmacros.h"
 
 EFXPreviewArea::EFXPreviewArea(QWidget* parent)
     : QWidget(parent)
+    , m_bearingPreview(false)
     , m_timer(this)
     , m_iter(0)
 {
@@ -45,19 +48,22 @@ EFXPreviewArea::~EFXPreviewArea()
 
 void EFXPreviewArea::setPoints(const QVector <QPoint>& points)
 {
-    m_original = QPolygon(points);
-    m_points = scale(m_original, size());
+    m_originalPoints = QPolygon(points);
+    m_points = scale(m_originalPoints, size());
+    m_bearingPoints = scale(toBearingPoints(m_originalPoints, 540, 270), size());
 }
 
 void EFXPreviewArea::setFixturePoints(const QVector<QVector<QPoint> >& fixturePoints)
 {
     m_originalFixturePoints.resize(fixturePoints.size());
     m_fixturePoints.resize(fixturePoints.size());
+    m_bearingFixturePoints.resize(fixturePoints.size());
 
     for(int i = 0; i < m_fixturePoints.size(); ++i)
     {
         m_originalFixturePoints[i] = QPolygon(fixturePoints[i]);
         m_fixturePoints[i] = scale(m_originalFixturePoints[i], size());
+        m_bearingFixturePoints[i] = scale(toBearingPoints(m_originalFixturePoints[i], 540, 270), size());
     }
 }
 
@@ -74,6 +80,13 @@ void EFXPreviewArea::slotTimeout()
     repaint();
 }
 
+void EFXPreviewArea::mouseDoubleClickEvent(QMouseEvent* e)
+{
+    m_bearingPreview = !m_bearingPreview;
+    draw(m_timer.interval());
+    QWidget::mouseDoubleClickEvent(e);
+}
+
 QPolygon EFXPreviewArea::scale(const QPolygon& poly, const QSize& target)
 {
     QPolygon scaled(poly.size());
@@ -88,13 +101,30 @@ QPolygon EFXPreviewArea::scale(const QPolygon& poly, const QSize& target)
     return scaled;
 }
 
+QPolygon EFXPreviewArea::toBearingPoints(const QPolygon& poly, qreal panRangeDeg, qreal)
+{
+    QPolygon bearing(poly.size());
+    for (int i = 0; i < poly.size(); ++i)
+    {
+        QPoint pt = poly.point(i);
+        qreal angle = pt.x() * (M_PI * 2.0 / 255.0) * (panRangeDeg / 360.0);
+        qreal distance = (pt.y() / 255.0 - 0.5);
+        pt.setX((cos(angle) * distance + 0.5) * 255.0);
+        pt.setY((sin(angle) * distance + 0.5) * 255.0);
+        bearing.setPoint(i, pt);
+    }
+    return bearing;
+}
+
 void EFXPreviewArea::resizeEvent(QResizeEvent* e)
 {
-    m_points = scale(m_original, e->size());
+    m_points = scale(m_originalPoints, e->size());
+    m_bearingPoints = scale(toBearingPoints(m_originalPoints, 540, 270), e->size());
 
     for(int i = 0; i < m_fixturePoints.size(); ++i)
     {
         m_fixturePoints[i] = scale(m_originalFixturePoints[i], e->size());
+        m_bearingFixturePoints[i] = scale(toBearingPoints(m_originalFixturePoints[i], 540, 270), e->size());
     }
     QWidget::resizeEvent(e);
 }
@@ -124,6 +154,13 @@ void EFXPreviewArea::paintEvent(QPaintEvent* e)
     painter.setPen(pen);
     painter.drawPolygon(m_points);
 
+    if (m_bearingPreview)
+    {
+        pen.setColor(Qt::red);
+        painter.setPen(pen);
+        painter.drawPolygon(m_bearingPoints);
+    }
+
     // Draw the points from the point array
     if (m_iter < m_points.size() && m_iter >= 0)
     {
@@ -136,18 +173,37 @@ void EFXPreviewArea::paintEvent(QPaintEvent* e)
         painter.drawEllipse(point.x() - 4, point.y() - 4, 8, 8);
         */
 
+        pen.setColor(Qt::black);
+        painter.setPen(pen);
         painter.setBrush(Qt::white);
-	pen.setColor(Qt::black);
 
         // draw fixture positions
 
         // drawing from the end -- so that lower numbers are on top
         for (int i = m_fixturePoints.size() - 1; i >= 0; --i)
         {
-	    point = m_fixturePoints.at(i).at(m_iter);
-            
+            point = m_fixturePoints.at(i).at(m_iter);
+
             painter.drawEllipse(point, 8, 8);
-	    painter.drawText(point.x() - 4, point.y() + 5, QString::number(i+1));
+            painter.drawText(point.x() - 4, point.y() + 5, QString::number(i+1));
+        }
+
+        if (m_bearingPreview)
+        {
+            pen.setColor(Qt::red);
+            painter.setPen(pen);
+            painter.setBrush(Qt::white);
+
+            // draw fixture positions
+
+            // drawing from the end -- so that lower numbers are on top
+            for (int i = m_fixturePoints.size() - 1; i >= 0; --i)
+            {
+                point = m_bearingFixturePoints.at(i).at(m_iter);
+
+                painter.drawEllipse(point, 8, 8);
+                painter.drawText(point.x() - 4, point.y() + 5, QString::number(i+1));
+            }
         }
     }
     else

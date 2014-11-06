@@ -6,8 +6,7 @@
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
+  You may obtain a copy of the License at 
       http://www.apache.org/licenses/LICENSE-2.0.txt
 
   Unless required by applicable law or agreed to in writing, software
@@ -69,12 +68,20 @@ public:
     /** Scale the points in the given polygon of size [0, 255] to the given target size */
     static QPolygon scale(const QPolygon& poly, const QSize& target);
 
+    /** */
+    static QPolygon toBearingPoints(const QPolygon& poly, qreal panRangeDeg, qreal tiltRangeRad);
+
 protected:
+    void rescale(const QSize& target);
+
     /** @reimp */
     void resizeEvent(QResizeEvent* e);
 
     /** @reimp */
     void paintEvent(QPaintEvent* e);
+
+    /** @reimp */
+    void mouseDoubleClickEvent(QMouseEvent* e);
 
 private slots:
     /** Animation timeout */
@@ -83,10 +90,15 @@ private slots:
 private:
     /** Points that are drawn in the preview area */
     QPolygon m_points;
-    QPolygon m_original;
+    QPolygon m_bearingPoints;
+    QPolygon m_originalPoints;
 
     QVector <QPolygon> m_fixturePoints;
+    QVector <QPolygon> m_bearingFixturePoints;
     QVector <QPolygon> m_originalFixturePoints;
+
+    /** Realistic preview */
+    bool m_bearingPreview;
 
     /** Animation timer */
     QTimer m_timer;
