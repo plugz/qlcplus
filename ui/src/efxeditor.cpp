@@ -1033,7 +1033,7 @@ void EFXEditor::redrawPreview()
 
     QVector <QVector <QPoint> > fixturePoints;
     m_efx->previewFixtures(fixturePoints);
- 
+
     m_previewArea->setPoints(points);
     m_previewArea->setFixturePoints(fixturePoints);
 
