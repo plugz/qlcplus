@@ -173,7 +173,7 @@ void MonitorFixtureItem::setSize(QSize size)
     double cellWidth = headsWidth / columns;
     double cellHeight = headsHeight / rows;
     double headDiam = (cellWidth < cellHeight) ? cellWidth : cellHeight;
-    
+
     int ypos = (cellHeight - headDiam) / 2;
     for (int i = 0; i < rows; i++)
     {
@@ -183,7 +183,7 @@ void MonitorFixtureItem::setSize(QSize size)
             int index = i * columns + j;
             if (index < m_heads.size())
             {
-		FixtureHead * h = m_heads.at(index);
+                FixtureHead * h = m_heads.at(index);
                 QGraphicsEllipseItem *head = h->m_item;
                 head->setRect(xpos, ypos, headDiam, headDiam);
 
@@ -195,7 +195,7 @@ void MonitorFixtureItem::setSize(QSize size)
                 {
                     head->setRect(head->rect().adjusted(MOVEMENT_THICKNESS + 1, MOVEMENT_THICKNESS + 1, -MOVEMENT_THICKNESS - 1, -MOVEMENT_THICKNESS - 1));
                 }
- 
+
                 head->setZValue(2);
                 QGraphicsEllipseItem *back = m_heads.at(index)->m_back;
                 if (back != NULL)
@@ -339,7 +339,7 @@ void MonitorFixtureItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
         if (head->m_tiltChannel != UINT_MAX /*QLCChannel::invalid()*/)
         {
             rect.adjust(-MOVEMENT_THICKNESS, -MOVEMENT_THICKNESS, MOVEMENT_THICKNESS, MOVEMENT_THICKNESS);
-            
+
             painter->setPen(QPen(defColor, MOVEMENT_THICKNESS));
             painter->drawArc(rect, 270 * 16 - head->m_tiltMaxDegrees * 16 / 2 - 8, 16);
             painter->drawArc(rect, 270 * 16 + head->m_tiltMaxDegrees * 16 / 2 - 8, 16);
@@ -356,6 +356,21 @@ void MonitorFixtureItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
             painter->drawArc(rect, 270 * 16 + head->m_panMaxDegrees * 16 / 2 - 8, 16);
             painter->setPen(QPen(QColor("purple"), MOVEMENT_THICKNESS));
             painter->drawArc(rect, 270 * 16, - head->m_panDegrees * 16);
+        }
+
+        if (head->m_panChannel != UINT_MAX && head->m_tiltChannel != UINT_MAX)
+        {
+            // rect.adjust(-rect.width / 2.0, -rect.height / 2.0, rect.width() / 2.0, rect.height() / 2.0);
+
+            qreal distance = head->m_tiltDegrees / head->m_tiltMaxDegrees;
+            qreal distanceAbs = distance < 0 ? -distance : distance;
+
+            qreal adjustment = (distanceAbs - 0.5) * MOVEMENT_THICKNESS * 4.0;
+
+            painter->setPen(QPen(Qt::red, 1.0));
+            rect.adjust(-adjustment, -adjustment, adjustment, adjustment);
+
+            painter->drawArc(rect, (270.0 + head->m_panDegrees - ((1.0-distance) / 2.0)) * 16.0, (1.0-distance) * 16.0 * 4.0);
         }
     }
 
@@ -391,13 +406,13 @@ void MonitorFixtureItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *)
 void MonitorFixtureItem::computeTiltPosition(FixtureHead *h, uchar value)
 {
     // find the TILT degrees based on value
-    h->m_tiltDegrees = ((double)value * h->m_tiltMaxDegrees) / (256.0 - 1/256) - (h->m_tiltMaxDegrees / 2);
+    h->m_tiltDegrees = ((double)value * h->m_tiltMaxDegrees) / 255.0 - (h->m_tiltMaxDegrees / 2.0);
     //qDebug() << "TILT degrees:" << h->m_tiltDegrees;
 }
 
 void MonitorFixtureItem::computePanPosition(FixtureHead *h, uchar value)
 {
     // find the PAN degrees based on value
-    h->m_panDegrees = ((double)value * h->m_panMaxDegrees) / (256.0 - 1/256) - (h->m_panMaxDegrees / 2);
+    h->m_panDegrees = ((double)value * h->m_panMaxDegrees) / 255.0 - (h->m_panMaxDegrees / 2.0);
     //qDebug() << "PAN degrees:" << h->m_panDegrees;
 }
