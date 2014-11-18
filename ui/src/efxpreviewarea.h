@@ -32,6 +32,14 @@ class QPaintEvent;
  * @{
  */
 
+struct EFXPreviewAreaBearingProp
+{
+    EFXPreviewAreaBearingProp() : enable(false), panRangeDeg(540), tiltRangeDeg(270) {}
+    bool enable;
+    qreal panRangeDeg;
+    qreal tiltRangeDeg;
+};
+
 /**
  * The area that is used to draw a preview of
  * the EFX function currently being edited.
@@ -90,7 +98,7 @@ private slots:
 private:
     /** Points that are drawn in the preview area */
     QPolygon m_points;
-    QPolygon m_bearingPoints;
+    QVector <QPolygon> m_bearingPoints;
     QPolygon m_originalPoints;
 
     QVector <QPolygon> m_fixturePoints;
@@ -98,7 +106,8 @@ private:
     QVector <QPolygon> m_originalFixturePoints;
 
     /** Realistic preview */
-    bool m_bearingPreview;
+    QVector <EFXPreviewAreaBearingProp> m_bearingPreviews;
+    bool m_displayOptions;
 
     /** Animation timer */
     QTimer m_timer;

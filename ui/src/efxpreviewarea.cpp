@@ -29,7 +29,7 @@
 
 EFXPreviewArea::EFXPreviewArea(QWidget* parent)
     : QWidget(parent)
-    , m_bearingPreview(false)
+    , m_displayOptions(false)
     , m_timer(this)
     , m_iter(0)
 {
@@ -50,20 +50,31 @@ void EFXPreviewArea::setPoints(const QVector <QPoint>& points)
 {
     m_originalPoints = QPolygon(points);
     m_points = scale(m_originalPoints, size());
-    m_bearingPoints = scale(toBearingPoints(m_originalPoints, 540, 270), size());
+
+    for (int i = 0; i < m_bearingPreviews.size(); ++i)
+    {
+        EFXPreviewAreaBearingProp const& prop = m_bearingPreviews[i];
+        // if (prop.enable)
+            m_bearingPoints[i] = scale(toBearingPoints(m_originalPoints, prop.panRangeDeg, prop.tiltRangeDeg), size());
+    }
 }
 
 void EFXPreviewArea::setFixturePoints(const QVector<QVector<QPoint> >& fixturePoints)
 {
     m_originalFixturePoints.resize(fixturePoints.size());
     m_fixturePoints.resize(fixturePoints.size());
+    m_bearingPoints.resize(fixturePoints.size());
     m_bearingFixturePoints.resize(fixturePoints.size());
+    m_bearingPreviews.resize(fixturePoints.size());
 
     for(int i = 0; i < m_fixturePoints.size(); ++i)
     {
         m_originalFixturePoints[i] = QPolygon(fixturePoints[i]);
         m_fixturePoints[i] = scale(m_originalFixturePoints[i], size());
-        m_bearingFixturePoints[i] = scale(toBearingPoints(m_originalFixturePoints[i], 540, 270), size());
+
+        EFXPreviewAreaBearingProp const& prop = m_bearingPreviews[i];
+        m_bearingPoints[i] = scale(toBearingPoints(m_originalPoints, prop.panRangeDeg, prop.tiltRangeDeg), size());
+        m_bearingFixturePoints[i] = scale(toBearingPoints(m_originalFixturePoints[i], prop.panRangeDeg, prop.tiltRangeDeg), size());
     }
 }
 
@@ -82,8 +93,9 @@ void EFXPreviewArea::slotTimeout()
 
 void EFXPreviewArea::mouseDoubleClickEvent(QMouseEvent* e)
 {
-    m_bearingPreview = !m_bearingPreview;
-    draw(m_timer.interval());
+    m_displayOptions = !m_displayOptions;
+    if (!m_displayOptions)
+        draw(m_timer.interval());
     QWidget::mouseDoubleClickEvent(e);
 }
 
@@ -101,8 +113,10 @@ QPolygon EFXPreviewArea::scale(const QPolygon& poly, const QSize& target)
     return scaled;
 }
 
-QPolygon EFXPreviewArea::toBearingPoints(const QPolygon& poly, qreal panRangeDeg, qreal)
+QPolygon EFXPreviewArea::toBearingPoints(const QPolygon& poly, qreal panRangeDeg, qreal tiltRangeDeg)
 {
+    (void)tiltRangeDeg;
+
     QPolygon bearing(poly.size());
     for (int i = 0; i < poly.size(); ++i)
     {
@@ -119,13 +133,14 @@ QPolygon EFXPreviewArea::toBearingPoints(const QPolygon& poly, qreal panRangeDeg
 void EFXPreviewArea::resizeEvent(QResizeEvent* e)
 {
     m_points = scale(m_originalPoints, e->size());
-    m_bearingPoints = scale(toBearingPoints(m_originalPoints, 540, 270), e->size());
-
     for(int i = 0; i < m_fixturePoints.size(); ++i)
     {
         m_fixturePoints[i] = scale(m_originalFixturePoints[i], e->size());
-        m_bearingFixturePoints[i] = scale(toBearingPoints(m_originalFixturePoints[i], 540, 270), e->size());
+        EFXPreviewAreaBearingProp const& prop = m_bearingPreviews[i];
+        m_bearingPoints[i] = scale(toBearingPoints(m_originalPoints, prop.panRangeDeg, prop.tiltRangeDeg), e->size());
+        m_bearingFixturePoints[i] = scale(toBearingPoints(m_originalFixturePoints[i], prop.panRangeDeg, prop.tiltRangeDeg), e->size());
     }
+
     QWidget::resizeEvent(e);
 }
 
@@ -154,11 +169,15 @@ void EFXPreviewArea::paintEvent(QPaintEvent* e)
     painter.setPen(pen);
     painter.drawPolygon(m_points);
 
-    if (m_bearingPreview)
+    for (int i = 0; i < m_bearingPoints.size(); ++i)
     {
-        pen.setColor(Qt::red);
-        painter.setPen(pen);
-        painter.drawPolygon(m_bearingPoints);
+        EFXPreviewAreaBearingProp const& prop = m_bearingPreviews[i];
+        if (prop.enable)
+        {
+            pen.setColor(Qt::red);
+            painter.setPen(pen);
+            painter.drawPolygon(m_bearingPoints[i]);
+        }
     }
 
     // Draw the points from the point array
@@ -188,17 +207,18 @@ void EFXPreviewArea::paintEvent(QPaintEvent* e)
             painter.drawText(point.x() - 4, point.y() + 5, QString::number(i+1));
         }
 
-        if (m_bearingPreview)
+        for (int i = m_fixturePoints.size() - 1; i >= 0; --i)
         {
-            pen.setColor(Qt::red);
-            painter.setPen(pen);
-            painter.setBrush(Qt::white);
-
-            // draw fixture positions
-
-            // drawing from the end -- so that lower numbers are on top
-            for (int i = m_fixturePoints.size() - 1; i >= 0; --i)
+            EFXPreviewAreaBearingProp const& prop = m_bearingPreviews[i];
+            if (prop.enable)
             {
+                pen.setColor(Qt::red);
+                painter.setPen(pen);
+                painter.setBrush(Qt::white);
+
+                // draw fixture positions
+
+                // drawing from the end -- so that lower numbers are on top
                 point = m_bearingFixturePoints.at(i).at(m_iter);
 
                 painter.drawEllipse(point, 8, 8);
