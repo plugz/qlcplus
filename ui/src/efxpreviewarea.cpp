@@ -172,7 +172,7 @@ QPolygon EFXPreviewArea::toBearingPoints(const QPolygon& poly, qreal panRangeDeg
         qreal panPi = (pt.x() * (M_PI * 2.0 / 255.0) - M_PI) * panRange; // -PI . PI
         qreal tiltPi = (pt.y() * (M_PI * 2.0 / 255.0) - M_PI) * tiltRange; // -PI . PI
 
-        qreal angle = panPi;
+        qreal angle = panPi + M_PI_2; // so the middle is UP
         qreal distance = sin(tiltPi) / 2.0; // -0.5 . 0.5
 
         pt.setX((cos(angle) * distance + 0.5) * 255.0);
