@@ -169,8 +169,8 @@ QPolygon EFXPreviewArea::toBearingPoints(const QPolygon& poly, qreal panRangeDeg
     for (int i = 0; i < poly.size(); ++i)
     {
         QPoint pt = poly.point(i);
-        qreal panPi = (pt.x() * (M_PI * 2.0 / 255.0)) * panRange; // 0 . 2PI
-        qreal tiltPi = (pt.y() * (M_PI / 255.0)) * tiltRange; // 0 . 2PI
+        qreal panPi = (pt.x() * (M_PI * 2.0 / 255.0) - M_PI) * panRange; // -PI . PI
+        qreal tiltPi = (pt.y() * (M_PI * 2.0 / 255.0) - M_PI) * tiltRange; // -PI . PI
 
         qreal angle = panPi;
         qreal distance = sin(tiltPi) / 2.0; // -0.5 . 0.5
