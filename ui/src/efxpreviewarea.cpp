@@ -19,6 +19,7 @@
 
 #include <QPaintEvent>
 #include <QPainter>
+#include <QLineEdit>
 #include <QDebug>
 #include <QPen>
 
@@ -39,6 +40,8 @@ EFXPreviewArea::EFXPreviewArea(QWidget* parent)
 
     setAutoFillBackground(true);
 
+    new QVBoxLayout(this);
+
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(slotTimeout()));
 }
 
@@ -54,8 +57,7 @@ void EFXPreviewArea::setPoints(const QVector <QPoint>& points)
     for (int i = 0; i < m_bearingPreviews.size(); ++i)
     {
         EFXPreviewAreaBearingProp const& prop = m_bearingPreviews[i];
-        // if (prop.enable)
-            m_bearingPoints[i] = scale(toBearingPoints(m_originalPoints, prop.panRangeDeg, prop.tiltRangeDeg), size());
+        m_bearingPoints[i] = scale(toBearingPoints(m_originalPoints, prop.panRangeDeg, prop.tiltRangeDeg), size());
     }
 }
 
@@ -94,8 +96,51 @@ void EFXPreviewArea::slotTimeout()
 void EFXPreviewArea::mouseDoubleClickEvent(QMouseEvent* e)
 {
     m_displayOptions = !m_displayOptions;
-    if (!m_displayOptions)
+    if (m_displayOptions)
+    {
+        for (int i = 0; i < m_bearingPreviews.size(); ++i)
+        {
+            EFXPreviewAreaBearingProp const& prop = m_bearingPreviews[i];
+
+            QLineEdit* panText = new QLineEdit(QString::number(prop.panRangeDeg), this);
+            QLineEdit* tiltText = new QLineEdit(QString::number(prop.tiltRangeDeg), this);
+            QCheckBox* cb = new QCheckBox(QString::number(i + 1), this);
+            cb->setCheckState(prop.enable ? Qt::Checked : Qt::Unchecked);
+
+            layout()->addWidget(panText);
+            layout()->addWidget(tiltText);
+            layout()->addWidget(cb);
+            m_bearingPreviewPanTexts.append(panText);
+            m_bearingPreviewTiltTexts.append(tiltText);
+            m_bearingPreviewCBs.append(cb);
+        }
+    }
+    else
+    {
+        for (int i = 0; i < m_bearingPreviewCBs.size(); ++i)
+        {
+            EFXPreviewAreaBearingProp& prop = m_bearingPreviews[i];
+            QCheckBox* cb = m_bearingPreviewCBs.at(i);
+            QLineEdit* panText = m_bearingPreviewPanTexts.at(i);
+            QLineEdit* tiltText = m_bearingPreviewTiltTexts.at(i);
+
+            prop.panRangeDeg = panText->text().toDouble();
+            prop.tiltRangeDeg = tiltText->text().toDouble();
+            prop.enable = cb->checkState() == Qt::Checked;
+
+            layout()->removeWidget(panText);
+            layout()->removeWidget(tiltText);
+            layout()->removeWidget(cb);
+            delete panText;
+            delete tiltText;
+            delete cb;
+        }
+        m_bearingPreviewPanTexts.clear();
+        m_bearingPreviewTiltTexts.clear();
+        m_bearingPreviewCBs.clear();
+        rescale(size());
         draw(m_timer.interval());
+    }
     QWidget::mouseDoubleClickEvent(e);
 }
 
@@ -117,12 +162,19 @@ QPolygon EFXPreviewArea::toBearingPoints(const QPolygon& poly, qreal panRangeDeg
 {
     (void)tiltRangeDeg;
 
+    qreal panRange = panRangeDeg / 360.0;
+    qreal tiltRange = tiltRangeDeg / 360.0;
+
     QPolygon bearing(poly.size());
     for (int i = 0; i < poly.size(); ++i)
     {
         QPoint pt = poly.point(i);
-        qreal angle = pt.x() * (M_PI * 2.0 / 255.0) * (panRangeDeg / 360.0);
-        qreal distance = (pt.y() / 255.0 - 0.5);
+        qreal panPi = (pt.x() * (M_PI * 2.0 / 255.0)) * panRange; // 0 . 2PI
+        qreal tiltPi = (pt.y() * (M_PI / 255.0)) * tiltRange; // 0 . 2PI
+
+        qreal angle = panPi;
+        qreal distance = sin(tiltPi) / 2.0; // -0.5 . 0.5
+
         pt.setX((cos(angle) * distance + 0.5) * 255.0);
         pt.setY((sin(angle) * distance + 0.5) * 255.0);
         bearing.setPoint(i, pt);
@@ -130,24 +182,27 @@ QPolygon EFXPreviewArea::toBearingPoints(const QPolygon& poly, qreal panRangeDeg
     return bearing;
 }
 
-void EFXPreviewArea::resizeEvent(QResizeEvent* e)
+void EFXPreviewArea::rescale(const QSize& size)
 {
-    m_points = scale(m_originalPoints, e->size());
+    m_points = scale(m_originalPoints, size);
     for(int i = 0; i < m_fixturePoints.size(); ++i)
     {
-        m_fixturePoints[i] = scale(m_originalFixturePoints[i], e->size());
+        m_fixturePoints[i] = scale(m_originalFixturePoints[i], size);
         EFXPreviewAreaBearingProp const& prop = m_bearingPreviews[i];
-        m_bearingPoints[i] = scale(toBearingPoints(m_originalPoints, prop.panRangeDeg, prop.tiltRangeDeg), e->size());
-        m_bearingFixturePoints[i] = scale(toBearingPoints(m_originalFixturePoints[i], prop.panRangeDeg, prop.tiltRangeDeg), e->size());
+        m_bearingPoints[i] = scale(toBearingPoints(m_originalPoints, prop.panRangeDeg, prop.tiltRangeDeg), size);
+        m_bearingFixturePoints[i] = scale(toBearingPoints(m_originalFixturePoints[i], prop.panRangeDeg, prop.tiltRangeDeg), size);
     }
+}
+
+void EFXPreviewArea::resizeEvent(QResizeEvent* e)
+{
+    rescale(e->size());
 
     QWidget::resizeEvent(e);
 }
 
 void EFXPreviewArea::paintEvent(QPaintEvent* e)
 {
-    QWidget::paintEvent(e);
-
     QPainter painter(this);
     QPen pen;
     QPoint point;
@@ -183,15 +238,6 @@ void EFXPreviewArea::paintEvent(QPaintEvent* e)
     // Draw the points from the point array
     if (m_iter < m_points.size() && m_iter >= 0)
     {
-        /*
-        // draw origin
-        color = color.lighter(100 + (m_points.size() / 100));
-        pen.setColor(color);
-        painter.setPen(pen);
-        point = m_points.point(m_iter);
-        painter.drawEllipse(point.x() - 4, point.y() - 4, 8, 8);
-        */
-
         pen.setColor(Qt::black);
         painter.setPen(pen);
         painter.setBrush(Qt::white);
@@ -230,4 +276,6 @@ void EFXPreviewArea::paintEvent(QPaintEvent* e)
     {
         m_timer.stop();
     }
+
+    QWidget::paintEvent(e);
 }

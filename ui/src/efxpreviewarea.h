@@ -27,6 +27,7 @@
 #include "efx.h"
 
 class QPaintEvent;
+class QLineEdit;
 
 /** @addtogroup ui_functions
  * @{
@@ -80,7 +81,7 @@ public:
     static QPolygon toBearingPoints(const QPolygon& poly, qreal panRangeDeg, qreal tiltRangeRad);
 
 protected:
-    void rescale(const QSize& target);
+    void rescale(const QSize& size);
 
     /** @reimp */
     void resizeEvent(QResizeEvent* e);
@@ -108,6 +109,9 @@ private:
     /** Realistic preview */
     QVector <EFXPreviewAreaBearingProp> m_bearingPreviews;
     bool m_displayOptions;
+    QVector <QLineEdit*> m_bearingPreviewPanTexts;
+    QVector <QLineEdit*> m_bearingPreviewTiltTexts;
+    QVector <QCheckBox*> m_bearingPreviewCBs;
 
     /** Animation timer */
     QTimer m_timer;
