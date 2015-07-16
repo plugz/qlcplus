@@ -27,6 +27,7 @@
 #include "universe.h"
 #include "script.h"
 #include "doc.h"
+#include "grandmaster.h"
 
 #undef private
 

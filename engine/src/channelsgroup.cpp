@@ -21,11 +21,13 @@
 #include <QDomElement>
 #include <QDebug>
 
-#include "qlcfixturemode.h"
 #include "channelsgroup.h"
-#include "scenevalue.h"
-#include "fixture.h"
 #include "doc.h"
+#include "fixture.h"
+#include "inputoutputmap.h"
+#include "qlcfixturemode.h"
+#include "qlcinputsource.h"
+#include "scenevalue.h"
 
 #define KXMLQLCChannelsGroupID    "ID"
 #define KXMLQLCChannelsGroupName  "Name"

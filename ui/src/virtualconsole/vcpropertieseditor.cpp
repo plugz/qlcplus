@@ -20,6 +20,7 @@
 #include <QRadioButton>
 #include <QCheckBox>
 #include <QSpinBox>
+#include <QSettings>
 
 #include "qlcinputprofile.h"
 #include "qlcinputchannel.h"
@@ -27,6 +28,7 @@
 #include "qlcfile.h"
 
 #include "vcpropertieseditor.h"
+#include "inputoutputmap.h"
 #include "selectinputchannel.h"
 #include "virtualconsole.h"
 #include "vcproperties.h"

@@ -25,7 +25,6 @@
 #include <QList>
 
 #include "function.h"
-#include "scene.h"
 #include "chaserrunner.h"
 
 class QFile;

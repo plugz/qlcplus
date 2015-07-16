@@ -24,6 +24,7 @@
 #include <QString>
 #include <QMutex>
 #include <QFrame>
+#include <QVariant>
 
 #include "doc.h"
 

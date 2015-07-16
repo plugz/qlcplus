@@ -25,7 +25,10 @@
 #include "channelmodifiereditor.h"
 #include "channelsselection.h"
 #include "channelmodifier.h"
+#include "inputoutputmap.h"
 #include "qlcfixturedef.h"
+#include "qlcmodifierscache.h"
+#include "scenevalue.h"
 #include "universe.h"
 #include "doc.h"
 

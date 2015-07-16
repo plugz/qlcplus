@@ -24,13 +24,13 @@
 #include <QDialog>
 
 #include "ui_vcbuttonproperties.h"
-#include "qlcinputsource.h"
-#include "vcbutton.h"
 #include "function.h"
 
 class FunctionManager;
 class SpeedDialWidget;
 class KeyBind;
+class QLCInputSource;
+class VCButton;
 
 /** @addtogroup ui_vc_props
  * @{

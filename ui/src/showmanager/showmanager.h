@@ -24,13 +24,6 @@
 #include <QWidget>
 #include <QList>
 
-#include "multitrackview.h"
-#include "sequenceitem.h"
-#include "trackitem.h"
-#include "scene.h"
-#include "show.h"
-#include "doc.h"
-
 class QComboBox;
 class QCheckBox;
 class QSplitter;
@@ -39,6 +32,12 @@ class QSpinBox;
 class QAction;
 class QLabel;
 class Doc;
+class Function;
+class MultiTrackView;
+class Scene;
+class Show;
+class ShowItem;
+class Track;
 
 /** @addtogroup ui_shows
  * @{

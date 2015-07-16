@@ -22,10 +22,10 @@
 
 #include <QColor>
 
-#include "audiorenderer.h"
 #include "audiodecoder.h"
 #include "function.h"
 
+class AudioRenderer;
 class QDomDocument;
 
 /** @addtogroup engine_functions Functions

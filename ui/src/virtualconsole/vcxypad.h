@@ -25,8 +25,8 @@
 #include <QString>
 #include <QMutex>
 #include <QList>
+#include <QVariant>
 
-#include "vcxypadfixture.h"
 #include "dmxsource.h"
 #include "vcwidget.h"
 
@@ -42,6 +42,7 @@ class QVBoxLayout;
 class QByteArray;
 class QSlider;
 class Doc;
+class VCXYPadFixture;
 
 /** @addtogroup ui_vc_widgets
  * @{

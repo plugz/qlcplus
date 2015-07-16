@@ -43,6 +43,7 @@
 #include "qlcinputsource.h"
 #include "qlcfile.h"
 
+#include "inputoutputmap.h"
 #include "qlcinputchannel.h"
 #include "virtualconsole.h"
 #include "vcproperties.h"

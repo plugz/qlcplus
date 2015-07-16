@@ -22,7 +22,9 @@
 #include "selectinputchannel.h"
 #include "vcframeproperties.h"
 #include "assignhotkey.h"
+#include "inputoutputmap.h"
 #include "inputpatch.h"
+#include "qlcinputsource.h"
 #include "vcframe.h"
 #include "doc.h"
 

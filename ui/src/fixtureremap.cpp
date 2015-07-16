@@ -25,6 +25,7 @@
 
 #include "monitorproperties.h"
 #include "vcaudiotriggers.h"
+#include "vcxypadfixture.h"
 #include "virtualconsole.h"
 #include "qlcfixturemode.h"
 #include "qlcfixturedef.h"
@@ -32,6 +33,7 @@
 #include "fixtureremap.h"
 #include "remapwidget.h"
 #include "qlcchannel.h"
+#include "qlcfixturedefcache.h"
 #include "addfixture.h"
 #include "efxfixture.h"
 #include "scenevalue.h"

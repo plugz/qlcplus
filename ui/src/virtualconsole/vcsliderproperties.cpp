@@ -31,10 +31,12 @@
 
 #include "qlcinputprofile.h"
 #include "qlcinputchannel.h"
+#include "qlcinputsource.h"
 #include "qlccapability.h"
 #include "qlcchannel.h"
 
 #include "vcsliderproperties.h"
+#include "inputoutputmap.h"
 #include "selectinputchannel.h"
 #include "functionselection.h"
 #include "mastertimer.h"

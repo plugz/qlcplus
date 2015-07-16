@@ -21,13 +21,13 @@
 #define CHANNELSGROUP_H
 
 #include <QObject>
+#include <QSharedPointer>
 
-#include "qlcinputsource.h"
-#include "scenevalue.h"
-
+class Doc;
 class QDomDocument;
 class QDomElement;
-class Doc;
+class QLCInputSource;
+class SceneValue;
 
 /** @addtogroup engine Engine
  * @{

@@ -24,11 +24,6 @@
 #include <QMutex>
 #include <QIcon>
 
-#include "clickandgoslider.h"
-#include "clickandgowidget.h"
-#include "qlcchannel.h"
-#include "dmxsource.h"
-
 class QContextMenuEvent;
 class QIntValidator;
 class QToolButton;
@@ -37,6 +32,8 @@ class QLabel;
 class QMenu;
 
 class QLCChannel;
+class ClickAndGoSlider;
+class ClickAndGoWidget;
 class Doc;
 
 /** @addtogroup ui_simpledesk

@@ -34,11 +34,14 @@
 #include <QDebug>
 #include <QMutex>
 
-#include "fixtureselection.h"
-#include "speeddialwidget.h"
 #include "rgbmatrixeditor.h"
+#include "chaserstep.h"
+#include "fixtureselection.h"
+#include "mastertimer.h"
+#include "speeddialwidget.h"
 #include "rgbmatrix.h"
 #include "rgbitem.h"
+#include "rgbscript.h"
 #include "rgbtext.h"
 #include "rgbimage.h"
 #include "apputil.h"

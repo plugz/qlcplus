@@ -34,6 +34,8 @@
 #include <QtXml>
 
 #include "monitorfixturepropertieseditor.h"
+#include "inputoutputmap.h"
+#include "mastertimer.h"
 #include "monitorbackgroundselection.h"
 #include "monitorgraphicsview.h"
 #include "fixtureselection.h"

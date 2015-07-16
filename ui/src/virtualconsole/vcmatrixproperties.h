@@ -22,11 +22,13 @@
 
 #include <QDialog>
 
-#include "qlcinputsource.h"
-#include "vcmatrix.h"
 #include "function.h"
 
 #include "ui_vcmatrixproperties.h"
+
+class VCMatrix;
+class VCMatrixControl;
+class QLCInputSource;
 
 /** @addtogroup ui_vc_props
  * @{

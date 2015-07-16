@@ -23,9 +23,9 @@
 #include <QDialog>
 
 #include "ui_channelsselection.h"
-#include "scenevalue.h"
 
 class Doc;
+class SceneValue;
 
 /** @addtogroup ui UI
  * @{

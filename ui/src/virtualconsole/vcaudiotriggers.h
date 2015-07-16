@@ -29,12 +29,12 @@
  #include "clickandgoslider.h"
 #endif
 
-#include "audiotriggerwidget.h"
 #include "dmxsource.h"
 #include "vcwidget.h"
 
-class AudioCapture;
 class AudioBar;
+class AudioCapture;
+class AudioTriggerWidget;
 
 /** @addtogroup ui_vc_widgets
  * @{

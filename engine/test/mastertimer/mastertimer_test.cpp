@@ -28,6 +28,7 @@
 #include "universe.h"
 #include "qlcfile.h"
 #include "doc.h"
+#include "qlcfixturedefcache.h"
 #undef private
 
 #include "../common/resource_paths.h"

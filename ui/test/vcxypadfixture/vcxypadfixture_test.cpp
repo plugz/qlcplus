@@ -25,8 +25,10 @@
 #undef private
 
 #include "vcxypadfixture_test.h"
+#include "grandmaster.h"
 #include "qlcfixturemode.h"
 #include "qlcfixturedef.h"
+#include "qlcfixturedefcache.h"
 #include "universe.h"
 #include "qlcfile.h"
 #include "doc.h"

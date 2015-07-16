@@ -21,6 +21,10 @@
 #include <QInputDialog>
 #include <QTreeWidget>
 
+#include "inputoutputmap.h"
+#include "qlcinputsource.h"
+#include "vcmatrix.h"
+#include "vcmatrixcontrol.h"
 #include "vcmatrixpresetselection.h"
 #include "vcmatrixproperties.h"
 #include "selectinputchannel.h"

@@ -24,13 +24,13 @@
 #include <QHash>
 
 #include "ui_rgbmatrixeditor.h"
-#include "rgbmatrix.h"
-#include "qlcpoint.h"
 #include "doc.h"
 
 class SpeedDialWidget;
 class QGraphicsScene;
 class RGBMatrix;
+class RGBScript;
+class QLCPoint;
 class QTimer;
 class Doc;
 

@@ -17,16 +17,17 @@
   limitations under the License.
 */
 
-#ifndef CHANNELSELECTION_H
-#define CHANNELSELECTION_H
+#ifndef ADDCHANNELSGROUP_H
+#define ADDCHANNELSGROUP_H
 
 #include <QDialog>
+#include <QSharedPointer>
 
 #include "ui_addchannelsgroup.h"
-#include "qlcinputsource.h"
 
 class ChannelsGroup;
 class Doc;
+class QLCInputSource;
 
 /** @addtogroup ui_fixtures
  * @{

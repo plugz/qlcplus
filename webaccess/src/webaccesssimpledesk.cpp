@@ -21,6 +21,7 @@
 #include <QDebug>
 
 #include "webaccesssimpledesk.h"
+#include "inputoutputmap.h"
 #include "commonjscss.h"
 #include "simpledesk.h"
 #include "qlcconfig.h"

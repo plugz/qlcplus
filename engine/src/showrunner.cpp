@@ -24,6 +24,7 @@
 #include "chaserstep.h"
 #include "function.h"
 #include "chaser.h"
+#include "mastertimer.h"
 #include "track.h"
 #include "scene.h"
 #include "audio.h"

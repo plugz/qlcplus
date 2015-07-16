@@ -35,6 +35,8 @@
 #include <QFrame>
 #include <QDebug>
 
+#include "simpledesk.h"
+#include "channelsgroup.h"
 #include "grandmasterslider.h"
 #include "simpledeskengine.h"
 #include "speeddialwidget.h"
@@ -43,7 +45,7 @@
 #include "consolechannel.h"
 #include "cuestackmodel.h"
 #include "groupsconsole.h"
-#include "simpledesk.h"
+#include "inputoutputmap.h"
 #include "qlcmacros.h"
 #include "cuestack.h"
 #include "cue.h"

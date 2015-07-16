@@ -26,6 +26,7 @@
 #define private public
 #include "function_stub.h"
 #include "function.h"
+#include "mastertimer.h"
 #undef private
 #undef protected
 

@@ -19,6 +19,7 @@
 
 #include "mastertimer_stub.h"
 #include "function.h"
+#include "dmxsource.h"
 
 /****************************************************************************
  * MasterTimer Stub

@@ -24,6 +24,7 @@
 #include "rgbmatrix_test.h"
 #include "qlcfixturemode.h"
 #include "qlcfixturedef.h"
+#include "qlcfixturedefcache.h"
 #include "fixturegroup.h"
 #include "mastertimer.h"
 #include "rgbscript.h"

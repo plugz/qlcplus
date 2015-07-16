@@ -25,12 +25,15 @@
 #include <QIcon>
 #include <QList>
 
+#include "groupsconsole.h"
+#include "channelsgroup.h"
 #include "consolechannel.h"
 #include "clickandgoslider.h"
-#include "groupsconsole.h"
+#include "grandmasterslider.h"
 #include "fixture.h"
 #include "apputil.h"
 #include "doc.h"
+#include "scenevalue.h"
 
 /*****************************************************************************
  * Initialization

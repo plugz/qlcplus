@@ -29,6 +29,7 @@
 #include "collection.h"
 #include "function.h"
 #include "fixture.h"
+#include "grandmaster.h"
 #include "universe.h"
 #include "chaser.h"
 #include "scene.h"

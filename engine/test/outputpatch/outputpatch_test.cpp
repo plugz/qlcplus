@@ -22,6 +22,8 @@
 
 #define private public
 #include "iopluginstub.h"
+#include "ioplugincache.h"
+#include "inputoutputmap.h"
 #include "outputpatch_test.h"
 #include "outputpatch.h"
 #include "qlcfile.h"

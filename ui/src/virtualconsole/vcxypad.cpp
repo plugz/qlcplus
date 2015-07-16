@@ -38,7 +38,9 @@
 
 #include "vcpropertieseditor.h"
 #include "vcxypadproperties.h"
+#include "vcxypadfixture.h"
 #include "qlcinputchannel.h"
+#include "qlcinputsource.h"
 #include "virtualconsole.h"
 #include "ctkrangeslider.h"
 #include "mastertimer.h"

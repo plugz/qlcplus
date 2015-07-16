@@ -23,9 +23,10 @@
 #include <QDialog>
 
 #include "ui_vcaudiotriggersproperties.h"
-#include "doc.h"
 
 class VCAudioTriggers;
+class Doc;
+class QLCInputSource;
 
 /** @addtogroup ui_vc_props
  * @{

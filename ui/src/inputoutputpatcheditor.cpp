@@ -39,6 +39,7 @@
 #include "inputoutputpatcheditor.h"
 #include "inputprofileeditor.h"
 #include "inputoutputmap.h"
+#include "ioplugincache.h"
 #include "outputpatch.h"
 #include "inputpatch.h"
 #include "apputil.h"

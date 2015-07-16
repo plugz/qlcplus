@@ -29,14 +29,14 @@
 #include <QMap>
 #include <QMutex>
 
-#include "rgbscript.h"
 #include "function.h"
 
+class FadeChannel;
 class FixtureGroup;
 class GenericFader;
-class FadeChannel;
-class QTime;
 class QDir;
+class QTime;
+class RGBAlgorithm;
 
 /** @addtogroup engine_functions Functions
  * @{

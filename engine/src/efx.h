@@ -24,11 +24,11 @@
 #include <QPoint>
 #include <QList>
 
-#include "efxfixture.h"
 #include "function.h"
 
 class QDomDocument;
 class QDomElement;
+class EFXFixture;
 class GenericFader;
 class QString;
 class Fixture;

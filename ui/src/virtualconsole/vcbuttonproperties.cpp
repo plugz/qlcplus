@@ -30,9 +30,12 @@
 
 #include "qlcinputchannel.h"
 #include "qlcinputprofile.h"
+#include "qlcinputsource.h"
 #include "qlcfixturedef.h"
 
 #include "vcbuttonproperties.h"
+#include "inputoutputmap.h"
+#include "vcbutton.h"
 #include "selectinputchannel.h"
 #include "functionselection.h"
 #include "speeddialwidget.h"

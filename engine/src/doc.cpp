@@ -24,23 +24,29 @@
 #include <QtXml>
 #include <QDir>
 
-#include "qlcfixturemode.h"
-#include "qlcfixturedef.h"
-#include "qlcfile.h"
-
+#include "doc.h"
+#include "audiocapture.h"
+#include "bus.h"
+#include "chaser.h"
 #include "channelsgroup.h"
 #include "collection.h"
-#include "function.h"
-#include "universe.h"
-#include "fixture.h"
-#include "chaser.h"
-#include "scene.h"
-#include "show.h"
 #include "efx.h"
-#include "doc.h"
-#include "bus.h"
-#include "rgbscriptscache.h"
+#include "fixture.h"
+#include "function.h"
+#include "inputoutputmap.h"
+#include "ioplugincache.h"
+#include "mastertimer.h"
 #include "monitorproperties.h"
+#include "scene.h"
+#include "qlcclipboard.h"
+#include "qlcfixturemode.h"
+#include "qlcfixturedef.h"
+#include "qlcfixturedefcache.h"
+#include "qlcfile.h"
+#include "qlcmodifierscache.h"
+#include "rgbscriptscache.h"
+#include "show.h"
+#include "universe.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
  #if defined(__APPLE__) || defined(Q_OS_MAC)

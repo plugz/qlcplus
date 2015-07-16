@@ -24,6 +24,7 @@
 #include "qlcfixturehead.h"
 #include "qlcfixturemode.h"
 #include "qlcfixturedef.h"
+#include "qlcfixturedefcache.h"
 #include "fixturegroup.h"
 #include "qlcfile.h"
 #include "doc.h"

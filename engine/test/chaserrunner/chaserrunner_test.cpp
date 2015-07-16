@@ -29,6 +29,7 @@
 #include "chaserrunner.h"
 #include "genericfader.h"
 #include "fadechannel.h"
+#include "grandmaster.h"
 #include "chaserstep.h"
 #include "universe.h"
 #include "qlcfile.h"

@@ -30,6 +30,7 @@
 #include <QTimer>
 #include <QtXml>
 
+#include "qlcinputsource.h"
 #include "vccuelistproperties.h"
 #include "vcpropertieseditor.h"
 #include "clickandgoslider.h"

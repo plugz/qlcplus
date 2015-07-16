@@ -37,6 +37,7 @@
 #include "speeddial.h"
 #include "script.h"
 #include "doc.h"
+#include "scenevalue.h"
 
 ScriptEditor::ScriptEditor(QWidget* parent, Script* script, Doc* doc)
     : QWidget(parent)

@@ -23,10 +23,10 @@
 #include <QDialog>
 
 #include "ui_vcsliderproperties.h"
-#include "qlcinputsource.h"
 
 class QTreeWidgetItem;
 class QLCCapability;
+class QLCInputSource;
 class MasterTimer;
 class QLCChannel;
 class OutputMap;

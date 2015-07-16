@@ -27,15 +27,17 @@
 #include <cmath>
 #include <QDir>
 
-#include "qlcfixturehead.h"
+#include "rgbmatrix.h"
+#include "doc.h"
+#include "fadechannel.h"
 #include "fixturegroup.h"
 #include "genericfader.h"
-#include "fadechannel.h"
-#include "rgbmatrix.h"
+#include "mastertimer.h"
+#include "qlcfixturehead.h"
 #include "qlcmacros.h"
 #include "rgbaudio.h"
+#include "rgbscript.h"
 #include "rgbscriptscache.h"
-#include "doc.h"
 
 #define KXMLQLCRGBMatrixStartColor "MonoColor"
 #define KXMLQLCRGBMatrixEndColor "EndColor"

@@ -32,6 +32,7 @@
 #include <QList>
 #include <QtXml>
 
+#include "qlcinputsource.h"
 #include "vcpropertieseditor.h"
 #include "vcframeproperties.h"
 #include "vcaudiotriggers.h"

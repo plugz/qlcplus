@@ -29,6 +29,7 @@
 #include "virtualconsole.h"
 #include "qlcfixturedef.h"
 #include "vcxypad_test.h"
+#include "vcxypadfixture.h"
 #include "mastertimer.h"
 #include "vcxypadarea.h"
 #include "vcwidget.h"

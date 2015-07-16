@@ -20,6 +20,8 @@
 #include <QDebug>
 
 #include "vcspeeddialproperties.h"
+#include "inputoutputmap.h"
+#include "qlcinputsource.h"
 #include "vcspeeddialfunction.h"
 #include "selectinputchannel.h"
 #include "functionselection.h"

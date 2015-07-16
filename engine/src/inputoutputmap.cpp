@@ -29,8 +29,10 @@
 
 #include "inputoutputmap.h"
 #include "qlcinputchannel.h"
+#include "qlcinputprofile.h"
 #include "qlcinputsource.h"
 #include "qlcioplugin.h"
+#include "ioplugincache.h"
 #include "outputpatch.h"
 #include "inputpatch.h"
 #include "qlcconfig.h"

@@ -25,6 +25,7 @@
 
 #include "video.h"
 #include "doc.h"
+#include "qfileinfo.h"
 
 #define KXMLQLCVideoSource "Source"
 #define KXMLQLCVideoStartTime "StartTime"

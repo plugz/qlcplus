@@ -24,6 +24,9 @@
 
 
 #include "vcaudiotriggersproperties.h"
+#include "doc.h"
+#include "inputoutputmap.h"
+#include "qlcinputsource.h"
 #include "selectinputchannel.h"
 #include "channelsselection.h"
 #include "functionselection.h"

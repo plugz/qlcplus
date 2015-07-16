@@ -23,7 +23,8 @@
 #include <QObject>
 
 #include "mastertimer.h"
-#include "dmxsource.h"
+
+class DMXSource;
 
 /****************************************************************************
  * MasterTimer Stub

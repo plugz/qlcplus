@@ -23,9 +23,7 @@
 #include <QDialog>
 
 #include "ui_vcproperties.h"
-#include "vcwidgetproperties.h"
 #include "vcproperties.h"
-#include "universe.h"
 
 class VirtualConsole;
 class InputOutputMap;

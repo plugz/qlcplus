@@ -25,6 +25,7 @@
 
 #include "grandmasterslider.h"
 #include "clickandgoslider.h"
+#include "inputoutputmap.h"
 #include "virtualconsole.h"
 #include "vcproperties.h"
 #include "apputil.h"

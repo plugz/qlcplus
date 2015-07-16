@@ -20,15 +20,15 @@
 #ifndef APP_H
 #define APP_H
 
+#include <QDir>
 #include <QMainWindow>
 #include <QString>
 #include <QList>
 #include <QFile>
 
-#include "dmxdumpfactoryproperties.h"
-#include "qlcfixturedefcache.h"
 #include "doc.h"
 
+class DmxDumpFactoryProperties;
 class QProgressDialog;
 class QDomDocument;
 class QDomElement;

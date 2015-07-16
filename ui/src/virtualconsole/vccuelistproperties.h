@@ -25,7 +25,6 @@
 #include <QList>
 
 #include "ui_vccuelistproperties.h"
-#include "qlcinputsource.h"
 
 class MasterTimer;
 class VCCueList;
@@ -33,6 +32,7 @@ class OutputMap;
 class InputMap;
 class Function;
 class Doc;
+class QLCInputSource;
 
 /** @addtogroup ui_vc_props
  * @{

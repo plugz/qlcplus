@@ -25,6 +25,8 @@
 #include "qlcchannel.h"
 #include "fixture.h"
 #include "doc.h"
+#include "grouphead.h"
+#include "inputoutputmap.h"
 
 #define KColumnName 0
 

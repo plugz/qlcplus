@@ -45,8 +45,12 @@
 #include "showmanager.h"
 #include "sceneeditor.h"
 #include "timingstool.h"
+#include "qlcclipboard.h"
 #include "qlcmacros.h"
 #include "chaser.h"
+#include "scene.h"
+#include "show.h"
+#include "doc.h"
 
 #define SETTINGS_HSPLITTER "showmanager/hsplitter"
 #define SETTINGS_VSPLITTER "showmanager/vsplitter"

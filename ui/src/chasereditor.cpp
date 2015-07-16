@@ -30,6 +30,7 @@
 
 #include "qlcfixturedef.h"
 #include "qlcmacros.h"
+#include "qlcclipboard.h"
 
 #include "functionselection.h"
 #include "speeddialwidget.h"

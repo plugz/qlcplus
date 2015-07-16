@@ -22,10 +22,10 @@
 
 #include <QDialog>
 #include "ui_vcframeproperties.h"
-#include "qlcinputsource.h"
 
 class VCFrame;
 class Doc;
+class QLCInputSource;
 
 /** @addtogroup ui_vc_props
  * @{

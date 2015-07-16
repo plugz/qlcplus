@@ -28,11 +28,13 @@
 #include "qlcfixturedef.h"
 #include "genericfader.h"
 #include "fadechannel.h"
+#include "grandmaster.h"
 #include "mastertimer.h"
 #include "universe.h"
 #include "cuestack.h"
 #include "fixture.h"
 #include "qlcfile.h"
+#include "qlcfixturedefcache.h"
 #include "doc.h"
 #undef protected
 #undef private

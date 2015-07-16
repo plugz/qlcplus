@@ -46,6 +46,7 @@
 #include "qlcmacros.h"
 #include "qlcfile.h"
 
+#include "inputoutputmap.h"
 #include "vcbuttonproperties.h"
 #include "vcpropertieseditor.h"
 #include "functionselection.h"

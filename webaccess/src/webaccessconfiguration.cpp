@@ -26,6 +26,7 @@
 #include "inputpatch.h"
 #include "qlcconfig.h"
 #include "qlcfile.h"
+#include "qlcfixturedefcache.h"
 #include "doc.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)

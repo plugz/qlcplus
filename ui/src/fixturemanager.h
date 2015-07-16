@@ -22,8 +22,6 @@
 
 #include <QWidget>
 
-#include "function.h"
-#include "fixture.h"
 #include "doc.h"
 
 class QLCFixtureDefCache;

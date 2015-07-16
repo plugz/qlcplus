@@ -28,6 +28,7 @@
 #include "universe.h"
 #include "function.h"
 #include "fixture.h"
+#include "grandmaster.h"
 #include "qlcfile.h"
 #include "scene.h"
 #include "doc.h"

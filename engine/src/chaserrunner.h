@@ -29,7 +29,6 @@
 
 class FadeChannel;
 class ChaserStep;
-class Function;
 class Universe;
 class Chaser;
 class QTime;

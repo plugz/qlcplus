@@ -31,13 +31,13 @@
 #include <QLabel>
 #include <QDebug>
 
+#include "addfixture.h"
 #include "qlcfixturedefcache.h"
 #include "qlcfixturemode.h"
 #include "qlcfixturedef.h"
-
 #include "addresstool.h"
+#include "inputoutputmap.h"
 #include "outputpatch.h"
-#include "addfixture.h"
 #include "apputil.h"
 #include "doc.h"
 

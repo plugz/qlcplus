@@ -26,6 +26,7 @@
 #include "simpledeskengine.h"
 #include "mastertimer.h"
 #include "fadechannel.h"
+#include "inputoutputmap.h"
 #include "cuestack.h"
 #include "universe.h"
 #include "doc.h"

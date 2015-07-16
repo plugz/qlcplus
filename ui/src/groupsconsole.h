@@ -22,9 +22,8 @@
 
 #include <QWidget>
 
-#include "consolechannel.h"
-#include "scene.h"
-
+class ConsoleChannel;
+class Doc;
 class QSlider;
 class QSpinBox;
 

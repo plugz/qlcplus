@@ -22,11 +22,11 @@
 
 #include <QDialog>
 #include "ui_vcspeeddialproperties.h"
-#include "qlcinputsource.h"
 
 class VCSpeedDial;
 class VCSpeedDialFunction;
 class Doc;
+class QLCInputSource;
 
 /** @addtogroup ui_vc_props
  * @{

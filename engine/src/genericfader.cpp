@@ -21,9 +21,10 @@
 #include <QDebug>
 
 #include "genericfader.h"
-#include "fadechannel.h"
-#include "universe.h"
 #include "doc.h"
+#include "fadechannel.h"
+#include "mastertimer.h"
+#include "universe.h"
 
 GenericFader::GenericFader(Doc* doc)
     : m_intensity(1)

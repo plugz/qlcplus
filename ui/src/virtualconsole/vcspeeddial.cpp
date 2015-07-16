@@ -21,12 +21,14 @@
 #include <QDomElement>
 #include <QLayout>
 #include <QDebug>
+#include <QSettings>
 
 #include "vcspeeddialproperties.h"
 #include "vcpropertieseditor.h"
 #include "vcspeeddial.h"
 #include "vcspeeddialfunction.h"
 #include "speeddial.h"
+#include "qlcinputsource.h"
 #include "qlcmacros.h"
 #include "qlcfile.h"
 #include "function.h"

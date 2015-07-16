@@ -20,6 +20,10 @@
 #include <QtXml>
 #include <QMessageBox>
 
+#include "audiotriggerwidget.h"
+#include "inputoutputmap.h"
+#include "mastertimer.h"
+#include "qlcinputsource.h"
 #include "vcaudiotriggersproperties.h"
 #include "vcpropertieseditor.h"
 #include "vcaudiotriggers.h"

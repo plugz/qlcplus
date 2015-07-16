@@ -22,8 +22,8 @@
 
 #include <QWidget>
 #include "ui_chasereditor.h"
-#include "scene.h"
 #include "doc.h"
+#include "scenevalue.h"
 
 class Chaser;
 class Function;

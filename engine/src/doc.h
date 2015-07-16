@@ -25,22 +25,22 @@
 #include <QFile>
 #include <QMap>
 
-#include "qlcfixturedefcache.h"
-#include "qlcmodifierscache.h"
-#include "inputoutputmap.h"
-#include "ioplugincache.h"
-#include "channelsgroup.h"
-#include "fixturegroup.h"
-#include "qlcclipboard.h"
-#include "mastertimer.h"
-#include "function.h"
 #include "fixture.h"
+#include "fixturegroup.h"
+#include "function.h"
 
-class QDomDocument;
 class AudioCapture;
+class ChannelsGroup;
+class InputOutputMap;
+class IOPluginCache;
+class MasterTimer;
+class MonitorProperties;
+class QDomDocument;
+class QLCClipboard;
+class QLCFixtureDefCache;
+class QLCModifiersCache;
 class QString;
 class RGBScriptsCache;
-class MonitorProperties;
 
 /** @addtogroup engine Engine
  * @{

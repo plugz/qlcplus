@@ -23,8 +23,8 @@
 #include <QtGlobal>
 
 #include "qlcchannel.h"
-#include "fixture.h"
-#include "doc.h"
+
+class Doc;
 
 /** @addtogroup engine Engine
  * @{

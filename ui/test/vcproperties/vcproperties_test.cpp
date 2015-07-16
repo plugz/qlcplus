@@ -21,6 +21,7 @@
 
 #define private public
 #include "vcwidgetproperties.h"
+#include "inputoutputmap.h"
 #include "vcproperties.h"
 #include "qlcfixturedefcache.h"
 #include "vcproperties_test.h"

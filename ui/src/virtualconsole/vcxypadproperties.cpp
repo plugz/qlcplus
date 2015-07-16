@@ -25,6 +25,7 @@
 
 #include "qlcfixturemode.h"
 #include "qlcinputchannel.h"
+#include "qlcinputsource.h"
 #include "qlcchannel.h"
 
 #include "vcxypadfixtureeditor.h"
@@ -33,6 +34,7 @@
 #include "fixtureselection.h"
 #include "vcxypadfixture.h"
 #include "inputpatch.h"
+#include "inputoutputmap.h"
 #include "vcxypad.h"
 #include "apputil.h"
 #include "doc.h"

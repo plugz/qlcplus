@@ -22,9 +22,11 @@
 #include "fadechannel_test.h"
 #include "qlcfixturemode.h"
 #include "qlcfixturedef.h"
+#include "qlcfixturedefcache.h"
 #include "qlcchannel.h"
 #include "qlcmacros.h"
 #include "qlcfile.h"
+#include "mastertimer.h"
 
 #define private public
 #include "fadechannel.h"

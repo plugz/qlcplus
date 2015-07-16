@@ -23,6 +23,8 @@
 #include <QDebug>
 
 #include "vccuelistproperties.h"
+#include "inputoutputmap.h"
+#include "qlcinputsource.h"
 #include "selectinputchannel.h"
 #include "functionselection.h"
 #include "assignhotkey.h"

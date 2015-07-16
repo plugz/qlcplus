@@ -27,6 +27,7 @@
 #define private public
 #include "qlcfixturedefcache.h"
 #include "qlcinputsource.h"
+#include "inputoutputmap.h"
 #include "virtualconsole.h"
 #include "vcbutton_test.h"
 #include "mastertimer.h"

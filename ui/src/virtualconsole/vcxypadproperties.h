@@ -23,12 +23,13 @@
 #include <QDialog>
 
 #include "ui_vcxypadproperties.h"
-#include "qlcinputsource.h"
-#include "vcxypadfixture.h"
 
-class InputMap;
-class VCXYPad;
 class Doc;
+class GroupHead;
+class InputMap;
+class QLCInputSource;
+class VCXYPad;
+class VCXYPadFixture;
 
 /** @addtogroup ui_vc_props
  * @{

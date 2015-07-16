@@ -25,15 +25,17 @@
 #include <QDir>
 #include <QSharedPointer>
 
-#include "qlcinputprofile.h"
 #include "grandmaster.h"
 
+class QLCInputProfile;
 class QLCInputSource;
 class QLCIOPlugin;
 class OutputPatch;
 class InputPatch;
 class Universe;
 class Doc;
+class QDomElement;
+class QDomDocument;
 
 /** @addtogroup engine Engine
  * @{

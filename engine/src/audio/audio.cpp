@@ -48,6 +48,7 @@
 
 #include "audio.h"
 #include "doc.h"
+#include "qfileinfo.h"
 
 #define KXMLQLCAudioSource "Source"
 #define KXMLQLCAudioDevice "Device"

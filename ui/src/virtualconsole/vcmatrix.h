@@ -27,13 +27,13 @@
 #include <QHash>
 
 #include "vcwidget.h"
-#include "vcmatrixcontrol.h"
 
 class ClickAndGoSlider;
 class ClickAndGoWidget;
 class QDomDocument;
 class QDomElement;
 class FlowLayout;
+class VCMatrixControl;
 
 /** @addtogroup ui_vc_widgets
  * @{

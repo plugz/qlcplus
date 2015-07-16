@@ -31,6 +31,9 @@
 #include "qlcchannel.h"
 #include "qlccapability.h"
 
+#include "clickandgoslider.h"
+#include "clickandgowidget.h"
+#include "channelsgroup.h"
 #include "doc.h"
 #include "fixture.h"
 #include "apputil.h"

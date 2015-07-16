@@ -21,14 +21,18 @@
 #include <QDebug>
 #include <QSettings>
 
-#include "selectinputchannel.h"
 #include "addchannelsgroup.h"
+#include "channelsgroup.h"
+#include "doc.h"
+#include "fixture.h"
+#include "inputoutputmap.h"
+#include "inputpatch.h"
+#include "qlcinputsource.h"
 #include "qlcfixturemode.h"
 #include "qlcfixturedef.h"
-#include "channelsgroup.h"
-#include "inputpatch.h"
-#include "fixture.h"
-#include "doc.h"
+#include "qlcinputsource.h"
+#include "selectinputchannel.h"
+#include "scenevalue.h"
 
 #define KColumnName  0
 #define KColumnType  1

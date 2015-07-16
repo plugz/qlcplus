@@ -37,6 +37,7 @@
 #include <QList>
 #include <QtXml>
 
+#include "inputoutputmap.h"
 #include "vcpropertieseditor.h"
 #include "addvcbuttonmatrix.h"
 #include "addvcslidermatrix.h"

@@ -35,8 +35,10 @@
 #include "rgbscriptscache.h"
 #include "vcmatrix.h"
 #include "function.h"
+#include "rgbscript.h"
 #include "rgbtext.h"
 #include "doc.h"
+#include "vcmatrixcontrol.h"
 
 #define UPDATE_TIMEOUT 50
 

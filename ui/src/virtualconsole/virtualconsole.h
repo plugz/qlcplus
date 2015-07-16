@@ -20,9 +20,7 @@
 #ifndef VIRTUALCONSOLE_H
 #define VIRTUALCONSOLE_H
 
-#include <QKeySequence>
 #include <QWidget>
-#include <QFrame>
 #include <QList>
 
 #include "vcproperties.h"
@@ -36,6 +34,7 @@ class QScrollArea;
 class QDomElement;
 class VCDockArea;
 class QKeyEvent;
+class QKeySequence;
 class QToolBar;
 class VCWidget;
 class VCFrame;
