@@ -18,6 +18,7 @@
 */
 
 #include "qlcclipboard.h"
+#include "doc.h"
 #include "chaser.h"
 #include "scene.h"
 

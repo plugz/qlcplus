@@ -23,12 +23,11 @@
 #include <QObject>
 #include <QHash>
 
-#include "showfunction.h"
-#include "chaser.h"
 #include "scene.h"
 
 class QDomDocument;
 class QDomElement;
+class ShowFunction;
 
 /** @addtogroup engine_functions Functions
  * @{

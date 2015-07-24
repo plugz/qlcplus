@@ -17,13 +17,14 @@
   limitations under the License.
 */
 
-#include "videoprovider.h"
-#include "doc.h"
-
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QMediaPlayer>
 #include <QVideoWidget>
+
+#include "videoprovider.h"
+#include "doc.h"
+#include "video.h"
 
 VideoProvider::VideoProvider(Doc *doc, QObject *parent)
     : QObject(parent)

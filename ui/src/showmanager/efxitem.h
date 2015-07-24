@@ -26,7 +26,8 @@
 #include <QFont>
 
 #include "showitem.h"
-#include "efx.h"
+
+class EFX;
 
 /** @addtogroup ui_functions
  * @{

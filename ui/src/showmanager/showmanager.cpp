@@ -33,6 +33,8 @@
 #include <QDebug>
 #include <QUrl>
 
+#include "audio.h"
+#include "efx.h"
 #include "functionselection.h"
 #include "rgbmatrixeditor.h"
 #include "multitrackview.h"
@@ -40,16 +42,21 @@
 #include "audioeditor.h"
 #include "efxeditor.h"
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include "video.h"
 #include "videoeditor.h"
 #endif
 #include "showmanager.h"
+#include "sequenceitem.h"
 #include "sceneeditor.h"
+#include "rgbmatrix.h"
 #include "timingstool.h"
 #include "qlcclipboard.h"
 #include "qlcmacros.h"
 #include "chaser.h"
 #include "scene.h"
 #include "show.h"
+#include "showfunction.h"
+#include "showitem.h"
 #include "doc.h"
 
 #define SETTINGS_HSPLITTER "showmanager/hsplitter"

@@ -24,13 +24,14 @@
 #include <QList>
 #include <QMap>
 
+#include "doc.h"
+#include "scenevalue.h"
 #include "ui_sceneeditor.h"
-#include "groupsconsole.h"
-#include "fixture.h"
-#include "scene.h"
 
 class GenericDMXSource;
+class GroupsConsole;
 class SpeedDialWidget;
+class Fixture;
 class FixtureConsole;
 class MasterTimer;
 class QComboBox;
@@ -38,7 +39,7 @@ class OutputMap;
 class InputMap;
 class QAction;
 class Chaser;
-class Doc;
+class Scene;
 class SceneUiState;
 
 /** @addtogroup ui_functions

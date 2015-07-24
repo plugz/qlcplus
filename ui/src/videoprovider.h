@@ -24,10 +24,9 @@
 #include <QObject>
 #include <QHash>
 
-#include "video.h"
-
 class Doc;
 class QVideoWidget;
+class Video;
 
 class VideoWidget: public QObject
 {

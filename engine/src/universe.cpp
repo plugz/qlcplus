@@ -28,6 +28,7 @@
 #include "outputpatch.h"
 #include "grandmaster.h"
 #include "inputpatch.h"
+#include "qlcinputprofile.h"
 #include "qlcmacros.h"
 #include "universe.h"
 #include "qlcfile.h"

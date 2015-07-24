@@ -28,7 +28,21 @@
 #include <QDebug>
 
 #include "multitrackview.h"
+#if QT_VERSION >= 0x050000
+#include "video.h"
+#include "videoitem.h"
+#endif
+#include "audio.h"
+#include "audioitem.h"
+#include "efx.h"
+#include "efxitem.h"
+#include "rgbmatrix.h"
+#include "rgbmatrixitem.h"
+#include "sequenceitem.h"
+#include "chaser.h"
+#include "showfunction.h"
 #include "track.h"
+#include "trackitem.h"
 
 #define VIEW_DEFAULT_WIDTH  2000
 #define VIEW_DEFAULT_HEIGHT 600

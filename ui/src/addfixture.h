@@ -24,8 +24,8 @@
 #include <QList>
 
 #include "ui_addfixture.h"
-#include "fixture.h"
 
+class Fixture;
 class QLCFixtureDefCache;
 class QTreeWidgetItem;
 class QLCFixtureMode;

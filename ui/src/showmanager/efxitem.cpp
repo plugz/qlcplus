@@ -25,6 +25,8 @@
 #include <qmath.h>
 
 #include "efxitem.h"
+#include "efx.h"
+#include "showfunction.h"
 #include "trackitem.h"
 #include "headeritems.h"
 #include "audiodecoder.h"

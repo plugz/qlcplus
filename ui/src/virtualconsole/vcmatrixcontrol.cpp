@@ -21,6 +21,7 @@
 #include <QtXml>
 
 #include "vcmatrixcontrol.h"
+#include "qlcinputsource.h"
 #include "vcwidget.h"
 
 VCMatrixControl::VCMatrixControl(quint8 id)

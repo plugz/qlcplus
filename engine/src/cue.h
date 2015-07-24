@@ -23,8 +23,6 @@
 #include <QString>
 #include <QHash>
 
-#include "scenevalue.h"
-
 class QDomDocument;
 class QDomElement;
 

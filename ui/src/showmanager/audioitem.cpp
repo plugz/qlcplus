@@ -24,6 +24,8 @@
 #include <QMenu>
 
 #include "audioitem.h"
+#include "audio.h"
+#include "showfunction.h"
 #include "trackitem.h"
 #include "headeritems.h"
 #include "audiodecoder.h"

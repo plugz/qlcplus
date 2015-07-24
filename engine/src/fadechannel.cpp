@@ -21,6 +21,7 @@
 #include <cmath>
 
 #include "fadechannel.h"
+#include "doc.h"
 #include "qlcchannel.h"
 #include "qlcmacros.h"
 #include "universe.h"

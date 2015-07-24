@@ -23,7 +23,6 @@
 #include <QKeySequence>
 #include <QWidget>
 
-#include "dmxsource.h"
 #include "vcwidget.h"
 
 class QTreeWidgetItem;

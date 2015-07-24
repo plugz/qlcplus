@@ -30,6 +30,7 @@
 #include "track.h"
 #include "scene.h"
 #include "show.h"
+#include "showfunction.h"
 #include "doc.h"
 
 #define NAME_COL  0

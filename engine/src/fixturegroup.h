@@ -27,7 +27,6 @@
 
 #include "grouphead.h"
 #include "qlcpoint.h"
-#include "fixture.h"
 
 class QDomDocument;
 class QDomElement;

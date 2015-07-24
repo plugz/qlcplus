@@ -25,7 +25,6 @@
 #include <QTimer>
 
 #include "ui_efxeditor.h"
-#include "efx.h"
 
 class QPaintEvent;
 

@@ -22,7 +22,9 @@
 
 #include <QWidget>
 
-#include "qlcchannel.h"
+class QMouseEvent;
+
+class QLCChannel;
 
 /** @addtogroup ui UI
  * @{

@@ -26,7 +26,8 @@
 #include <QFont>
 
 #include "showitem.h"
-#include "audio.h"
+
+class Audio;
 
 /** @addtogroup ui_functions
  * @{

@@ -21,12 +21,11 @@
 #define AUDIOBAR_H
 
 #include "scenevalue.h"
-#include "vcwidget.h"
-#include "function.h"
-#include "fixture.h"
 
 class QDomDocument;
 class QDomElement;
+class Function;
+class VCWidget;
 
 /** @addtogroup ui_vc_widgets
  * @{

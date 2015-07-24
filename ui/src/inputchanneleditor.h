@@ -26,8 +26,6 @@
 #include "qlcinputprofile.h"
 #include "ui_inputchanneleditor.h"
 
-class QLCInputChannel;
-
 /** @addtogroup ui_io
  * @{
  */

@@ -21,7 +21,6 @@
 #define CUESTACKMODEL_H
 
 #include <QAbstractItemModel>
-#include <qglobal.h>
 
 class CueStack;
 

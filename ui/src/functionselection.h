@@ -24,7 +24,6 @@
 #include <QList>
 
 #include "ui_functionselection.h"
-#include "function.h"
 
 class FunctionsTreeWidget;
 class QTreeWidgetItem;

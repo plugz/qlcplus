@@ -31,6 +31,7 @@
 #include "qlcmacros.h"
 #include "qlcfile.h"
 
+#include "efxfixture.h"
 #include "mastertimer.h"
 #include "fixture.h"
 #include "scene.h"

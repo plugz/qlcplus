@@ -35,6 +35,8 @@
 #include "qlcfixturedef.h"
 #include "qlcchannel.h"
 
+#include "efx.h"
+#include "efxfixture.h"
 #include "fixtureselection.h"
 #include "speeddialwidget.h"
 #include "efxpreviewarea.h"

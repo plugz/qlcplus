@@ -28,6 +28,7 @@
 #include <QtXml>
 
 #include "qlcinputchannel.h"
+#include "qlcinputprofile.h"
 #include "qlcioplugin.h"
 #include "inputpatch.h"
 

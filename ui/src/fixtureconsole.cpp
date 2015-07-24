@@ -26,6 +26,7 @@
 #include "qlcfile.h"
 
 #include "fixtureconsole.h"
+#include "scenevalue.h"
 #include "consolechannel.h"
 #include "fixture.h"
 #include "doc.h"

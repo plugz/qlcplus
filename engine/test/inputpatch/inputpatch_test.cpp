@@ -28,6 +28,7 @@
 #include "qlcioplugin.h"
 #include "inputpatch.h"
 #include "qlcfile.h"
+#include "qlcinputprofile.h"
 #include "doc.h"
 #undef private
 

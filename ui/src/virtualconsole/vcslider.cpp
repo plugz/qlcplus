@@ -33,6 +33,8 @@
 #include <QPen>
 
 #include "vcsliderproperties.h"
+#include "clickandgoslider.h"
+#include "knobwidget.h"
 #include "vcpropertieseditor.h"
 #include "qlcinputchannel.h"
 #include "virtualconsole.h"

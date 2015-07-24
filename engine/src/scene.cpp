@@ -28,6 +28,7 @@
 #include "qlcfile.h"
 #include "qlccapability.h"
 
+#include "fadechannel.h"
 #include "genericfader.h"
 #include "mastertimer.h"
 #include "universe.h"

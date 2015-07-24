@@ -23,9 +23,7 @@
 #include <QWidget>
 #include <QList>
 
-#include "function.h"
-#include "doc.h"
-
+class Function;
 class FunctionsTreeWidget;
 class QTreeWidgetItem;
 class QSplitter;

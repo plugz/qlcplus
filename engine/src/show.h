@@ -20,6 +20,7 @@
 #ifndef SHOW_H
 #define SHOW_H
 
+#include <QMap>
 #include <QMutex>
 #include <QList>
 #include <QSet>

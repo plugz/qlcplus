@@ -26,7 +26,8 @@
 #include <QFont>
 
 #include "showitem.h"
-#include "video.h"
+
+class Video;
 
 /** @addtogroup ui_functions
  * @{

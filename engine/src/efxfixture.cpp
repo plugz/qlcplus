@@ -22,6 +22,7 @@
 #include <QDebug>
 #include <math.h>
 
+#include "fadechannel.h"
 #include "genericfader.h"
 #include "mastertimer.h"
 #include "efxfixture.h"

@@ -20,19 +20,19 @@
 #ifndef FIXTURECONSOLE_H
 #define FIXTURECONSOLE_H
 
+#include <QGroupBox>
 #include <QWidget>
 #include <QList>
 
-#include "consolechannel.h"
-#include "scene.h"
-
 class QDomDocument;
 class QDomElement;
+class ConsoleChannel;
 class MasterTimer;
 class QHBoxLayout;
 class OutputMap;
 class InputMap;
 class Doc;
+class SceneValue;
 
 /** @addtogroup ui_fixtures
  * @{

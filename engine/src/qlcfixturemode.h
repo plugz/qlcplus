@@ -25,17 +25,13 @@
 #include <QList>
 
 #include "qlcfixturehead.h"
-#include "qlcfixturedef.h"
 #include "qlcphysical.h"
-#include "qlcchannel.h"
 
 class QDomDocument;
 class QDomElement;
-class QLCFixtureHead;
-class QLCFixtureMode;
-class QLCFixtureDef;
-class QLCPhysical;
 class QLCChannel;
+class QLCFixtureDef;
+class QLCFixtureMode;
 
 /** @addtogroup engine Engine
  * @{

@@ -24,7 +24,7 @@
 #include <QList>
 #include <QFont>
 
-#include "monitor.h"
+#include "monitorproperties.h"
 
 class QByteArray;
 class OutputMap;

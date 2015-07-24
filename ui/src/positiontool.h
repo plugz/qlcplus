@@ -21,7 +21,8 @@
 #define POSITIONTOOL_H
 
 #include <QDialog>
-#include <ui_positiontool.h>
+
+#include "ui_positiontool.h"
 
 class VCXYPadArea;
 

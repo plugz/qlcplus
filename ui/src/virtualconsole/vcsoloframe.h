@@ -22,7 +22,6 @@
 
 #include "vcwidget.h"
 #include "vcframe.h"
-#include "function.h"
 
 class QDomDocument;
 class QDomElement;

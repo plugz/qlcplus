@@ -26,17 +26,19 @@
 #include <QSlider>
 #include <QWidget>
 
-#include "rgbmatrixitem.h"
-#include "sequenceitem.h"
 #include "headeritems.h"
-#include "trackitem.h"
-#include "audioitem.h"
-#include "efxitem.h"
+
+class Audio;
+class Chaser;
+class EFX;
+class RGBMatrix;
+class ShowItem;
+class ShowFunction;
+class Track;
+class TrackItem;
 #if QT_VERSION >= 0x050000
-#include "videoitem.h"
+class Video;
 #endif
-#include "chaser.h"
-#include "track.h"
 
 /** @addtogroup ui_shows
  * @{

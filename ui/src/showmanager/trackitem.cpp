@@ -24,6 +24,7 @@
 #include <QMenu>
 
 #include "trackitem.h"
+#include "track.h"
 
 TrackItem::TrackItem(Track *track, int number)
     : m_number(number)

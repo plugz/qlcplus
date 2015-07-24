@@ -45,6 +45,7 @@
 
 #include "inputoutputmap.h"
 #include "qlcinputchannel.h"
+#include "qlcinputprofile.h"
 #include "virtualconsole.h"
 #include "vcproperties.h"
 #include "inputpatch.h"

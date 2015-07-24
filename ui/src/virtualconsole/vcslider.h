@@ -23,12 +23,11 @@
 #include <QMutex>
 #include <QList>
 
-#include "clickandgoslider.h"
 #include "clickandgowidget.h"
-#include "knobwidget.h"
 #include "dmxsource.h"
 #include "vcwidget.h"
 
+class QAbstractSlider;
 class QDomDocument;
 class QDomElement;
 class QToolButton;

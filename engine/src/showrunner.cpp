@@ -21,6 +21,7 @@
 #include <QDebug>
 
 #include "showrunner.h"
+#include "doc.h"
 #include "chaserstep.h"
 #include "function.h"
 #include "chaser.h"
@@ -29,6 +30,7 @@
 #include "scene.h"
 #include "audio.h"
 #include "show.h"
+#include "showfunction.h"
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include "video.h"
 #endif

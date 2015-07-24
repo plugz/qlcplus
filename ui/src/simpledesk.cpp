@@ -50,6 +50,7 @@
 #include "cuestack.h"
 #include "cue.h"
 #include "doc.h"
+#include "scenevalue.h"
 
 #define PROP_ADDRESS    "address"
 #define PROP_PLAYBACK   "playback"

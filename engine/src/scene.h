@@ -20,16 +20,17 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include <QMap>
 #include <QMutex>
 #include <QList>
 
-#include "genericfader.h"
-#include "fadechannel.h"
 #include "scenevalue.h"
 #include "dmxsource.h"
 #include "function.h"
 #include "fixture.h"
 
+class FadeChannel;
+class GenericFader;
 class QDomDocument;
 class QDomElement;
 

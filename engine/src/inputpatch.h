@@ -23,9 +23,8 @@
 #include <QObject>
 #include <QMap>
 
-#include "qlcinputprofile.h"
-
 class QLCIOPlugin;
+class QLCInputProfile;
 
 /** @addtogroup engine Engine
  * @{

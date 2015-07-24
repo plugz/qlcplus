@@ -26,7 +26,8 @@
 #include <QFont>
 
 #include "showitem.h"
-#include "chaser.h"
+
+class Chaser;
 
 /** @addtogroup ui_functions
  * @{

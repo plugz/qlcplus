@@ -26,6 +26,7 @@
 #include "headeritems.h"
 #include "trackitem.h"
 #include "showitem.h"
+#include "showfunction.h"
 #include "function.h"
 
 ShowItem::ShowItem(ShowFunction *function, QObject *)

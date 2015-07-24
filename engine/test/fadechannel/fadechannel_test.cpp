@@ -26,6 +26,8 @@
 #include "qlcchannel.h"
 #include "qlcmacros.h"
 #include "qlcfile.h"
+#include "doc.h"
+#include "fixture.h"
 #include "mastertimer.h"
 
 #define private public

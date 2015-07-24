@@ -30,6 +30,7 @@
 #include "function.h"
 #include "chaser.h"
 #include "show.h"
+#include "showfunction.h"
 #include "doc.h"
 
 #define KXMLQLCShowTimeDivision "TimeDivision"

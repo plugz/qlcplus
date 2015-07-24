@@ -24,6 +24,7 @@
 #include "inputoutputmap_test.h"
 #include "inputoutputmap.h"
 #include "ioplugincache.h"
+#include "qlcinputprofile.h"
 #include "qlcinputsource.h"
 #include "outputpatch.h"
 #include "inputpatch.h"

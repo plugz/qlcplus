@@ -30,13 +30,13 @@
 #include <QMutex>
 
 #include "function.h"
+#include "rgbalgorithm.h"
 
 class FadeChannel;
 class FixtureGroup;
 class GenericFader;
 class QDir;
 class QTime;
-class RGBAlgorithm;
 
 /** @addtogroup engine_functions Functions
  * @{

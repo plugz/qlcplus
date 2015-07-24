@@ -33,6 +33,7 @@
 #include <QLabel>
 #include <QDebug>
 
+#include "consolechannel.h"
 #include "genericdmxsource.h"
 #include "fixtureselection.h"
 #include "speeddialwidget.h"
@@ -49,6 +50,7 @@
 #include "fixture.h"
 #include "chaser.h"
 #include "scene.h"
+#include "scenevalue.h"
 #include "sceneuistate.h"
 #include "doc.h"
 #include "positiontool.h"

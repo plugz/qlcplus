@@ -26,12 +26,13 @@
 #include <QTimer>
 
 #include "ui_efxeditor.h"
-#include "efx.h"
 #include "doc.h"
 
 class SpeedDialWidget;
 class EFXPreviewArea;
 class Doc;
+class EFX;
+class EFXFixture;
 
 class EfxUiState;
 

@@ -23,6 +23,7 @@
 #define protected public
 #define private public
 #include "qlcfixturemode_test.h"
+#include "qlcchannel.h"
 #include "qlcfixturemode.h"
 #include "qlcfixturehead.h"
 #include "qlcfixturedef.h"

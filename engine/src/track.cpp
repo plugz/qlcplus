@@ -24,6 +24,7 @@
 #include "track.h"
 #include "scene.h"
 #include "doc.h"
+#include "showfunction.h"
 
 #define KXMLQLCTrackID        "ID"
 #define KXMLQLCTrackName      "Name"

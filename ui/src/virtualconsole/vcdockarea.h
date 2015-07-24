@@ -20,9 +20,9 @@
 #ifndef VCDOCKAREA_H
 #define VCDOCKAREA_H
 
-#include "grandmaster.h"
+#include <QFrame>
 
-#include <qframe.h>
+#include "grandmaster.h"
 
 class GrandMasterSlider;
 class InputOutputMap;

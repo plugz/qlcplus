@@ -31,6 +31,7 @@
 #include "knobwidget.h"
 #include "rgbalgorithm.h"
 #include "flowlayout.h"
+#include "qlcinputsource.h"
 #include "rgbmatrix.h"
 #include "rgbscriptscache.h"
 #include "vcmatrix.h"

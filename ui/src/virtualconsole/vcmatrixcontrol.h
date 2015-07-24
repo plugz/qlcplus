@@ -23,10 +23,9 @@
 #include <QKeySequence>
 #include <QColor>
 
-#include "qlcinputsource.h"
-
 class QDomDocument;
 class QDomElement;
+class QLCInputSource;
 
 /** @addtogroup ui_vc_widgets
  * @{

@@ -25,7 +25,6 @@
 
 #include "ui_functionwizard.h"
 #include "palettegenerator.h"
-#include "scenevalue.h"
 #include "function.h"
 
 class QLCChannel;

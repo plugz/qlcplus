@@ -19,6 +19,7 @@
 
 #include <QDesktopWidget>
 #include <QApplication>
+#include <QMouseEvent>
 #include <QPainter>
 #include <qmath.h>
 #include <QDebug>

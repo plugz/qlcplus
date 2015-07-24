@@ -25,7 +25,7 @@
 #include <QAction>
 #include <QFont>
 
-#include "track.h"
+class Track;
 
 #define TRACK_HEIGHT        80
 #define TRACK_WIDTH         150
