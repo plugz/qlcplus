@@ -26,7 +26,6 @@ ArtNetPacketizer::ArtNetPacketizer()
 {
     // Initialize a commond header.
     // Changing only the tenth byte will create a valid ArtNet header
-    m_commonHeader.clear();
     m_commonHeader.append(ARTNET_CODE_STR);
     m_commonHeader.append('\0');
 
@@ -54,7 +53,7 @@ ArtNetPacketizer::~ArtNetPacketizer()
 
 void ArtNetPacketizer::setupArtNetPoll(QByteArray& data)
 {
-    data.clear();
+    data.resize(0);
     data.append(m_commonHeader);
     const char opCodeMSB = (ARTNET_POLL >> 8);
     data[9] = opCodeMSB;
@@ -65,7 +64,7 @@ void ArtNetPacketizer::setupArtNetPoll(QByteArray& data)
 void ArtNetPacketizer::setupArtNetPollReply(QByteArray &data, QHostAddress ipAddr, QString MACaddr)
 {
     int i = 0;
-    data.clear();
+    data.resize(0);
     data.append(m_commonHeader);
     data.remove(9, 2);
     const char opCodeMSB = (ARTNET_POLLREPLY >> 8);
@@ -122,7 +121,7 @@ void ArtNetPacketizer::setupArtNetPollReply(QByteArray &data, QHostAddress ipAdd
 
 void ArtNetPacketizer::setupArtNetDmx(QByteArray& data, int universe, const QByteArray &values, bool fillWithZeroes)
 {
-    data.clear();
+    data.resize(0);
     data.append(m_commonHeader);
     const char opCodeMSB = (ARTNET_DMX >> 8);
     data[9] = opCodeMSB;
@@ -189,7 +188,7 @@ bool ArtNetPacketizer::fillDMXdata(QByteArray& data, QByteArray &dmx, quint32 &u
 {
     if (data.isNull())
         return false;
-    dmx.clear();
+    dmx.resize(0);
     //char sequence = data.at(12);
     //qDebug() << "Sequence: " << sequence;
     // char physical = data.at(13) // skipped

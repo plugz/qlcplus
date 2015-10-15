@@ -66,9 +66,9 @@ ArtNetController::ArtNetController(QString ipaddr, QNetworkAddressEntry interfac
                                                  m_broadcastAddr, ARTNET_DEFAULT_PORT);
         if (sent < 0)
         {
-            qDebug() << "Unable to send initial Poll packet";
-            qDebug() << "Errno: " << m_UdpSocket->error();
-            qDebug() << "Errmgs: " << m_UdpSocket->errorString();
+            qWarning() << "Unable to send initial Poll packet";
+            qWarning() << "Errno: " << m_UdpSocket->error();
+            qWarning() << "Errmgs: " << m_UdpSocket->errorString();
         }
         else
             m_packetSent++;
@@ -77,7 +77,6 @@ ArtNetController::ArtNetController(QString ipaddr, QNetworkAddressEntry interfac
 
 ArtNetController::~ArtNetController()
 {
-    qDebug() << Q_FUNC_INFO;
     disconnect(m_UdpSocket, SIGNAL(readyRead()),
             this, SLOT(processPendingPackets()));
     m_UdpSocket->close();
@@ -238,7 +237,6 @@ void ArtNetController::sendDmx(const quint32 universe, const QByteArray &data)
     QHostAddress outAddress = m_broadcastAddr;
     quint32 outUniverse = universe;
     TransmissionMode transmitMode = Full;
-    m_outPacket.clear();
 
     if (m_universeMap.contains(universe))
     {
