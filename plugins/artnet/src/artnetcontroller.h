@@ -32,7 +32,7 @@ typedef struct
 {
     QHostAddress outputAddress;
     ushort outputUniverse;
-    int trasmissionMode;
+    int transmissionMode;
     int type;
 } UniverseInfo;
 
@@ -151,6 +151,9 @@ private:
     /** Mutex to handle the change of output IP address or in general
      *  variables that could be used to transmit/receive data */
     QMutex m_dataMutex;
+
+    /** Cached out packet so it does not get reallocated each time data is sent */
+    QByteArray m_outPacket;
 
 private slots:
     /** Async event raised when new packets have been received */

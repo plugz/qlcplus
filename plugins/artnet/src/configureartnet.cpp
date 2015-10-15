@@ -160,7 +160,7 @@ void ConfigureArtNet::fillMappingTree()
                 QComboBox *combo = new QComboBox(this);
                 combo->addItem(tr("Full"));
                 combo->addItem(tr("Partial"));
-                if (info->trasmissionMode == ArtNetController::Partial)
+                if (info->transmissionMode == ArtNetController::Partial)
                     combo->setCurrentIndex(1);
                 m_uniMapTree->setItemWidget(item, KMapColumnTransmitMode, combo);
             }

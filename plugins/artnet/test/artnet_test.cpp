@@ -39,24 +39,24 @@ void ArtNet_Test::setupArtNetDmx()
     const QByteArray full(512, 20);
 
     // empty data
-    ap.setupArtNetDmx(data, 0, empty);
+    ap.setupArtNetDmx(data, 0, empty, false);
 
     QCOMPARE(data.size(), 20);
     QCOMPARE(data.data(), "Art-Net");
 
     // full data
-    ap.setupArtNetDmx(data, 0, full);
+    ap.setupArtNetDmx(data, 0, full, false);
 
     QCOMPARE(data.size(), 18 + 512);
     QCOMPARE(data.data(), "Art-Net");
 
     // partial data
-    ap.setupArtNetDmx(data, 0, fifty);
+    ap.setupArtNetDmx(data, 0, fifty, false);
 
     QCOMPARE(data.size(), 18 + 50);
     QCOMPARE(data.data(), "Art-Net");
 
-    ap.setupArtNetDmx(data, 0, fiftyone);
+    ap.setupArtNetDmx(data, 0, fiftyone, false);
 
     QCOMPARE(data.size(), 18 + 52);
     QCOMPARE(data.data(), "Art-Net");
