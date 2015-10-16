@@ -25,7 +25,7 @@
 E131Packetizer::E131Packetizer()
 {
     // Initialize a commond header.
-    m_commonHeader.clear();
+    m_commonHeader.resize(0);
 
     // Preamble Size
     m_commonHeader.append((char)0x00);
@@ -149,12 +149,15 @@ E131Packetizer::~E131Packetizer()
  * Sender functions
  *********************************************************************/
 
-void E131Packetizer::setupE131Dmx(QByteArray& data, const int &universe, const int &priority, const QByteArray &values)
+void E131Packetizer::setupE131Dmx(QByteArray& data, const int &universe, const int &priority, const QByteArray &values, bool fillWithZeroes)
 {
-    data.clear();
+    uchar& sequence = m_sequence[universe];
+    data.resize(0);
     data.append(m_commonHeader);
 
     data.append(values);
+    if (fillWithZeroes && data.size() < 512)
+        data.append(QByteArray(data.size() - 512, 0));
 
     int rootLayerSize = data.count() - 16;
     int e131LayerSize = data.count() - 38;
@@ -169,7 +172,7 @@ void E131Packetizer::setupE131Dmx(QByteArray& data, const int &universe, const i
 
     data[108] = (char) priority;
 
-    data[111] = m_sequence[universe];
+    data[111] = sequence;
 
     data[113] = (char)(universe >> 8);
     data[114] = (char)(universe & 0x00FF);
@@ -180,10 +183,10 @@ void E131Packetizer::setupE131Dmx(QByteArray& data, const int &universe, const i
     data[123] = (char)(valCountPlusOne >> 8);
     data[124] = (char)(valCountPlusOne & 0x00FF);
 
-    if (m_sequence[universe] == 0xff)
-        m_sequence[universe] = 1;
+    if (sequence == 0xff)
+        sequence = 1;
     else
-        m_sequence[universe]++;
+        ++sequence;
 }
 
 bool E131Packetizer::checkPacket(QByteArray &data)
@@ -211,7 +214,7 @@ bool E131Packetizer::fillDMXdata(QByteArray& data, QByteArray &dmx, quint32 &uni
 {
     if (data.isNull())
         return false;
-    dmx.clear();
+    dmx.resize(0);
 
     universe = (data[113] << 8) + data[114];
 

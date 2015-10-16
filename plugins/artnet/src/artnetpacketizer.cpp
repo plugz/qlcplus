@@ -139,7 +139,8 @@ void ArtNetPacketizer::setupArtNetDmx(QByteArray& data, int universe, const QByt
     data.append((char)(len >> 8));
     data.append((char)(len & 0x00FF));
     data.append(values);
-    data.append(QByteArray(padLength, 0));
+    if (padLength)
+        data.append(QByteArray(padLength, 0));
 
     if (sequence == 0xff)
         sequence = 1;

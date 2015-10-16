@@ -90,6 +90,10 @@ void E131Controller::addUniverse(quint32 universe, E131Controller::Type type)
         info.inputSocket.clear();
         info.inputSocket = getInputSocket(true, info.inputMcastAddress, E131_DEFAULT_PORT);
     }
+    else
+    {
+        m_outPacket.reserve(512);
+    }
 }
 
 void E131Controller::removeUniverse(quint32 universe, E131Controller::Type type)
@@ -300,7 +304,9 @@ E131Controller::TransmissionMode E131Controller::stringToTransmissionMode(const 
 
 QList<quint32> E131Controller::universesList()
 {
-    return m_universeMap.keys();
+    QList<quint32> universes(m_universeMap.keys());
+    qSort(universes);
+    return universes;
 }
 
 UniverseInfo *E131Controller::getUniverseInfo(quint32 universe)
@@ -340,16 +346,16 @@ quint64 E131Controller::getPacketReceivedNumber()
 void E131Controller::sendDmx(const quint32 universe, const QByteArray &data)
 {
     QMutexLocker locker(&m_dataMutex);
-    QByteArray dmxPacket;
-    QHostAddress outAddress = QHostAddress(QString("239.255.0.%1").arg(universe + 1));
+    QHostAddress outAddress;
     quint16 outPort = E131_DEFAULT_PORT;
     quint32 outUniverse = universe;
     quint32 outPriority = E131_PRIORITY_DEFAULT;
     TransmissionMode transmitMode = Full;
 
-    if (m_universeMap.contains(universe))
+    QHash<quint32, UniverseInfo>::const_iterator uniIt(m_universeMap.constFind(universe));
+    if (uniIt != m_universeMap.constEnd())
     {
-        UniverseInfo const& info = m_universeMap[universe];
+        UniverseInfo const& info = *uniIt;
         if (info.outputMulticast)
         {
             outAddress = info.outputMcastAddress;
@@ -364,18 +370,14 @@ void E131Controller::sendDmx(const quint32 universe, const QByteArray &data)
         transmitMode = TransmissionMode(info.outputTransmissionMode);
     }
     else
-        qWarning() << Q_FUNC_INFO << "universe" << universe << "unknown";
-
-    if (transmitMode == Full)
     {
-        QByteArray wholeuniverse(512, 0);
-        wholeuniverse.replace(0, data.length(), data);
-        m_packetizer->setupE131Dmx(dmxPacket, outUniverse, outPriority, wholeuniverse);
+        outAddress = QHostAddress(QString("239.255.0.%1").arg(universe + 1));
+        qWarning() << Q_FUNC_INFO << "universe" << universe << "unknown";
     }
-    else
-        m_packetizer->setupE131Dmx(dmxPacket, outUniverse, outPriority, data);
 
-    qint64 sent = m_UdpSocket->writeDatagram(dmxPacket.data(), dmxPacket.size(),
+    m_packetizer->setupE131Dmx(m_outPacket, outUniverse, outPriority, data, transmitMode == Full);
+
+    qint64 sent = m_UdpSocket->writeDatagram(m_outPacket.data(), m_outPacket.size(),
                                              outAddress, outPort);
     if (sent < 0)
     {
@@ -408,7 +410,7 @@ void E131Controller::processPendingPackets()
                 << ", for E1.31 universe: " << e131universe;
             ++m_packetReceived;
 
-            for (QMap<quint32, UniverseInfo>::iterator it = m_universeMap.begin(); it != m_universeMap.end(); ++it)
+            for (QHash<quint32, UniverseInfo>::iterator it = m_universeMap.begin(); it != m_universeMap.end(); ++it)
             {
                 quint32 universe = it.key();
                 UniverseInfo& info = it.value();
