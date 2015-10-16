@@ -121,11 +121,12 @@ void ArtNetPacketizer::setupArtNetPollReply(QByteArray &data, QHostAddress ipAdd
 
 void ArtNetPacketizer::setupArtNetDmx(QByteArray& data, int universe, const QByteArray &values, bool fillWithZeroes)
 {
+    uchar& sequence = m_sequence[universe];
     data.resize(0);
     data.append(m_commonHeader);
     const char opCodeMSB = (ARTNET_DMX >> 8);
     data[9] = opCodeMSB;
-    data.append(m_sequence[universe]); // Sequence
+    data.append(sequence); // Sequence
     data.append('\0'); // Physical
     data.append((char)(universe & 0x00FF));
     data.append((char)(universe >> 8));
@@ -140,10 +141,10 @@ void ArtNetPacketizer::setupArtNetDmx(QByteArray& data, int universe, const QByt
     data.append(values);
     data.append(QByteArray(padLength, 0));
 
-    if (m_sequence[universe] == 0xff)
-        m_sequence[universe] = 1;
+    if (sequence == 0xff)
+        sequence = 1;
     else
-        m_sequence[universe]++;
+        ++sequence;
 }
 
 /*********************************************************************

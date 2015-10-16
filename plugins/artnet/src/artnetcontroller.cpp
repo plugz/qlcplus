@@ -220,7 +220,9 @@ ArtNetController::TransmissionMode ArtNetController::stringToTransmissionMode(co
 
 QList<quint32> ArtNetController::universesList()
 {
-    return m_universeMap.keys();
+    QList<quint32> universesList(m_universeMap.keys());
+    qSort(universesList);
+    return universesList;
 }
 
 UniverseInfo *ArtNetController::getUniverseInfo(quint32 universe)
@@ -238,9 +240,10 @@ void ArtNetController::sendDmx(const quint32 universe, const QByteArray &data)
     quint32 outUniverse = universe;
     TransmissionMode transmitMode = Full;
 
-    if (m_universeMap.contains(universe))
+    QHash<quint32, UniverseInfo>::const_iterator uniIt(m_universeMap.constFind(universe));
+    if (uniIt != m_universeMap.constEnd())
     {
-        UniverseInfo info = m_universeMap[universe];
+        UniverseInfo const& info = *uniIt;
         outAddress = info.outputAddress;
         outUniverse = info.outputUniverse;
         transmitMode = TransmissionMode(info.transmissionMode);
