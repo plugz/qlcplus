@@ -156,13 +156,13 @@ void E131Packetizer::setupE131Dmx(QByteArray& data, const int &universe, const i
     data.append(m_commonHeader);
 
     data.append(values);
-    if (fillWithZeroes && data.size() < 512)
-        data.append(QByteArray(data.size() - 512, 0));
+    if (fillWithZeroes && values.size() < 512)
+        data.append(QByteArray(values.size() - 512, 0));
 
     int rootLayerSize = data.count() - 16;
     int e131LayerSize = data.count() - 38;
     int dmpLayerSize = data.count() - 115;
-    int valCountPlusOne = values.count() + 1;
+    int valCountPlusOne = (fillWithZeroes ? 512 : values.count()) + 1;
 
     data[16] = 0x70 | (char)(rootLayerSize >> 8);
     data[17] = (char)(rootLayerSize & 0x00FF);
