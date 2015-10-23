@@ -278,7 +278,7 @@ public:
     /**
      * Get a list of fixtures
      */
-    QList<Fixture*> const& fixtures() const;
+    QList<Fixture*> const& fixtures(quint32 universe = Universe::invalid()) const;
 
     /**
      * Get the fixture that occupies the given DMX address. If multiple fixtures
@@ -325,6 +325,8 @@ protected:
     /** Fixtures list cache */
     bool m_fixturesListCacheUpToDate;
     QList<Fixture*> m_fixturesListCache;
+    QList<Fixture*> m_emptyFixturesListCache;
+    QHash<quint32, QList<Fixture*> > m_fixturesListsByUniverseCache;
 
     /** Map of the addresses occupied by fixtures */
     QHash <quint32, quint32> m_addresses;

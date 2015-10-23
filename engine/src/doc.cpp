@@ -569,22 +569,42 @@ bool Doc::updateFixtureChannelCapabilities(quint32 id, QList<int> forcedHTP, QLi
     return false;
 }
 
-QList<Fixture*> const& Doc::fixtures() const
+QList<Fixture*> const& Doc::fixtures(quint32 universe) const
 {
     if (!m_fixturesListCacheUpToDate)
     {
+        QMap<quint32, QMap<quint32, Fixture*> > fixturesMapMap;
         // Sort fixtures by id
         QMap <quint32, Fixture*> fixturesMap;
         QHashIterator <quint32, Fixture*> hashIt(m_fixtures);
         while (hashIt.hasNext())
         {
             hashIt.next();
+            fixturesMapMap[hashIt.value()->universe()].insert(hashIt.key(), hashIt.value());
             fixturesMap.insert(hashIt.key(), hashIt.value());
+        }
+        const_cast<QHash<quint32, QList<Fixture*> >&>(m_fixturesListsByUniverseCache).clear();
+        QMapIterator<quint32, QMap<quint32, Fixture*> > mapMapIt(fixturesMapMap);
+        while (mapMapIt.hasNext())
+        {
+            mapMapIt.next();
+            const_cast<QHash<quint32, QList<Fixture*> >&>
+                (m_fixturesListsByUniverseCache).insert(mapMapIt.key(), mapMapIt.value().values());
         }
         const_cast<QList<Fixture*>&>(m_fixturesListCache) = fixturesMap.values();
         const_cast<bool&>(m_fixturesListCacheUpToDate) = true;
     }
-    return m_fixturesListCache;
+    // universe == invalidId ? return everything
+    if (universe == Universe::invalid())
+        return m_fixturesListCache;
+
+    // return the fixtures that have been asked for
+    QHash<quint32, QList<Fixture*> >::const_iterator it = m_fixturesListsByUniverseCache.constFind(universe);
+    if (it != m_fixturesListsByUniverseCache.constEnd())
+        return it.value();
+
+    // unknown universe ? return an empty list
+    return m_emptyFixturesListCache;
 }
 
 Fixture* Doc::fixture(quint32 id) const

@@ -509,11 +509,8 @@ void App::slotDocModified(bool state)
 
 void App::slotUniversesWritten(int idx, const QByteArray &ua)
 {
-    foreach(Fixture *fixture, m_doc->fixtures())
+    foreach(Fixture *fixture, m_doc->fixtures(idx))
     {
-        if (fixture->universe() != (quint32)idx)
-            continue;
-
         int fxStartAddr = fixture->address();
         if (fxStartAddr >= ua.size())
             continue;

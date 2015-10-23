@@ -494,17 +494,16 @@ ChannelModifier *Fixture::channelModifier(quint32 idx)
 bool Fixture::setChannelValues(QByteArray values)
 {
     bool changed = false;
-    for (int i = 0; i < qMin(values.length(), (int)channels()); i++)
+    int size = qMin(values.length(), (int)channels());
     {
-        if (m_values.at(i) != values.at(i))
-        {
-            m_valuesMutex.lock();
-            m_values[i] = values.at(i);
-            changed = true;
-            m_valuesMutex.unlock();
-        }
+        QMutexLocker valuesLock(&m_valuesMutex);
+        changed =
+            memcmp(m_values.constData(), values.constData(), size);
+        if (changed)
+            memcpy(m_values.data(), values.constData(), size);
     }
-    if (changed == true)
+
+    if (changed)
         emit valuesChanged();
 
     return changed;
