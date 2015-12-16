@@ -81,7 +81,7 @@ SimpleDesk::SimpleDesk(QWidget* parent, Doc* doc)
     , m_doc(doc)
     , m_docChanged(false)
     , m_chGroupsArea(NULL)
-    , m_currentUniverse(0)
+    , m_currentUniverseID(Universe::invalid())
     , m_channelsPerPage(DEFAULT_PAGE_CHANNELS)
     , m_selectedPlayback(UINT_MAX)
     , m_playbacksPerPage(DEFAULT_PAGE_PLAYBACKS)
@@ -104,10 +104,6 @@ SimpleDesk::SimpleDesk(QWidget* parent, Doc* doc)
     var = settings.value(SETTINGS_PAGE_PLAYBACKS);
     if (var.isValid() == true && var.toUInt() > 0)
         m_playbacksPerPage = var.toUInt();
-
-    // default all the universes pages to 1
-    for (quint32 i = 0; i < m_doc->inputOutputMap()->universesCount(); i++)
-        m_universesPage.append(1);
 
     initEngine();
     initView();
@@ -134,8 +130,8 @@ SimpleDesk::SimpleDesk(QWidget* parent, Doc* doc)
     connect(m_doc->inputOutputMap(), SIGNAL(universeRemoved(quint32)),
             this, SLOT(slotDocChanged()));
 
-    connect(m_doc->inputOutputMap(), SIGNAL(universesWritten(int, const QByteArray&)),
-            this, SLOT(slotUniversesWritten(int, const QByteArray&)));
+    connect(m_doc->inputOutputMap(), SIGNAL(universesWritten(quint32, const QByteArray&)),
+            this, SLOT(slotUniversesWritten(quint32, const QByteArray&)));
 }
 
 SimpleDesk::~SimpleDesk()
@@ -144,11 +140,7 @@ SimpleDesk::~SimpleDesk()
 
     QSettings settings;
     settings.setValue(SETTINGS_SPLITTER, m_splitter->saveState());
-
-    Q_ASSERT(m_engine != NULL);
     delete m_engine;
-    m_engine = NULL;
-
     s_instance = NULL;
 }
 
@@ -362,9 +354,9 @@ int SimpleDesk::getSlidersNumber()
     return m_channelsPerPage;
 }
 
-int SimpleDesk::getCurrentUniverseIndex()
+quint32 SimpleDesk::getCurrentUniverseID()
 {
-    return m_currentUniverse;
+    return m_currentUniverseID;
 }
 
 int SimpleDesk::getCurrentPage()
@@ -388,7 +380,7 @@ void SimpleDesk::setAbsoluteChannelValue(uint address, uchar value)
 void SimpleDesk::resetUniverse()
 {
     // force a engine reset
-    m_engine->resetUniverse(m_currentUniverse);
+    m_engine->resetUniverse(m_currentUniverseID);
     // simulate a user click on the reset button
     // to avoid messing up with multithread calls
     m_universeResetButton->click();
@@ -400,23 +392,37 @@ void SimpleDesk::resetUniverse()
 
 void SimpleDesk::initUniversesCombo()
 {
-    disconnect(m_universesCombo, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(slotUniversesComboChanged(int)));
+    m_universesCombo->blockSignals(true);
     int currIdx = m_universesCombo->currentIndex();
     m_universesCombo->clear();
-    m_universesCombo->addItems(m_doc->inputOutputMap()->universeNames());
+    QMap<quint32, QString> universes(m_doc->inputOutputMap()->universeNames());
+    for (QMap<quint32, QString>::iterator it = universes.begin();
+            it != universes.end(); ++it)
+    {
+        quint32 id = it.key();
+        QString name = it.value();
+        m_universesCombo->addItem(name, id);
+    }
     if (currIdx != -1)
         m_universesCombo->setCurrentIndex(currIdx);
-    while (m_universesPage.length() < m_universesCombo->count())
-        m_universesPage.append(1);
-    connect(m_universesCombo, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(slotUniversesComboChanged(int)));
+
+    if (m_universesCombo->currentIndex() != -1)
+        m_currentUniverseID = m_universesCombo->itemData(m_universesCombo->currentIndex()).toUInt();
+
+    // default all the universes pages to 1
+    foreach (quint32 universe, universes.keys())
+    {
+        if (!m_universesPage.contains(universe))
+            m_universesPage.insert(universe, 1);
+    }
+
+    m_universesCombo->blockSignals(false);
 }
 
 void SimpleDesk::initUniverseSliders()
 {
     qDebug() << Q_FUNC_INFO;
-    quint32 start = m_universesPage.at(m_currentUniverse) * m_channelsPerPage;
+    quint32 start = m_universesPage.value(m_currentUniverseID) * m_channelsPerPage;
     for (quint32 i = 0; i < m_channelsPerPage; i++)
     {
         ConsoleChannel* slider = NULL;
@@ -482,7 +488,7 @@ void SimpleDesk::initSliderView(bool fullMode)
         int c = 0;
         foreach(Fixture *fixture, m_doc->fixtures())
         {
-            if (fixture->universe() != (quint32)m_universesCombo->currentIndex())
+            if (fixture->universe() != m_currentUniverseID)
                 continue;
             FixtureConsole* console = NULL;
             if (c%2 == 0)
@@ -522,7 +528,7 @@ void SimpleDesk::initSliderView(bool fullMode)
     }
     else
     {
-        int page = m_universesPage.at(m_universesCombo->currentIndex());
+        int page = m_universesPage.value(m_currentUniverseID);
         slotUniversePageChanged(page);
     }
 }
@@ -552,7 +558,7 @@ void SimpleDesk::initChannelGroupsView()
 
 void SimpleDesk::slotUniversesComboChanged(int index)
 {
-    m_currentUniverse = index;
+    m_currentUniverseID = m_universesCombo->itemData(index).toUInt();
     if (m_viewModeButton->isChecked() == true)
     {
         m_universeGroup->layout()->removeWidget(scrollArea);
@@ -561,9 +567,9 @@ void SimpleDesk::slotUniversesComboChanged(int index)
     }
     else
     {
-        int page = m_universesPage.at(index);
-        slotUniversePageChanged(m_universesPage.at(index));
+        int page = m_universesPage.value(m_currentUniverseID);
         m_universePageSpin->setValue(page);
+        // TODO test if we need to call slotUniversePageChanged()
     }
 }
 
@@ -616,10 +622,10 @@ void SimpleDesk::slotUniversePageChanged(int page)
     quint32 start = (page - 1) * m_channelsPerPage;
 
     /* now, calculate the absolute address including current universe (0 - 2048) */
-    quint32 absoluteAddr = start | (m_currentUniverse << 9);
+    quint32 absoluteAddr = start | (m_currentUniverseID << 9);
 
     /* Set the new page for this universe */
-    m_universesPage.replace(m_currentUniverse, page);
+    m_universesPage.insert(m_currentUniverseID, page);
 
     //qDebug() << "[slotUniversePageChanged] start: " << start << ", absoluteAddr: " << absoluteAddr;
 
@@ -640,7 +646,7 @@ void SimpleDesk::slotUniversePageChanged(int page)
         if (fx == NULL)
         {
             slider = new ConsoleChannel(this, m_doc, Fixture::invalidId(), start + i, false);
-            if (m_engine->hasChannel((m_currentUniverse << 9) + (start + i)))
+            if (m_engine->hasChannel((m_currentUniverseID << 9) + (start + i)))
                 slider->setChannelStyleSheet(ssOverride);
             else
                 slider->setChannelStyleSheet(ssNone);
@@ -694,10 +700,12 @@ void SimpleDesk::slotUniversePageChanged(int page)
 void SimpleDesk::slotUniverseResetClicked()
 {
     qDebug() << Q_FUNC_INFO;
-    m_engine->resetUniverse(m_currentUniverse);
+    m_engine->resetUniverse(m_currentUniverseID);
     m_universePageSpin->setValue(1);
     if (m_viewModeButton->isChecked() == false)
+    {
         slotUniversePageChanged(1);
+    }
     else
     {
         QHashIterator <quint32,FixtureConsole*> it(m_consoleList);
@@ -799,13 +807,13 @@ void SimpleDesk::slotUniverseSliderValueChanged(quint32 fid, quint32 chan, uchar
     }
 }
 
-void SimpleDesk::slotUniversesWritten(int idx, const QByteArray& ua)
+void SimpleDesk::slotUniversesWritten(quint32 id, const QByteArray& ua)
 {
     // If Simple Desk is not visible, don't even waste CPU
     if (isVisible() == false)
         return;
 
-    if (idx != m_currentUniverse)
+    if (id != m_currentUniverseID)
         return;
 
     if (m_viewModeButton->isChecked() == false)
@@ -818,7 +826,7 @@ void SimpleDesk::slotUniversesWritten(int idx, const QByteArray& ua)
             if (i >= (quint32)ua.length())
                 break;
 
-            quint32 absAddr = i + (idx << 9);
+            quint32 absAddr = i + (id << 9);
             ConsoleChannel *cc = m_universeSliders[i - start];
             if (cc == NULL)
                 continue;
@@ -854,7 +862,7 @@ void SimpleDesk::slotUniversesWritten(int idx, const QByteArray& ua)
                     if (startAddr + c >= (quint32)ua.length())
                         break;
 
-                    if (m_engine->hasChannel((startAddr + c) + (idx << 9)) == true)
+                    if (m_engine->hasChannel((startAddr + c) + (id << 9)) == true)
                         continue;
 
                     fc->blockSignals(true);
@@ -1003,7 +1011,7 @@ void SimpleDesk::slotGroupValueChanged(quint32 groupID, uchar value)
         // Update sliders on screen
         if (m_viewModeButton->isChecked() == false)
         {
-            if (fixture->universe() == (quint32)m_currentUniverse &&
+            if (fixture->universe() == m_currentUniverseID &&
                 absAddr >= start &&
                 absAddr < start + m_channelsPerPage)
             {

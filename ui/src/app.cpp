@@ -285,8 +285,8 @@ void App::init()
     connect(m_doc->inputOutputMap(), SIGNAL(blackoutChanged(bool)), this, SLOT(slotBlackoutChanged(bool)));
 
     // Listen to DMX value changes and update each Fixture values array
-    connect(m_doc->inputOutputMap(), SIGNAL(universesWritten(int, const QByteArray&)),
-            this, SLOT(slotUniversesWritten(int, const QByteArray&)));
+    connect(m_doc->inputOutputMap(), SIGNAL(universesWritten(quint32, const QByteArray&)),
+            this, SLOT(slotUniversesWritten(quint32, const QByteArray&)));
 
     // Enable/Disable panic button
     connect(m_doc->masterTimer(), SIGNAL(functionListChanged()), this, SLOT(slotRunningFunctionsChanged()));
@@ -507,11 +507,11 @@ void App::slotDocModified(bool state)
         setWindowTitle(caption);
 }
 
-void App::slotUniversesWritten(int idx, const QByteArray &ua)
+void App::slotUniversesWritten(quint32 id, const QByteArray &ua)
 {
     foreach(Fixture *fixture, m_doc->fixtures())
     {
-        if (fixture->universe() != (quint32)idx)
+        if (fixture->universe() != (quint32)id)
             continue;
 
         int fxStartAddr = fixture->address();

@@ -1072,7 +1072,8 @@ void FixtureManager::slotAddRGBPanel()
         QLCFixtureDef *rowDef = NULL;
         QLCFixtureMode *rowMode = NULL;
         quint32 address = (quint32)rgb.address();
-        int uniIndex = rgb.universeIndex();
+        QList<quint32> universeIDs = m_doc->inputOutputMap()->universeNames().keys();
+        int universeIndex = rgb.universeIndex();
         int currRow = 0;
         int rowInc = 1;
         int xPosStart = 0;
@@ -1107,13 +1108,17 @@ void FixtureManager::slotAddRGBPanel()
             // Check universe span
             if (address + fxi->channels() >= 512)
             {
-                uniIndex++;
-                if (m_doc->inputOutputMap()->getUniverseID(uniIndex) == m_doc->inputOutputMap()->invalidUniverse())
+                ++universeIndex;
+                if (universeIndex >= universeIDs.count())
+                {
                     m_doc->inputOutputMap()->addUniverse();
+                    universeIDs = m_doc->inputOutputMap()->universeNames().keys();
+                }
+                // TODO if there are fixtures in this universe, 0 is not the correct address
                 address = 0;
             }
 
-            fxi->setUniverse(m_doc->inputOutputMap()->getUniverseID(uniIndex));
+            fxi->setUniverse(universeIDs.at(universeIndex));
             fxi->setAddress(address);
             address += fxi->channels();
             m_doc->addFixture(fxi);

@@ -26,6 +26,8 @@
 #include "qlcconfig.h"
 #include "doc.h"
 
+// TODO WEBACCESS SIMPLEDESK UNIVERSE IDX ETC
+
 WebAccessSimpleDesk::WebAccessSimpleDesk(QObject *parent) :
     QObject(parent)
 {
@@ -33,7 +35,7 @@ WebAccessSimpleDesk::WebAccessSimpleDesk(QObject *parent) :
 
 QString WebAccessSimpleDesk::getHTML(Doc *doc, SimpleDesk *sd)
 {
-    int uni = sd->getCurrentUniverseIndex() + 1;
+    int uni = sd->getCurrentUniverseID();
     int page = sd->getCurrentPage();
 
     QString JScode = "<script type=\"text/javascript\" src=\"simpledesk.js\"></script>\n";
@@ -70,10 +72,12 @@ QString WebAccessSimpleDesk::getHTML(Doc *doc, SimpleDesk *sd)
                 "<div class=\"styled-select\" style=\"display: inline-block;\">\n"
                 "<select onchange=\"universeChanged(this.value);\">\n";
 
-    QStringList uniList = doc->inputOutputMap()->universeNames();
-    for (int i = 0; i < uniList.count(); i++)
+    QMap<quint32, QString> universes(doc->inputOutputMap()->universeNames());
+    for (QMap<quint32, QString>::iterator it = universes.begin(); it != universes.end(); ++it)
     {
-        bodyHTML += "<option value=\"" + QString::number(i) + "\">" + uniList.at(i) + "</option>\n";
+        quint32 id = it.key();
+        QString name = it.value();
+        bodyHTML += "<option value=\"" + QString::number(id) + "\">" + name + "</option>\n";
     }
     bodyHTML += "</select></div>\n";
     bodyHTML += "</div>\n";

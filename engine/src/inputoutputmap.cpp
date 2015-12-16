@@ -88,9 +88,8 @@ void InputOutputMap::setBlackout(bool blackout)
     m_blackout = blackout;
 
     QByteArray zeros(512, 0);
-    for (quint32 i = 0; i < universesCount(); i++)
+    foreach (Universe* universe, m_universeMap)
     {
-        Universe *universe = m_universeArray.at(i);
         if (universe->outputPatch() != NULL)
         {
             if (blackout == true)
@@ -99,11 +98,11 @@ void InputOutputMap::setBlackout(bool blackout)
         }
         locker.unlock();
         if (blackout == true)
-            emit universesWritten(i, zeros);
+            emit universesWritten(universe->id(), zeros);
         else
         {
             const QByteArray postGM = universe->postGMValues()->mid(0, universe->usedChannels());
-            emit universesWritten(i, postGM);
+            emit universesWritten(universe->id(), postGM);
         }
         locker.relock();
     }
@@ -122,39 +121,43 @@ bool InputOutputMap::blackout() const
 
 quint32 InputOutputMap::invalidUniverse()
 {
-    return UINT_MAX;
+    return Universe::invalid();
 }
 
 bool InputOutputMap::addUniverse(quint32 id)
 {
-    QMutexLocker locker(&m_universeMutex);
-    if (id == InputOutputMap::invalidUniverse())
-        id = ++m_latestUniverseId;
-    else if (m_latestUniverseId == InputOutputMap::invalidUniverse()
-            || id >= m_latestUniverseId)
-        m_latestUniverseId = id;
+    {
+        QMutexLocker locker(&m_universeMutex);
+        if (id == InputOutputMap::invalidUniverse())
+            id = ++m_latestUniverseId;
+        else if (m_latestUniverseId == InputOutputMap::invalidUniverse()
+                || id >= m_latestUniverseId)
+            m_latestUniverseId = id;
+        else
+            id = ++m_latestUniverseId;
 
-    m_universeArray.append(new Universe(id, m_grandMaster));
-    locker.unlock();
+        m_universeMap.insert(id, new Universe(id, m_grandMaster));
+    }
 
     emit universeAdded(id);
     return true;
 }
 
-bool InputOutputMap::removeUniverse(int index)
+bool InputOutputMap::removeUniverse(quint32 id)
 {
-    QMutexLocker locker(&m_universeMutex);
+    {
+        QMutexLocker locker(&m_universeMutex);
 
-    if (index < 0 || index >= m_universeArray.count())
-        return false;
+        if (!m_universeMap.contains(id))
+        {
+            qWarning() << Q_FUNC_INFO << "Trying to remove universe" << id << "that does not exist";
+            return false;
+        }
 
-    Universe *delUni = m_universeArray.takeAt(index);
-    quint32 id = delUni->id();
-    delete delUni;
-    if (m_universeArray.count() == 0)
-        m_latestUniverseId = invalidUniverse();
-
-    locker.unlock();
+        delete m_universeMap.take(id);
+        if (m_universeMap.isEmpty())
+            m_latestUniverseId = invalidUniverse();
+    }
 
     emit universeRemoved(id);
     return true;
@@ -163,98 +166,90 @@ bool InputOutputMap::removeUniverse(int index)
 bool InputOutputMap::removeAllUniverses()
 {
     QMutexLocker locker(&m_universeMutex);
-    quint32 uniCount = universesCount();
-    for (quint32 i = 0; i < uniCount; i++)
-    {
-        Universe *uni = m_universeArray.takeLast();
-        delete uni;
-    }
+    qDeleteAll(m_universeMap);
+    m_universeMap.clear();
     m_latestUniverseId = invalidUniverse();
     return true;
 }
 
-quint32 InputOutputMap::getUniverseID(int index)
+QString InputOutputMap::getUniverseName(quint32 id)
 {
-    if (index < 0 || index >= m_universeArray.count())
-        return invalidUniverse();
-
-    return m_universeArray.at(index)->id();
+    QMap<quint32, Universe*>::iterator it = m_universeMap.find(id);
+    if (it == m_universeMap.end())
+        return QString();
+    return it.value()->name();
 }
 
-QString InputOutputMap::getUniverseNameByIndex(int index)
+void InputOutputMap::setUniverseName(quint32 id, QString name)
 {
-    if (index >= 0 && index < m_universeArray.count())
-        return m_universeArray.at(index)->name();
-
-    return QString();
-}
-
-QString InputOutputMap::getUniverseNameByID(quint32 id)
-{
-    for (int i = 0; i < m_universeArray.count(); i++)
-        if (m_universeArray.at(i)->id() == id)
-            return m_universeArray.at(i)->name();
-
-    return QString();
-}
-
-void InputOutputMap::setUniverseName(int index, QString name)
-{
-    if (index < 0 || index >= m_universeArray.count())
+    QMap<quint32, Universe*>::iterator it = m_universeMap.find(id);
+    if (it == m_universeMap.end())
         return;
-    m_universeArray.at(index)->setName(name);
+    it.value()->setName(name);
 }
 
-void InputOutputMap::setUniversePassthrough(int index, bool enable)
+void InputOutputMap::setUniversePassthrough(quint32 id, bool enable)
 {
-    if (index < 0 || index >= m_universeArray.count())
+    QMap<quint32, Universe*>::iterator it = m_universeMap.find(id);
+    if (it == m_universeMap.end())
         return;
-    m_universeArray.at(index)->setPassthrough(enable);
+    it.value()->setPassthrough(enable);
 }
 
-bool InputOutputMap::getUniversePassthrough(int index)
+bool InputOutputMap::getUniversePassthrough(quint32 id)
 {
-    if (index < 0 || index >= m_universeArray.count())
+    QMap<quint32, Universe*>::iterator it = m_universeMap.find(id);
+    if (it == m_universeMap.end())
         return false;
-    return m_universeArray.at(index)->passthrough();
+    return it.value()->passthrough();
 }
 
-void InputOutputMap::setUniverseMonitor(int index, bool enable)
+void InputOutputMap::setUniverseMonitor(quint32 id, bool enable)
 {
-    if (index < 0 || index >= m_universeArray.count())
+    QMap<quint32, Universe*>::iterator it = m_universeMap.find(id);
+    if (it == m_universeMap.end())
         return;
-    m_universeArray.at(index)->setMonitor(enable);
+    it.value()->setMonitor(enable);
 }
 
-bool InputOutputMap::getUniverseMonitor(int index)
+bool InputOutputMap::getUniverseMonitor(quint32 id)
 {
-    if (index < 0 || index >= m_universeArray.count())
+    QMap<quint32, Universe*>::iterator it = m_universeMap.find(id);
+    if (it == m_universeMap.end())
         return false;
-    return m_universeArray.at(index)->monitor();
+    return it.value()->monitor();
 }
 
-bool InputOutputMap::isUniversePatched(int index)
+bool InputOutputMap::isUniversePatched(quint32 id)
 {
-    if (index < 0 || index >= m_universeArray.count())
+    QMap<quint32, Universe*>::iterator it = m_universeMap.find(id);
+    if (it == m_universeMap.end())
         return false;
-
-    return m_universeArray.at(index)->isPatched();
+    return it.value()->isPatched();
 }
 
 quint32 InputOutputMap::universesCount() const
 {
-    return (quint32)m_universeArray.count();
+    return m_universeMap.count();
+}
+
+quint32 InputOutputMap::getNextUniverseID(quint32 id) const
+{
+    QMap<quint32, Universe*>::const_iterator it = m_universeMap.constFind(id);
+    if (it == m_universeMap.constEnd() || ++it == m_universeMap.constEnd())
+        return invalidUniverse();
+    return it.key();
 }
 
 QList<Universe *> InputOutputMap::universes() const
 {
-    return m_universeArray;
+    return m_universeMap.values();
 }
 
 QList<Universe*> InputOutputMap::claimUniverses()
 {
     m_universeMutex.lock();
-    return m_universeArray;
+    return m_universeMap.values();
 }
 
 void InputOutputMap::releaseUniverses(bool changed)
@@ -265,25 +260,32 @@ void InputOutputMap::releaseUniverses(bool changed)
 
 void InputOutputMap::dumpUniverses()
 {
-    QMutexLocker locker(&m_universeMutex);
-    if (m_blackout == false)
-    {
-        for (int i = 0; i < m_universeArray.count(); i++)
-        {
-            Universe *universe = m_universeArray.at(i);
-            const QByteArray postGM = universe->postGMValues()->mid(0, universe->usedChannels());
+    if (m_blackout)
+        return;
 
-            // notify the universe listeners that some channels have changed
+    QMap<quint32, QByteArray> writtenUniverses;
+
+    {
+        QMutexLocker locker(&m_universeMutex);
+        foreach(Universe* universe, m_universeMap)
+        {
+            QByteArray const postGM = universe->postGMValues()->mid(0, universe->usedChannels());
+
             if (universe->hasChanged())
             {
-                locker.unlock();
-                emit universesWritten(i, postGM);
-                locker.relock();
+                writtenUniverses.insert(universe->id(), postGM);
             }
 
             // this is where QLC+ sends data to the output plugins
             universe->dumpOutput(postGM);
         }
+    }
+
+    // notify the universe listeners that some channels have changed
+    for (QMap<quint32, QByteArray>::iterator it = writtenUniverses.begin();
+            it != writtenUniverses.end(); ++it)
+    {
+        emit universesWritten(it.key(), it.value());
     }
 }
 
@@ -291,8 +293,8 @@ void InputOutputMap::resetUniverses()
 {
     {
         QMutexLocker locker(&m_universeMutex);
-        for (int i = 0; i < m_universeArray.size(); i++)
-            m_universeArray.at(i)->reset();
+        foreach(Universe* universe, m_universeMap)
+            universe->reset();
     }
 
     /* Reset Grand Master parameters */
@@ -372,26 +374,26 @@ void InputOutputMap::flushInputs()
 {
     QMutexLocker locker(&m_universeMutex);
 
-    for (int i = 0; i < m_universeArray.count(); i++)
+    foreach (Universe* universe, m_universeMap)
     {
-        Universe *universe = m_universeArray.at(i);
-
         universe->flushInput();
     }
 }
 
-bool InputOutputMap::setInputPatch(quint32 universe, const QString &pluginName,
+bool InputOutputMap::setInputPatch(quint32 universeID, const QString &pluginName,
                                    quint32 input, const QString &profileName)
 {
+    QMutexLocker locker(&m_universeMutex);
+
     /* Check that the universe that we're doing mapping for is valid */
-    if (universe >= universesCount())
+    if (!m_universeMap.contains(universeID))
     {
-        qWarning() << Q_FUNC_INFO << "Universe" << universe << "out of bounds.";
+        qWarning() << Q_FUNC_INFO << "Universe" << universeID << "out of bounds.";
         return false;
     }
 
-    QMutexLocker locker(&m_universeMutex);
-    InputPatch *currInPatch = m_universeArray.at(universe)->inputPatch();
+    Universe* universe = m_universeMap.value(universeID);
+    InputPatch *currInPatch = universe->inputPatch();
     QLCInputProfile *currProfile = NULL;
     if (currInPatch != NULL)
     {
@@ -401,11 +403,11 @@ bool InputOutputMap::setInputPatch(quint32 universe, const QString &pluginName,
     }
     InputPatch *ip = NULL;
 
-    if (m_universeArray.at(universe)->setInputPatch(
+    if (universe->setInputPatch(
                 doc()->ioPluginCache()->plugin(pluginName), input,
                 profile(profileName)) == true)
     {
-        ip = m_universeArray.at(universe)->inputPatch();
+        ip = universe->inputPatch();
         if (ip != NULL)
             connect(ip, SIGNAL(inputValueChanged(quint32,quint32,uchar,const QString&)),
                     this, SIGNAL(inputValueChanged(quint32,quint32,uchar,const QString&)));
@@ -416,7 +418,7 @@ bool InputOutputMap::setInputPatch(quint32 universe, const QString &pluginName,
     }
 
     if (ip != NULL && currProfile != ip->profile())
-        emit profileChanged(universe, ip->profileName());
+        emit profileChanged(universeID, ip->profileName());
 
     return true;
 }
@@ -424,13 +426,13 @@ bool InputOutputMap::setInputPatch(quint32 universe, const QString &pluginName,
 bool InputOutputMap::setInputProfile(quint32 universe, const QString &profileName)
 {
     /* Check that the universe that we're doing mapping for is valid */
-    if (universe >= universesCount())
+    if (!m_universeMap.contains(universe))
     {
         qWarning() << Q_FUNC_INFO << "Universe" << universe << "out of bounds.";
         return false;
     }
 
-    InputPatch *currInPatch = m_universeArray.at(universe)->inputPatch();
+    InputPatch *currInPatch = m_universeMap.value(universe)->inputPatch();
     if (currInPatch == NULL)
         return false;
 
@@ -441,7 +443,7 @@ bool InputOutputMap::setOutputPatch(quint32 universe, const QString &pluginName,
                                     quint32 output, bool isFeedback)
 {
     /* Check that the universe that we're doing mapping for is valid */
-    if (universe >= universesCount())
+    if (!m_universeMap.contains(universe))
     {
         qWarning() << Q_FUNC_INFO << "Universe" << universe << "out of bounds.";
         return false;
@@ -449,10 +451,10 @@ bool InputOutputMap::setOutputPatch(quint32 universe, const QString &pluginName,
 
     QMutexLocker locker(&m_universeMutex);
     if (isFeedback == false)
-        return m_universeArray.at(universe)->setOutputPatch(
+        return m_universeMap.value(universe)->setOutputPatch(
                     doc()->ioPluginCache()->plugin(pluginName), output);
     else
-        return m_universeArray.at(universe)->setFeedbackPatch(
+        return m_universeMap.value(universe)->setFeedbackPatch(
                     doc()->ioPluginCache()->plugin(pluginName), output);
 
     return false;
@@ -460,65 +462,65 @@ bool InputOutputMap::setOutputPatch(quint32 universe, const QString &pluginName,
 
 InputPatch *InputOutputMap::inputPatch(quint32 universe) const
 {
-    if (universe >= universesCount())
+    if (!m_universeMap.contains(universe))
     {
         qWarning() << Q_FUNC_INFO << "Universe" << universe << "out of bounds.";
         return NULL;
     }
-    return m_universeArray.at(universe)->inputPatch();
+    return m_universeMap.value(universe)->inputPatch();
 }
 
 OutputPatch *InputOutputMap::outputPatch(quint32 universe) const
 {
-    if (universe >= universesCount())
+    if (!m_universeMap.contains(universe))
     {
         qWarning() << Q_FUNC_INFO << "Universe" << universe << "out of bounds.";
         return NULL;
     }
-    return m_universeArray.at(universe)->outputPatch();
+    return m_universeMap.value(universe)->outputPatch();
 }
 
 OutputPatch *InputOutputMap::feedbackPatch(quint32 universe) const
 {
-    if (universe >= universesCount())
+    if (!m_universeMap.contains(universe))
     {
         qWarning() << Q_FUNC_INFO << "Universe" << universe << "out of bounds.";
         return NULL;
     }
-    return m_universeArray.at(universe)->feedbackPatch();
+    return m_universeMap.value(universe)->feedbackPatch();
 }
 
-QStringList InputOutputMap::universeNames() const
+QMap<quint32, QString> InputOutputMap::universeNames() const
 {
-    QStringList list;
-    for (quint32 i = 0; i < universesCount(); i++)
-        list << m_universeArray.at(i)->name();
+    QMap<quint32, QString> map;
+    foreach(Universe* universe, m_universeMap)
+        map.insert(universe->id(), universe->name());
 
-    return list;
+    return map;
 }
 
 quint32 InputOutputMap::inputMapping(const QString &pluginName, quint32 input) const
 {
-    for (quint32 uni = 0; uni < universesCount(); uni++)
+    foreach (Universe* universe, m_universeMap)
     {
-        const InputPatch* p = m_universeArray.at(uni)->inputPatch();
+        const InputPatch* p = universe->inputPatch();
         if (p != NULL && p->pluginName() == pluginName && p->input() == input)
-            return uni;
+            return universe->id();
     }
 
-    return QLCIOPlugin::invalidLine();
+    return invalidUniverse();
 }
 
 quint32 InputOutputMap::outputMapping(const QString &pluginName, quint32 output) const
 {
-    for (quint32 uni = 0; uni < universesCount(); uni++)
+    foreach (Universe* universe, m_universeMap)
     {
-        const OutputPatch* p = m_universeArray.at(uni)->outputPatch();
+        const OutputPatch* p = universe->outputPatch();
         if (p != NULL && p->pluginName() == pluginName && p->output() == output)
-            return uni;
+            return universe->id();
     }
 
-    return QLCIOPlugin::invalidLine();
+    return invalidUniverse();
 }
 
 /*****************************************************************************
@@ -651,10 +653,10 @@ QString InputOutputMap::outputPluginStatus(const QString& pluginName, quint32 ou
 
 bool InputOutputMap::sendFeedBack(quint32 universe, quint32 channel, uchar value, const QString& key)
 {
-    if (universe >= universesCount())
+    if (!m_universeMap.contains(universe))
         return false;
 
-    OutputPatch* patch = m_universeArray.at(universe)->feedbackPatch();
+    OutputPatch* patch = m_universeMap.value(universe)->feedbackPatch();
 
     if (patch != NULL && patch->isPatched())
     {
@@ -671,16 +673,16 @@ void InputOutputMap::slotPluginConfigurationChanged(QLCIOPlugin* plugin)
 {
     QMutexLocker locker(&m_universeMutex);
     bool success = true;
-    for (quint32 i = 0; i < universesCount(); i++)
+    foreach (Universe* universe, m_universeMap)
     {
-        OutputPatch* op = m_universeArray.at(i)->outputPatch();
+        OutputPatch* op = universe->outputPatch();
 
         if (op != NULL && op->plugin() == plugin)
         {
             /*success = */ op->reconnect();
         }
 
-        InputPatch* ip = m_universeArray.at(i)->inputPatch();
+        InputPatch* ip = universe->inputPatch();
 
         if (ip != NULL && ip->plugin() == plugin)
         {
@@ -788,10 +790,10 @@ bool InputOutputMap::inputSourceNames(const QLCInputSource *src,
     if (src == NULL || src->isValid() == false)
         return false;
 
-    if (src->universe() >= universesCount())
+    if (!m_universeMap.contains(src->universe()))
         return false;
 
-    InputPatch* pat = m_universeArray.at(src->universe())->inputPatch();
+    InputPatch* pat = m_universeMap.value(src->universe())->inputPatch();
     if (pat == NULL)
     {
         /* There is no patch for the given universe */
@@ -902,7 +904,7 @@ void InputOutputMap::loadDefaults()
         key = QString("/inputmap/universe%1/passthrough/").arg(i);
         passthrough = settings.value(key).toBool();
         if (passthrough == true)
-            m_universeArray.at(i)->setPassthrough(passthrough);
+            m_universeMap.value(i)->setPassthrough(passthrough);
 
         /* Do the mapping */
         if (plugin != KInputNone && input != KInputNone)
@@ -973,7 +975,7 @@ void InputOutputMap::saveDefaults()
 
         /* Passthrough */
         key = QString("/inputmap/universe%1/passthrough/").arg(i);
-        bool passthrough = m_universeArray.at(i)->passthrough();
+        bool passthrough = m_universeMap.value(i)->passthrough();
         if (passthrough == true)
             settings.setValue(key, passthrough);
         else
@@ -1038,8 +1040,8 @@ bool InputOutputMap::loadXML(QXmlStreamReader &root)
             if (root.attributes().hasAttribute(KXMLQLCUniverseID))
                 id = root.attributes().value(KXMLQLCUniverseID).toString().toUInt();
             addUniverse(id);
-            Universe *uni = m_universeArray.last();
-            uni->loadXML(root, m_universeArray.count() - 1, this);
+            Universe *uni = m_universeMap.value(id);
+            uni->loadXML(root, this);
         }
         else
         {
@@ -1058,7 +1060,7 @@ bool InputOutputMap::saveXML(QXmlStreamWriter *doc) const
     /* IO Map Instance entry */
     doc->writeStartElement(KXMLIOMap);
 
-    foreach(Universe *uni, m_universeArray)
+    foreach(Universe *uni, m_universeMap)
         uni->saveXML(doc);
 
     doc->writeEndElement();

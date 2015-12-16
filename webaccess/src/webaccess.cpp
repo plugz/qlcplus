@@ -329,7 +329,7 @@ mg_result WebAccess::websocketDataHandler(mg_connection *conn)
         if (cmdList.count() < 3)
             return MG_FALSE;
 
-        int universe = cmdList[2].toInt();
+        quint32 universe = cmdList[2].toUInt();
 
         if (cmdList[1] == "INPUT")
         {
@@ -357,11 +357,10 @@ mg_result WebAccess::websocketDataHandler(mg_connection *conn)
         }
         else if (cmdList[1] == "PASSTHROUGH")
         {
-            quint32 uniIdx = cmdList[2].toUInt();
             if (cmdList[3] == "true")
-                m_doc->inputOutputMap()->setUniversePassthrough(uniIdx, true);
+                m_doc->inputOutputMap()->setUniversePassthrough(universe, true);
             else
-                m_doc->inputOutputMap()->setUniversePassthrough(uniIdx, false);
+                m_doc->inputOutputMap()->setUniversePassthrough(universe, false);
             m_doc->inputOutputMap()->saveDefaults();
         }
         else if (cmdList[1] == "AUDIOIN")
@@ -559,7 +558,7 @@ mg_result WebAccess::websocketDataHandler(mg_connection *conn)
             if (cmdList.count() < 4)
                 return MG_FALSE;
 
-            quint32 universe = cmdList[2].toUInt() - 1;
+            quint32 universe = cmdList[2].toUInt();
             int startAddr = cmdList[3].toInt() - 1;
             int count = 1;
             if (cmdList.count() == 5)
@@ -572,7 +571,7 @@ mg_result WebAccess::websocketDataHandler(mg_connection *conn)
             m_sd->resetUniverse();
             wsAPIMessage = "QLC+API|getChannelsValues|";
             wsAPIMessage.append(WebAccessSimpleDesk::getChannelsMessage(
-                                m_doc, m_sd, m_sd->getCurrentUniverseIndex(),
+                                m_doc, m_sd, m_sd->getCurrentUniverseID(),
                                 0, m_sd->getSlidersNumber()));
         }
         //qDebug() << "Simple desk channels:" << wsAPIMessage;

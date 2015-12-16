@@ -456,7 +456,7 @@ void FixtureTreeWidget::updateTree()
         if (topItem == NULL)
         {
             topItem = new QTreeWidgetItem(this);
-            topItem->setText(KColumnName, m_doc->inputOutputMap()->getUniverseNameByID(uni));
+            topItem->setText(KColumnName, m_doc->inputOutputMap()->getUniverseName(uni));
             topItem->setIcon(KColumnName, QIcon(":/group.png"));
             topItem->setData(KColumnName, PROP_UNIVERSE, uni);
             topItem->setExpanded(true);

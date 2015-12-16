@@ -178,13 +178,12 @@ void Monitor::showDMXView()
     m_DMXToolBar->show();
     m_scrollArea->show();
 
-    for (quint32 i = 0; i < m_doc->inputOutputMap()->universesCount(); i++)
+    foreach (quint32 universe, m_doc->inputOutputMap()->universeNames().keys())
     {
-        quint32 uniID = m_doc->inputOutputMap()->getUniverseID(i);
-        if (m_currentUniverse == Universe::invalid() || uniID == m_currentUniverse)
-            m_doc->inputOutputMap()->setUniverseMonitor(i, true);
+        if (m_currentUniverse == Universe::invalid() || universe == m_currentUniverse)
+            m_doc->inputOutputMap()->setUniverseMonitor(universe, true);
         else
-            m_doc->inputOutputMap()->setUniverseMonitor(i, false);
+            m_doc->inputOutputMap()->setUniverseMonitor(universe, false);
     }
 }
 
@@ -277,9 +276,9 @@ void Monitor::showGraphicsView()
     m_graphicsView->show();
 
     // Graphics view needs to monitor all the universes
-    for (quint32 i = 0; i < m_doc->inputOutputMap()->universesCount(); i++)
+    foreach (quint32 universe, m_doc->inputOutputMap()->universeNames().keys())
     {
-        m_doc->inputOutputMap()->setUniverseMonitor(i, true);
+        m_doc->inputOutputMap()->setUniverseMonitor(universe, true);
     }
 }
 
@@ -448,10 +447,13 @@ void Monitor::initDMXToolbar()
 
     QComboBox *uniCombo = new QComboBox(this);
     uniCombo->addItem(tr("All universes"), Universe::invalid());
-    for (quint32 i = 0; i < m_doc->inputOutputMap()->universesCount(); i++)
+    QMap<quint32, QString> universes(m_doc->inputOutputMap()->universeNames());
+    for (QMap<quint32, QString>::iterator it = universes.begin();
+            it != universes.end(); ++it)
     {
-        quint32 uniID = m_doc->inputOutputMap()->getUniverseID(i);
-        uniCombo->addItem(m_doc->inputOutputMap()->getUniverseNameByIndex(i), uniID);
+        quint32 id = it.key();
+        QString name = it.value();
+        uniCombo->addItem(name, id);
     }
     connect(uniCombo, SIGNAL(currentIndexChanged(int)),
             this, SLOT(slotUniverseSelected(int)));
@@ -666,13 +668,12 @@ void Monitor::slotUniverseSelected(int index)
     QComboBox *combo = (QComboBox *)sender();
     m_currentUniverse = combo->itemData(index).toUInt();
 
-    for (quint32 i = 0; i < m_doc->inputOutputMap()->universesCount(); i++)
+    foreach (quint32 universe, m_doc->inputOutputMap()->universeNames().keys())
     {
-        quint32 uniID = m_doc->inputOutputMap()->getUniverseID(i);
-        if (m_currentUniverse == Universe::invalid() || uniID == m_currentUniverse)
-            m_doc->inputOutputMap()->setUniverseMonitor(i, true);
+        if (m_currentUniverse == Universe::invalid() || universe == m_currentUniverse)
+            m_doc->inputOutputMap()->setUniverseMonitor(universe, true);
         else
-            m_doc->inputOutputMap()->setUniverseMonitor(i, false);
+            m_doc->inputOutputMap()->setUniverseMonitor(universe, false);
     }
 
     fillDMXView();

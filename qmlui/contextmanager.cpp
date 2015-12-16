@@ -62,8 +62,8 @@ ContextManager::ContextManager(QQuickView *view, Doc *doc,
             this, SLOT(slotPositionChanged(int,int)));
     connect(m_fixtureManager, SIGNAL(presetChanged(const QLCChannel*,quint8)),
             this, SLOT(slotPresetChanged(const QLCChannel*,quint8)));
-    connect(m_doc->inputOutputMap(), SIGNAL(universesWritten(int, const QByteArray&)),
-            this, SLOT(slotUniversesWritten(int, const QByteArray&)));
+    connect(m_doc->inputOutputMap(), SIGNAL(universesWritten(quint32, const QByteArray&)),
+            this, SLOT(slotUniversesWritten(quint32, const QByteArray&)));
     connect(m_functionManager, SIGNAL(functionEditingChanged(bool)),
             this, SLOT(slotFunctionEditingChanged(bool)));
 }
@@ -456,11 +456,11 @@ void ContextManager::slotPresetChanged(const QLCChannel *channel, quint8 value)
     }
 }
 
-void ContextManager::slotUniversesWritten(int idx, const QByteArray &ua)
+void ContextManager::slotUniversesWritten(quint32 id, const QByteArray &ua)
 {
     foreach(Fixture *fixture, m_doc->fixtures())
     {
-        if (fixture->universe() != (quint32)idx)
+        if (fixture->universe() != id)
             continue;
 
         int fxStartAddr = fixture->address();

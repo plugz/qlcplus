@@ -785,7 +785,7 @@ bool Universe::writeBlended(int channel, uchar value, Universe::BlendMode blend)
  * Load & Save
  *********************************************************************/
 
-bool Universe::loadXML(QXmlStreamReader &root, int index, InputOutputMap *ioMap)
+bool Universe::loadXML(QXmlStreamReader &root, InputOutputMap *ioMap)
 {
     if (root.name() != KXMLQLCUniverse)
     {
@@ -825,7 +825,7 @@ bool Universe::loadXML(QXmlStreamReader &root, int index, InputOutputMap *ioMap)
                 input = pAttrs.value(KXMLQLCUniverseInputLine).toString().toUInt();
             if (pAttrs.hasAttribute(KXMLQLCUniverseInputProfileName))
                 profile = pAttrs.value(KXMLQLCUniverseInputProfileName).toString();
-            ioMap->setInputPatch(index, plugin, input, profile);
+            ioMap->setInputPatch(id(), plugin, input, profile);
 
             QXmlStreamReader::TokenType tType = root.readNext();
             if (tType == QXmlStreamReader::Characters)
@@ -847,7 +847,7 @@ bool Universe::loadXML(QXmlStreamReader &root, int index, InputOutputMap *ioMap)
                 plugin = pAttrs.value(KXMLQLCUniverseOutputPlugin).toString();
             if (pAttrs.hasAttribute(KXMLQLCUniverseOutputLine))
                 output = pAttrs.value(KXMLQLCUniverseOutputLine).toString().toUInt();
-            ioMap->setOutputPatch(index, plugin, output, false);
+            ioMap->setOutputPatch(id(), plugin, output, false);
 
             QXmlStreamReader::TokenType tType = root.readNext();
             if (tType == QXmlStreamReader::Characters)
@@ -869,7 +869,7 @@ bool Universe::loadXML(QXmlStreamReader &root, int index, InputOutputMap *ioMap)
                 plugin = pAttrs.value(KXMLQLCUniverseFeedbackPlugin).toString();
             if (pAttrs.hasAttribute(KXMLQLCUniverseFeedbackLine))
                 output = pAttrs.value(KXMLQLCUniverseFeedbackLine).toString().toUInt();
-            ioMap->setOutputPatch(index, plugin, output, true);
+            ioMap->setOutputPatch(id(), plugin, output, true);
 
             QXmlStreamReader::TokenType tType = root.readNext();
             if (tType == QXmlStreamReader::Characters)

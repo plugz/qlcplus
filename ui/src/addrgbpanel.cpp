@@ -33,7 +33,14 @@ AddRGBPanel::AddRGBPanel(QWidget *parent, const Doc *doc)
     setupUi(this);
 
     /* Fill universe combo with available universes */
-    m_uniCombo->addItems(m_doc->inputOutputMap()->universeNames());
+    QMap<quint32, QString> universes(m_doc->inputOutputMap()->universeNames());
+    for (QMap<quint32, QString>::iterator it = universes.begin();
+            it != universes.end(); ++it)
+    {
+        quint32 id = it.key();
+        QString name = it.value();
+        m_uniCombo->addItem(name, id);
+    }
 
     m_compCombo->addItem("RGB");
     m_compCombo->addItem("BGR");
@@ -57,9 +64,10 @@ AddRGBPanel::AddRGBPanel(QWidget *parent, const Doc *doc)
 AddRGBPanel::~AddRGBPanel()
 {
 }
+
 bool AddRGBPanel::checkAddressAvailability()
 {
-    int uniAddr = m_doc->inputOutputMap()->getUniverseID(m_uniCombo->currentIndex());
+    quint32 uniAddr = m_uniCombo->itemData(universeIndex()).toUInt();
     int startAddress = ((m_addressSpin->value() - 1) & 0x01FF) | (uniAddr << 9);
     int channels = m_columnSpin->value() * m_rowSpin->value() * 3;
     QPushButton *okBtn = buttonBox->button(QDialogButtonBox::Ok);

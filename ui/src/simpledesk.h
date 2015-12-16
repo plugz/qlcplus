@@ -96,7 +96,7 @@ private:
      *********************************************************************/
 public:
     int getSlidersNumber();
-    int getCurrentUniverseIndex();
+    quint32 getCurrentUniverseID();
     int getCurrentPage();
     uchar getAbsoluteChannelValue(uint address);
     void setAbsoluteChannelValue(uint address, uchar value);
@@ -120,7 +120,7 @@ private slots:
     void slotChannelResetClicked(quint32 fxID, quint32 channel);
     void slotUniverseSliderValueChanged(quint32, quint32, uchar value);
     void slotUpdateUniverseSliders();
-    void slotUniversesWritten(int idx, const QByteArray& ua);
+    void slotUniversesWritten(quint32 id, const QByteArray& ua);
 
 private:
     QFrame* m_universeGroup;
@@ -146,14 +146,14 @@ private:
      */
     QHash <quint32, FixtureConsole *> m_consoleList;
 
-    /** Currently selected universe. Basically the index of m_universesCombo */
-    int m_currentUniverse;
+    /** Currently selected universe. */
+    quint32 m_currentUniverseID;
 
     /** Define how many sliders will be displayed for each page */
     uint m_channelsPerPage;
 
     /** A list to remember the selected page of each universe */
-    QList<int> m_universesPage;
+    QMap<quint32, int> m_universesPage;
 
     /*********************************************************************
      * Playback sliders

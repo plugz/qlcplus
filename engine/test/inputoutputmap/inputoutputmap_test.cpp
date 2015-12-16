@@ -61,7 +61,7 @@ void InputOutputMap_Test::initial()
 {
     InputOutputMap im(m_doc, 4);
     QVERIFY(im.universesCount() == 4);
-    QVERIFY(im.m_universeArray.count() == 4);
+    QVERIFY(im.m_universeMap.count() == 4);
     QVERIFY(im.universeNames().count() == 4);
     QVERIFY(im.m_profiles.size() == 0);
     QVERIFY(im.profileNames().size() == 0);
@@ -171,10 +171,10 @@ void InputOutputMap_Test::universeNames()
     InputOutputMap iom(m_doc, 4);
 
     QCOMPARE(quint32(iom.universeNames().size()), iom.universesCount());
-    QVERIFY(iom.universeNames().at(0).contains("Universe"));
-    QVERIFY(iom.universeNames().at(1).contains("Universe"));
-    QVERIFY(iom.universeNames().at(2).contains("Universe"));
-    QVERIFY(iom.universeNames().at(3).contains("Universe"));
+    QVERIFY(iom.universeNames().value(0).contains("Universe"));
+    QVERIFY(iom.universeNames().value(1).contains("Universe"));
+    QVERIFY(iom.universeNames().value(2).contains("Universe"));
+    QVERIFY(iom.universeNames().value(3).contains("Universe"));
 
     IOPluginStub* stub = static_cast<IOPluginStub*>
                                 (m_doc->ioPluginCache()->plugins().at(0));
@@ -182,17 +182,17 @@ void InputOutputMap_Test::universeNames()
 
     iom.setOutputPatch(0, stub->name(), 3);
     QCOMPARE(quint32(iom.universeNames().size()), iom.universesCount());
-    QCOMPARE(iom.universeNames().at(0), QString("Universe 1"));
-    QCOMPARE(iom.universeNames().at(1), QString("Universe 2"));
-    QCOMPARE(iom.universeNames().at(2), QString("Universe 3"));
-    QCOMPARE(iom.universeNames().at(3), QString("Universe 4"));
+    QCOMPARE(iom.universeNames().value(0), QString("Universe 1"));
+    QCOMPARE(iom.universeNames().value(1), QString("Universe 2"));
+    QCOMPARE(iom.universeNames().value(2), QString("Universe 3"));
+    QCOMPARE(iom.universeNames().value(3), QString("Universe 4"));
 
     iom.setOutputPatch(3, stub->name(), 2);
     QCOMPARE(quint32(iom.universeNames().size()), iom.universesCount());
-    QCOMPARE(iom.universeNames().at(0), QString("Universe 1"));
-    QCOMPARE(iom.universeNames().at(1), QString("Universe 2"));
-    QCOMPARE(iom.universeNames().at(2), QString("Universe 3"));
-    QCOMPARE(iom.universeNames().at(3), QString("Universe 4"));
+    QCOMPARE(iom.universeNames().value(0), QString("Universe 1"));
+    QCOMPARE(iom.universeNames().value(1), QString("Universe 2"));
+    QCOMPARE(iom.universeNames().value(2), QString("Universe 3"));
+    QCOMPARE(iom.universeNames().value(3), QString("Universe 4"));
 }
 
 void InputOutputMap_Test::addUniverse()
@@ -578,10 +578,10 @@ void InputOutputMap_Test::claimReleaseDumpReset()
         QCOMPARE(stub->m_universe.data()[i], 'd');
 
     iom.resetUniverses();
-    for (int u = 0; u < iom.m_universeArray.size(); u++)
+    foreach (Universe* universe, iom.m_universeMap)
     {
         for (quint32 i = 0; i < 512; i++)
-            QVERIFY(iom.m_universeArray.at(u)->preGMValues().data()[i] == 0);
+            QVERIFY(universe->preGMValues().data()[i] == 0);
     }
 }
 

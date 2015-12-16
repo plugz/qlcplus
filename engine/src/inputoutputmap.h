@@ -135,7 +135,7 @@ public:
     /**
      * Remove the last universe in the current universes list
      */
-    bool removeUniverse(int index);
+    bool removeUniverse(quint32 id);
 
     /**
      * Remove all the universes in the current universes list
@@ -143,68 +143,54 @@ public:
     bool removeAllUniverses();
 
     /**
-     * Get the unique ID of the universe at the given index
-     * @param index The universe index
-     * @return The universe ID or invalidUniverse()
-     */
-    quint32 getUniverseID(int index);
-
-    /**
-     * Retrieve the friendly name of the universe at the given index
-     * @param index The universe index
-     * @return The universe name or an empty string
-     */
-    QString getUniverseNameByIndex(int index);
-
-    /**
      * Retrieve the friendly name of the universe with the given ID
      * @param id The universe unique ID
      * @return The universe name or an empty string
      */
-    QString getUniverseNameByID(quint32 id);
+    QString getUniverseName(quint32 id);
 
     /**
-     * Set a friendly name of the universe with the given index
-     * @param index The universe index
+     * Set a friendly name of the universe with the given id
+     * @param id The universe id
      * @param name The universe new name
      */
-    void setUniverseName(int index, QString name);
+    void setUniverseName(quint32 id, QString name);
 
     /**
-     * Set/unset the universe with the given index in passthrough mode
-     * @param index The universe index
+     * Set/unset the universe with the given id in passthrough mode
+     * @param id The universe id
      * @param enable true = passthrough, false = normal mode
      */
-    void setUniversePassthrough(int index, bool enable);
+    void setUniversePassthrough(quint32 id, bool enable);
 
     /**
      * Retrieve the passthrough mode of the universe at the given index
-     * @param index The universe index
+     * @param id The universe id
      * @return true = passthrough, false = normal mode
      */
-    bool getUniversePassthrough(int index);
+    bool getUniversePassthrough(quint32 id);
 
     /**
-     * Enable/disable the monitor mode for the universe with the given index
-     * @param index The universe index
+     * Enable/disable the monitor mode for the universe with the given id
+     * @param id The universe id
      * @param enable true = monitor, false = do not monitor
      */
-    void setUniverseMonitor(int index, bool enable);
+    void setUniverseMonitor(quint32 id, bool enable);
 
     /**
-     * Retrieve the monitor mode of the universe at the given index
-     * @param index The universe index
+     * Retrieve the monitor mode of the universe at the given id
+     * @param id The universe id
      * @return true = monitor, false = do not monitor
      */
-    bool getUniverseMonitor(int index);
+    bool getUniverseMonitor(quint32 id);
 
     /**
      * Return if a universe is patched with any input, output or
      * feedback line
-     * @param index The universe index
+     * @param id The universe id
      * @return true = patched, false = not patched
      */
-    bool isUniversePatched(int index);
+    bool isUniversePatched(quint32 id);
 
     /**
      * Retrieve the number of universes in the input/output map
@@ -212,18 +198,23 @@ public:
     quint32 universesCount() const;
 
     /**
+     * Retrieve the ID of the next available universe
+     */
+    quint32 getNextUniverseID(quint32 id) const;
+
+    /**
      * Retrieve the list of references of the Universe in the input/output map
      */
     QList<Universe*> universes() const;
 
     /**
-     * Claim access to a universe. This is declared virtual to make
+     * Claim access to universes. This is declared virtual to make
      * unit testing a bit easier.
      */
     virtual QList<Universe*> claimUniverses();
 
     /**
-     * Release access to a universe. This is declared virtual to make
+     * Release access to universes. This is declared virtual to make
      * unit testing a bit easier.
      *
      * @param changed Set to true if DMX values were changed
@@ -244,14 +235,14 @@ public:
 signals:
     void universeAdded(quint32 id);
     void universeRemoved(quint32 id);
-    void universesWritten(int index, const QByteArray& universesCount);
+    void universesWritten(quint32 id, const QByteArray& values);
 
 private:
     /** Keep track of the lastest asigned universe ID */
     quint32 m_latestUniverseId;
 
     /** The values of all universes */
-    QList<Universe *> m_universeArray;
+    QMap<quint32, Universe*> m_universeMap;
 
     /** When true, universes are dumped. Otherwise not. */
     bool m_universeChanged;
@@ -366,11 +357,11 @@ public:
     /**
      * Get a list of available universes.
      */
-    QStringList universeNames() const;
+    QMap<quint32, QString> universeNames() const;
 
     /**
      * Check, whether a certain input in a certain plugin has been mapped
-     * to a universe. Returns the mapped universe number or QLCIOPlugin::invalidLine()
+     * to a universe. Returns the mapped universe number or invalidUniverse()
      * if not mapped.
      *
      * @param pluginName The name of the plugin to check for
@@ -381,7 +372,7 @@ public:
 
     /**
      * Check, whether a certain output in a certain plugin has been mapped
-     * to a universe. Returns the mapped universe number or QLCIOPlugin::invalidLine()
+     * to a universe. Returns the mapped universe number or invalidUniverse()
      * if not mapped.
      *
      * @param pluginName The name of the plugin to check for

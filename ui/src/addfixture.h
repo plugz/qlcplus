@@ -167,7 +167,7 @@ protected slots:
     void slotModeActivated(const QString& modeName);
 
     /** Callback for universe combo activations */
-    void slotUniverseActivated(int universe);
+    void slotUniverseActivated(int index);
 
     /** Callback for address spin changes */
     void slotAddressChanged(int value);

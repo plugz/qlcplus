@@ -471,7 +471,7 @@ public:
      * @param root An XML subtree containing the universe contents
      * @return true if the Universe was loaded successfully, otherwise false
      */
-    bool loadXML(QXmlStreamReader &root, int index, InputOutputMap* ioMap);
+    bool loadXML(QXmlStreamReader &root, InputOutputMap* ioMap);
 
     /**
      * Load an optional tag defining the plugin specific parameters

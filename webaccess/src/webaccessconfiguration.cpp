@@ -84,13 +84,15 @@ QString WebAccessConfiguration::getIOConfigHTML(Doc *doc)
     html += "<table class=\"hovertable\" style=\"width: 100%;\">\n";
     html += "<tr><th>Universe</th><th>Input</th><th>Output</th><th>Feedback</th><th>Profile</th></tr>\n";
 
-    for (quint32 i = 0; i < ioMap->universesCount(); i++)
+    QMap<quint32, QString> universes(ioMap->universeNames());
+    for (QMap<quint32, QString>::iterator it = universes.begin(); it != universes.end(); ++it)
     {
-        InputPatch* ip = ioMap->inputPatch(i);
-        OutputPatch* op = ioMap->outputPatch(i);
-        OutputPatch* fp = ioMap->feedbackPatch(i);
-        QString uniName = ioMap->getUniverseNameByIndex(i);
-        bool uniPass = ioMap->getUniversePassthrough(i);
+        quint32 id = it.key();
+        QString name = it.value();
+        InputPatch* ip = ioMap->inputPatch(id);
+        OutputPatch* op = ioMap->outputPatch(id);
+        OutputPatch* fp = ioMap->feedbackPatch(id);
+        bool uniPass = ioMap->getUniversePassthrough(id);
 
         QString currentInputPluginName = (ip == NULL)?KInputNone:ip->pluginName();
         quint32 currentInput = (ip == NULL)?QLCChannel::invalid():ip->input();
@@ -100,8 +102,8 @@ QString WebAccessConfiguration::getIOConfigHTML(Doc *doc)
         quint32 currentFeedback = (fp == NULL)?QLCChannel::invalid():fp->output();
         QString currentProfileName = (ip == NULL)?KInputNone:ip->profileName();
 
-        html += "<tr align=center><td>" + uniName + "</td>\n";
-        html += "<td><select onchange=\"ioChanged('INPUT', " + QString::number(i) + ", this.value);\">\n";
+        html += "<tr align=center><td>" + name + "</td>\n";
+        html += "<td><select onchange=\"ioChanged('INPUT', " + QString::number(id) + ", this.value);\">\n";
         for (int in = 0; in < inputLines.count(); in++)
         {
             QStringList strList = inputLines.at(in).split(",");
@@ -112,7 +114,7 @@ QString WebAccessConfiguration::getIOConfigHTML(Doc *doc)
                     QString("[%1] %2").arg(strList.at(0)).arg(strList.at(1)) + "</option>\n";
         }
         html += "</select></td>\n";
-        html += "<td><select onchange=\"ioChanged('OUTPUT', " + QString::number(i) + ", this.value);\">\n";
+        html += "<td><select onchange=\"ioChanged('OUTPUT', " + QString::number(id) + ", this.value);\">\n";
         for (int in = 0; in < outputLines.count(); in++)
         {
             QStringList strList = outputLines.at(in).split(",");
@@ -123,7 +125,7 @@ QString WebAccessConfiguration::getIOConfigHTML(Doc *doc)
                     QString("[%1] %2").arg(strList.at(0)).arg(strList.at(1)) + "</option>\n";
         }
         html += "</select></td>\n";
-        html += "<td><select onchange=\"ioChanged('FB', " + QString::number(i) + ", this.value);\">\n";
+        html += "<td><select onchange=\"ioChanged('FB', " + QString::number(id) + ", this.value);\">\n";
         for (int in = 0; in < feedbackLines.count(); in++)
         {
             QStringList strList = feedbackLines.at(in).split(",");
@@ -134,7 +136,7 @@ QString WebAccessConfiguration::getIOConfigHTML(Doc *doc)
                     QString("[%1] %2").arg(strList.at(0)).arg(strList.at(1)) + "</option>\n";
         }
         html += "</select></td>\n";
-        html += "<td><select onchange=\"ioChanged('PROFILE', " + QString::number(i) + ", this.value);\">\n";
+        html += "<td><select onchange=\"ioChanged('PROFILE', " + QString::number(id) + ", this.value);\">\n";
         for (int p = 0; p < profiles.count(); p++)
         {
             QString selected = "";
@@ -146,7 +148,7 @@ QString WebAccessConfiguration::getIOConfigHTML(Doc *doc)
         html += "<td><label><input type=\"checkbox\" ";
         if (uniPass == true)
             html +="checked=\"checked\"";
-        html += " onchange=\"ioChanged('PASSTHROUGH', " + QString::number(i) + ", this.checked);\">";
+        html += " onchange=\"ioChanged('PASSTHROUGH', " + QString::number(id) + ", this.checked);\">";
         html += tr("Passthrough") + "</label></td>\n";
 
         html += "</tr>\n";

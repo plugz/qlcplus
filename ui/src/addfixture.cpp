@@ -103,7 +103,14 @@ AddFixture::AddFixture(QWidget* parent, const Doc* doc, const Fixture* fxi)
     m_fixturesCount->setText(tr("Fixtures found: %1").arg(m_fxiCount));
 
     /* Fill universe combo with available universes */
-    m_universeCombo->addItems(m_doc->inputOutputMap()->universeNames());
+    QMap<quint32, QString> universes(m_doc->inputOutputMap()->universeNames());
+    for (QMap<quint32, QString>::iterator it = universes.begin();
+            it != universes.end(); ++it)
+    {
+        quint32 id = it.key();
+        QString name = it.value();
+        m_universeCombo->addItem(name, id);
+    }
 
     /* Simulate first selection and find the next free address */
     slotSelectionChanged();
@@ -111,8 +118,10 @@ AddFixture::AddFixture(QWidget* parent, const Doc* doc, const Fixture* fxi)
     if (fxi != NULL)
     {
         // Universe
-        m_universeCombo->setCurrentIndex(fxi->universe());
-        slotUniverseActivated(fxi->universe());
+        m_universeCombo->setCurrentIndex(
+                m_universeCombo->findData(QVariant(quint32(fxi->universe())))
+                );
+        slotUniverseActivated(m_universeCombo->currentIndex());
 
         m_addressSpin->setValue(fxi->address() + 1);
         m_addressValue = fxi->address();
@@ -362,7 +371,9 @@ void AddFixture::findAddress()
     /* Set the address only if the channel space was really found */
     if (address != QLCChannel::invalid())
     {
-        m_universeCombo->setCurrentIndex(address >> 9);
+        m_universeCombo->setCurrentIndex(
+                m_universeCombo->findData(QVariant(quint32(address >> 9)))
+                );
         m_addressSpin->setValue((address & 0x01FF) + 1);
     }
 }
@@ -473,14 +484,14 @@ void AddFixture::slotModeActivated(const QString& modeName)
     }
 }
 
-void AddFixture::slotUniverseActivated(int universe)
+void AddFixture::slotUniverseActivated(int index)
 {
-    m_universeValue = universe;
+    m_universeValue = m_universeCombo->itemData(index).toUInt();
 
     /* Adjust the available address range */
     slotChannelsChanged(m_channelsValue);
 
-    quint32 addr = findAddress(universe, m_channelsSpin->value(), m_doc->fixtures(), m_fixtureID);
+    quint32 addr = findAddress(m_universeValue, m_channelsSpin->value(), m_doc->fixtures(), m_fixtureID);
     if (addr != QLCChannel::invalid())
         m_addressSpin->setValue((addr & 0x01FF) + 1);
     else
