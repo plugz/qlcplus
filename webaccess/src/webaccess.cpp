@@ -338,6 +338,7 @@ mg_result WebAccess::websocketDataHandler(mg_connection *conn)
         }
         else if (cmdList[1] == "OUTPUT")
         {
+            qDebug() << Q_FUNC_INFO << universe;
             m_doc->inputOutputMap()->setOutputPatch(universe, cmdList[3], cmdList[4].toUInt(), false);
             m_doc->inputOutputMap()->saveDefaults();
         }

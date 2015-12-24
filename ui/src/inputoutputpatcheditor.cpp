@@ -92,8 +92,8 @@ InputOutputPatchEditor::InputOutputPatchEditor(QWidget* parent, quint32 universe
     , m_currentFeedback(QLCIOPlugin::invalidLine())
     , m_inputCapture(NULL)
 {
-    Q_ASSERT(universe < m_ioMap->universesCount());
     Q_ASSERT(ioMap != NULL);
+    Q_ASSERT(ioMap->universeNames().contains(universe));
 
     setupUi(this);
 

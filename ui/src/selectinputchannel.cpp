@@ -141,7 +141,6 @@ void SelectInputChannel::fillTree()
     QTreeWidgetItem* uniItem;
     QTreeWidgetItem* chItem;
     QLCInputProfile* profile;
-    quint32 uni;
     InputPatch* patch;
 
     // Clear tree
@@ -155,7 +154,7 @@ void SelectInputChannel::fillTree()
     chItem->setText(KColumnChannel, QString("%1")
                     .arg(QLCChannel::invalid()));
 
-    for (uni = 0; uni < m_ioMap->universesCount(); uni++)
+    foreach (quint32 uni, m_ioMap->universeNames().keys())
     {
         /* Get the patch associated to the current universe */
         patch = m_ioMap->inputPatch(uni);
