@@ -321,7 +321,7 @@ void MasterTimer::unregisterDMXSource(DMXSource* source)
     m_dmxSourceList.removeAll(source);
 }
 
-void MasterTimer::timerTickDMXSources(QList<Universe *> universes)
+void MasterTimer::timerTickDMXSources(QMap<Universe *> universes)
 {
     /* Lock before accessing the DMX sources list. */
     QMutexLocker lock(&m_dmxSourceListMutex);
