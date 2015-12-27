@@ -298,9 +298,16 @@ bool SimpleDeskEngine::saveXML(QXmlStreamWriter *doc) const
  * DMXSource
  ****************************************************************************/
 
-void SimpleDeskEngine::writeDMX(MasterTimer* timer, QList<Universe *> ua)
+void SimpleDeskEngine::writeDMX(MasterTimer* timer, QList<Universe *> const& ua)
 {
     QMutexLocker locker(&m_mutex);
+
+    QList<Universe*> uacopy(ua);
+    for (int i = 0; i < ua.size(); ++i)
+    {
+        if (uacopy[i]->id() > i)
+            uacopy.insert(i, NULL);
+    }
 
     QHashIterator <uint,uchar> it(m_values);
     while (it.hasNext() == true)
@@ -308,7 +315,8 @@ void SimpleDeskEngine::writeDMX(MasterTimer* timer, QList<Universe *> ua)
         it.next();
         int uni = it.key() >> 9;
         int address = it.key() & 0x01FF;
-        ua[uni]->write(address, it.value(), true);
+        Q_ASSERT(uacopy[uni] != NULL);
+        uacopy[uni]->write(address, it.value(), true);
     }
 
     foreach (CueStack* cueStack, m_cueStacks)

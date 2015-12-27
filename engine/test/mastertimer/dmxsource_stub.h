@@ -29,7 +29,7 @@ public:
     DMXSource_Stub();
     ~DMXSource_Stub();
 
-    void writeDMX(MasterTimer* timer, QList<Universe*> universes);
+    void writeDMX(MasterTimer* timer, QMap<quint32, Universe*> const& universes);
 
     /** Number of calls to writeDMX() */
     int m_writeCalls;

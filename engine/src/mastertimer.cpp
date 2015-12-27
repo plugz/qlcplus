@@ -107,10 +107,10 @@ void MasterTimer::timerTick()
     doc->inputOutputMap()->flushInputs();
 
     QList<Universe *> universes = doc->inputOutputMap()->claimUniverses();
-    for (int i = 0 ; i < universes.count(); i++)
+    foreach(Universe* universe, universes)
     {
-        universes[i]->zeroIntensityChannels();
-        universes[i]->zeroRelativeValues();
+        universe->zeroIntensityChannels();
+        universe->zeroRelativeValues();
     }
 
     timerTickFunctions(universes);
@@ -321,7 +321,7 @@ void MasterTimer::unregisterDMXSource(DMXSource* source)
     m_dmxSourceList.removeAll(source);
 }
 
-void MasterTimer::timerTickDMXSources(QMap<Universe *> universes)
+void MasterTimer::timerTickDMXSources(QMap<quint32, Universe*> const& universes)
 {
     /* Lock before accessing the DMX sources list. */
     QMutexLocker lock(&m_dmxSourceListMutex);

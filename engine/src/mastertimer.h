@@ -144,7 +144,7 @@ public:
 
 private:
     /** Execute one timer tick for each registered DMXSource */
-    void timerTickDMXSources(QList<Universe *> universes);
+    void timerTickDMXSources(QMap<quint32, Universe*> const& universes);
 
 private:
     /** List of currently registered DMX sources */

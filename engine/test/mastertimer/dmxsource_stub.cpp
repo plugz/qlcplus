@@ -32,7 +32,7 @@ DMXSource_Stub::~DMXSource_Stub()
 {
 }
 
-void DMXSource_Stub::writeDMX(MasterTimer* timer, QList<Universe*> universes)
+void DMXSource_Stub::writeDMX(MasterTimer* timer, QMap<quint32, Universe*> const& universes)
 {
     Q_UNUSED(timer);
     Q_UNUSED(universes);

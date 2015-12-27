@@ -131,7 +131,7 @@ public:
      ************************************************************************/
 public:
     /** @reimpl */
-    void writeDMX(MasterTimer* timer, QList<Universe*> ua);
+    void writeDMX(MasterTimer* timer, QList<Universe*> const& ua);
 
 };
 

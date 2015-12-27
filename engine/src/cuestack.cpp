@@ -424,9 +424,10 @@ bool CueStack::isFlashing() const
     return m_flashing;
 }
 
-void CueStack::writeDMX(MasterTimer* timer, QList<Universe*> ua)
+void CueStack::writeDMX(MasterTimer* timer, QMap<quint32, Universe*> const& universes)
 {
     Q_UNUSED(timer);
+
     if (isFlashing() == true && m_cues.size() > 0)
     {
         QHashIterator <uint,uchar> it(m_cues.first().values());
@@ -436,9 +437,10 @@ void CueStack::writeDMX(MasterTimer* timer, QList<Universe*> ua)
             FadeChannel fc;
             fc.setChannel(doc(), it.key());
             fc.setTarget(it.value());
-            int uni = qFloor(fc.channel() / 512);
-            if (uni < ua.size())
-                ua[uni]->write(fc.channel() - (uni * 512), fc.target());
+            int uni = fc.channel() >> 9;
+            int address = fc.channel() & 0x01FF;
+            Q_ASSERT(universes.contains(uni));
+            universes.value(uni)->write(address, fc.target());
         }
     }
 }
@@ -466,7 +468,7 @@ void CueStack::preRun()
     emit started();
 }
 
-void CueStack::write(QList<Universe*> ua)
+void CueStack::write(QList<Universe*> const& ua)
 {
     Q_ASSERT(m_fader != NULL);
 
@@ -619,7 +621,7 @@ void CueStack::switchCue(int from, int to, const QList<Universe *> ua)
     }
 }
 
-void CueStack::insertStartValue(FadeChannel& fc, const QList<Universe *> ua)
+void CueStack::insertStartValue(FadeChannel& fc, const QList<Universe *>& ua)
 {
     qDebug() << Q_FUNC_INFO;
     const QHash <FadeChannel,FadeChannel>& channels(m_fader->channels());

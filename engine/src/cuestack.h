@@ -231,7 +231,7 @@ public:
     void setFlashing(bool enable);
     bool isFlashing() const;
 
-    void writeDMX(MasterTimer* timer, QList<Universe *> ua);
+    void writeDMX(MasterTimer* timer, QMap<quint32, Universe*> const& universes);
 
 private:
     bool m_flashing;
@@ -243,14 +243,14 @@ public:
     bool isStarted() const;
 
     void preRun();
-    void write(QList<Universe *> ua);
+    void write(QList<Universe *> const& ua);
     void postRun(MasterTimer* timer);
 
 private:
     int next();
     int previous();
-    void switchCue(int from, int to, const QList<Universe *> ua);
-    void insertStartValue(FadeChannel& fc, const QList<Universe*> ua);
+    void switchCue(int from, int to, QList<Universe *> const& ua);
+    void insertStartValue(FadeChannel& fc, QList<Universe*> const& ua);
 
 private:
     GenericFader* m_fader;
