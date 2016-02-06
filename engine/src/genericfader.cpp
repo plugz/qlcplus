@@ -38,7 +38,8 @@ GenericFader::~GenericFader()
 
 void GenericFader::add(const FadeChannel& ch)
 {
-    QHash<FadeChannel,FadeChannel>::iterator channelIterator = m_channels.find(ch);
+    qWarning() << Q_FUNC_INFO << ch.start() << ch.current() << ch.target();
+    QHash<FadeChannel,FadeChannelList>::iterator channelIterator = m_channels.find(ch);
     if (channelIterator != m_channels.end())
     {
         // perform a HTP check
@@ -66,14 +67,14 @@ void GenericFader::removeAll()
     m_channels.clear();
 }
 
-const QHash <FadeChannel,FadeChannel>& GenericFader::channels() const
+const QHash <FadeChannel,FadeChannelList>& GenericFader::channels() const
 {
     return m_channels;
 }
 
 void GenericFader::write(QList<Universe*> ua)
 {
-    QMutableHashIterator <FadeChannel,FadeChannel> it(m_channels);
+    QMutableHashIterator <FadeChannel,FadeChannelList> it(m_channels);
     while (it.hasNext() == true)
     {
         FadeChannel& fc(it.next().value());

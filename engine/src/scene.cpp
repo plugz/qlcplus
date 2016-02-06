@@ -641,14 +641,20 @@ void Scene::postRun(MasterTimer* timer, QList<Universe *> ua)
 {
     Q_ASSERT(m_fader != NULL);
 
+    qDebug() << Q_FUNC_INFO;
+
     QHashIterator <FadeChannel,FadeChannel> it(m_fader->channels());
     while (it.hasNext() == true)
     {
+        qDebug() << Q_FUNC_INFO << "in loop";
         it.next();
         FadeChannel fc = it.value();
         // fade out only intensity channels
         if (fc.group(doc()) != QLCChannel::Intensity)
+        {
+            qDebug() << Q_FUNC_INFO << "in loop: not int channel fuck";
             continue;
+        }
 
         bool canFade = true;
         Fixture *fixture = doc()->fixture(fc.fixture());
@@ -672,6 +678,7 @@ void Scene::postRun(MasterTimer* timer, QList<Universe *> ua)
                 fc.setFadeTime(overrideFadeOutSpeed());
             fc.setTarget(0);
         }
+        qDebug() << Q_FUNC_INFO << "in loop: faderAdd";
         timer->faderAdd(fc);
     }
 

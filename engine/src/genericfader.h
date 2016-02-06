@@ -64,7 +64,7 @@ public:
     void removeAll();
 
     /** Get all channels in a non-modifiable hashmap */
-    const QHash <FadeChannel,FadeChannel>& channels() const;
+    const QHash <FadeChannel,FadeChannelList>& channels() const;
 
     /**
      * Run the channels forward by one step and write their current values to
@@ -96,7 +96,7 @@ public:
     void setBlendMode(Universe::BlendMode mode);
 
 private:
-    QHash <FadeChannel,FadeChannel> m_channels;
+    QHash <FadeChannel,FadeChannelList> m_channels;
     qreal m_intensity;
     Universe::BlendMode m_blendMode;
     Doc* m_doc;

@@ -51,8 +51,8 @@ public:
     /** Create a new FadeChannel and set fixture ID and channel */
     FadeChannel(const Doc *doc, quint32 fxi, quint32 channel);
 
-    /** Destructor */
-    virtual ~FadeChannel();
+    /** Non-virtual destructor: do not inherit */
+    ~FadeChannel();
 
     /** Comparison operator (true if fixture & channel match) */
     bool operator==(const FadeChannel& fc) const;
@@ -140,6 +140,7 @@ public:
      */
     uchar nextStep(uint ms);
 
+private:
     /**
      * Calculate current value based on fadeTime and elapsedTime. Basically:
      * "what m_current should be, if you were given $fadeTime ticks to fade
