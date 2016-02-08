@@ -58,6 +58,10 @@ public:
      */
     uchar nextStep(uint ms);
 
+    void add(FadeChannel const& channel);
+
+    // void remove(FadeChannel const& channel);
+
 private:
     QList<FadeChannel> m_fadeChannels;
 };

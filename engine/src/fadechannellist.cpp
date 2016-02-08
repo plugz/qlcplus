@@ -23,4 +23,20 @@
 
 #include "fadechannellist.h"
 
-// TODOODODODODODODO
+FadeChannelList::FadeChannelList()
+{
+}
+
+FadeChannelList::~FadeChannelList()
+{
+}
+
+void FadeChannelList::add(FadeChannel const& channel)
+{
+    // TODO
+}
+
+uchar FadeChannelList::nextStep(uint ms)
+{
+    // TODO
+}
