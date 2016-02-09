@@ -212,10 +212,13 @@ protected:
 
 protected slots:
     void slotPresetClicked(bool checked);
+    void slotEFXChanged();
 
 protected:
     QHash<QWidget *, VCXYPadPreset *> m_presets;
     EFX *m_efx;
+    EFX *m_sourceEFX;
+    quint32 m_efxID;
     Scene *m_scene;
     QList<SceneChannel> m_sceneChannels;
 

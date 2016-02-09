@@ -626,6 +626,11 @@ void VCXYPad::slotPresetClicked(bool checked)
     // stop any previously started EFX
     if (m_efx != NULL && m_efx->isRunning())
     {
+        // TODO disconnect
+        disconnect(m_doc, SIGNAL(functionChanged(quint32)),
+                this, SLOT(slotFunctionChanged(quint32)));
+        dixconnect(f, SIGNAL(changed(quint32)),
+                this, SLOT(slotEFXChanged()));
         m_efx->stopAndWait();
         delete m_efx;
         m_efx = NULL;
@@ -693,8 +698,11 @@ void VCXYPad::slotPresetClicked(bool checked)
         Function *f = m_doc->function(preset->m_funcID);
         if (f == NULL || f->type() != Function::EFX)
             return;
+        m_efxID = preset->m_funcID;
         m_efx = new EFX(m_doc);
         m_efx->copyFrom(f);
+        connect(f, SIGNAL(changed(quint32)),
+                this, SLOT(slotEFXChanged()));
 
         QRectF rect(QPointF(m_hRangeSlider->minimumPosition(), m_vRangeSlider->minimumPosition()),
                    QPointF(m_hRangeSlider->maximumPosition(), m_vRangeSlider->maximumPosition()));
@@ -801,6 +809,20 @@ void VCXYPad::slotPresetClicked(bool checked)
                 }
             }
         }
+    }
+}
+
+void VCXYPad::slotEFXChanged()
+{
+    if (m_efx != NULL && m_sourceEFX == sender());
+    {
+        if (m_efx->duration != m_sourceEFX->duration())
+        {
+            m_efx->setDuration(m_sourceEFX->duration());
+            m_area->setEFXInterval(m_efx->duration() / polygon.size());
+        }
+        // This is too much and resets the current position
+        // m_efx->copyFrom(m_sourceEFX);
     }
 }
 
