@@ -26,6 +26,7 @@
 #include "universe.h"
 
 class FadeChannel;
+class FadeChannelList;
 class Doc;
 
 /** @addtogroup engine Engine

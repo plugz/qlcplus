@@ -291,8 +291,10 @@ uint FadeChannel::elapsed() const
 
 uchar FadeChannel::nextStep(uint ms)
 {
-    if (elapsed() < UINT_MAX)
+    if (elapsed() < UINT_MAX - ms)
         setElapsed(elapsed() + ms);
+    else
+        setElapsed(UINT_MAX);
     return calculateCurrent(fadeTime(), elapsed());
 }
 

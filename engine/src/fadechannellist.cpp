@@ -22,9 +22,13 @@
 #include <cmath>
 
 #include "fadechannellist.h"
+#include "fadechannel.h"
+#include "qlcmacros.h"
 
-FadeChannelList::FadeChannelList()
+FadeChannelList::FadeChannelList(FadeChannel const& fadeChannel)
+    : m_fadeChannel(fadeChannel)
 {
+    add(fadeChannel);
 }
 
 FadeChannelList::~FadeChannelList()
@@ -33,10 +37,57 @@ FadeChannelList::~FadeChannelList()
 
 void FadeChannelList::add(FadeChannel const& channel)
 {
-    // TODO
+    Q_ASSERT(channel == m_fadeChannel);
+
+    foreach(FadeChannel const& curChannel, m_fadeChannels)
+    {
+        if (MIN(channel.current(), channel.target())
+                > MAX(curChannel.current(), curChannel.target()))
+            continue;
+
+        // If the new channel is lower than any current channel, abandon it
+        return;
+    }
+    // If the new channel may be at some time bigger than any current channel, add it
+    m_fadeChannels.push_back(channel);
 }
 
 uchar FadeChannelList::nextStep(uint ms)
 {
-    // TODO
+    // TODO handle LTP ?
+    uchar res = 0;
+    {
+        // first loop: get val
+        QListIterator it(m_fadeChannels);
+        while (it.hasNext())
+        {
+            FadeChannel& fadeChannel = it.next();
+            uchar val = fadeChannel.nextStep(ms);
+            if (val > res)
+                res = val;
+        }
+    }
+    {
+        // second loop: cleanup
+        QMutableListIterator it(m_fadeChannels);
+        while (it.hasNext())
+        {
+            FadeChannel& fadeChannel = it.next();
+            if (fadeChannel.elapsed() >= fadeChannel.fadeTime())
+            {
+                uchar currentMin = 0;
+                QListIterator currentIt(m_fadeChannels);
+                while (currentIt.hasNext())
+                {
+                    FadeChannel const& currentFc = currentIt.next();
+                    if (&currentFc != &fadeChannel)
+                        currentMin = MAX(currentMin,
+                                MIN(currentFc.current(), currentFc.target()));
+                }
+                if (fadeChannel.current() <= currentMin)
+                    it.remove();
+            }
+        }
+    }
+    return res;
 }

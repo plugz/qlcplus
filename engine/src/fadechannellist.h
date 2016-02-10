@@ -21,11 +21,7 @@
 #ifndef FADECHANNELLIST_H
 #define FADECHANNELLIST_H
 
-#include <QtGlobal>
-
-#include "qlcchannel.h"
-#include "fixture.h"
-#include "doc.h"
+#include "fadechannel.h"
 
 /** @addtogroup engine Engine
  * @{
@@ -42,8 +38,8 @@ class FadeChannelList
      * Initialization
      ************************************************************************/
 public:
-    /** Create a new FadeChannel with empty/invalid values */
-    FadeChannelList();
+    /** Create a new FadeChannelList */
+    explicit FadeChannelList(FadeChannel const& fadeChannel);
 
     /** Non-virtual destructor: do not inherit */
     ~FadeChannelList();
@@ -60,9 +56,8 @@ public:
 
     void add(FadeChannel const& channel);
 
-    // void remove(FadeChannel const& channel);
-
 private:
+    FadeChannel m_fadeChannel
     QList<FadeChannel> m_fadeChannels;
 };
 
