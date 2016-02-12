@@ -515,7 +515,6 @@ void CueStack::postRun(MasterTimer* timer)
     Q_ASSERT(m_fader != NULL);
 
     // Bounce all intensity channels to MasterTimer's fader for zeroing
-
     timer->faderAdd(*m_fader, intensity(), fadeOutSpeed());
 
     m_currentIndex = -1;

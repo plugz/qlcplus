@@ -38,6 +38,9 @@ public:
     void add(GenericFader const& fader, qreal faderIntensity, uint fadeOutTime);
 
     virtual void write(QList<Universe *> universes);
+
+protected:
+    QHash <FadeChannel,FadeChannel> m_fadeOutChannels;
 };
 
 /** @} */
