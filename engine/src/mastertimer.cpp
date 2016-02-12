@@ -29,7 +29,7 @@
 #endif
 
 #include "inputoutputmap.h"
-#include "genericfader.h"
+#include "fadeoutfader.h"
 #include "fadechannel.h"
 #include "mastertimer.h"
 #include "dmxsource.h"
@@ -59,7 +59,7 @@ MasterTimer::MasterTimer(Doc* doc)
     , m_stopAllFunctions(false)
     , m_dmxSourceListMutex(QMutex::Recursive)
     , m_simpleDeskRegistered(false)
-    , m_fader(new GenericFader(doc))
+    , m_fader(new FadeOutFader(doc))
     , d_ptr(new MasterTimerPrivate(this))
 {
     Q_ASSERT(doc != NULL);
@@ -159,8 +159,6 @@ void MasterTimer::stopAllFunctions()
 #endif
     }
 
-    // WARNING: the following brackets are fundamental for
-    // the scope of this piece of code !!
     {
         /* Remove all generic fader's channels */
         QMutexLocker faderLocker(&m_faderMutex);
@@ -208,11 +206,12 @@ void MasterTimer::fadeAndStopAll(int timeout)
     // Stop all functions first
     stopAllFunctions();
 
+    // TODO move the fadeout to the functions
     // Instruct mastertimer to do a fade out of all
     // the intensity channels that can fade
     QMutexLocker faderLocker(&m_faderMutex);
     foreach(FadeChannel fade, fcList)
-        fader()->add(fade);
+        fader()->GenericFader::add(fade);
 }
 
 int MasterTimer::runningFunctions() const
@@ -364,33 +363,26 @@ void MasterTimer::timerTickDMXSources(QList<Universe *> universes)
  * Generic Fader
  ****************************************************************************/
 
-GenericFader* MasterTimer::fader() const
+FadeOutFader* MasterTimer::fader() const
 {
     return m_fader;
 }
 
-void MasterTimer::faderAdd(const FadeChannel& ch)
+void MasterTimer::faderAdd(const GenericFader& f, qreal faderIntensity, uint fadeOutTime)
 {
     QMutexLocker faderLocker(&m_faderMutex);
 
-    fader()->add(ch);
+    fader()->add(f, faderIntensity, fadeOutTime);
 }
 
-void MasterTimer::faderForceAdd(const FadeChannel& ch)
+void MasterTimer::faderForceAdd(const FadeChannel& fc)
 {
     QMutexLocker faderLocker(&m_faderMutex);
 
-    fader()->forceAdd(ch);
+    fader()->forceAdd(fc);
 }
 
-QHash<FadeChannel,FadeChannel> MasterTimer::faderChannels() const
-{
-    QMutexLocker faderLocker(const_cast<QMutex*>(&m_faderMutex));
-
-    return fader()->channels();
-}
-
-QHash<FadeChannel,FadeChannel> const& MasterTimer::faderChannelsRef() const
+QHash<FadeChannel,FadeChannel> const& MasterTimer::faderChannels() const
 {
     return fader()->channels();
 }
@@ -405,7 +397,7 @@ void MasterTimer::timerTickFader(QList<Universe *> universes)
     QMutexLocker faderLocker(&m_faderMutex);
 
 #ifdef DEBUG_MASTERTIMER
-        qDebug() << "[MasterTimer] ticking fader (channels:" << fader()->channels().count() << ")";
+    qDebug() << "[MasterTimer] ticking fader (channels:" << fader()->channels().count() << ")";
 #endif
 
     fader()->write(universes);

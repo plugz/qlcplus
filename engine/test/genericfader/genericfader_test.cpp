@@ -29,8 +29,10 @@
 #include "doc.h"
 
 #define private public
+#define protected public
 #include "genericfader.h"
 #undef private
+#undef protected
 
 #include "../common/resource_paths.h"
 

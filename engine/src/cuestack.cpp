@@ -515,22 +515,8 @@ void CueStack::postRun(MasterTimer* timer)
     Q_ASSERT(m_fader != NULL);
 
     // Bounce all intensity channels to MasterTimer's fader for zeroing
-    QHashIterator <FadeChannel,FadeChannel> it(m_fader->channels());
-    while (it.hasNext() == true)
-    {
-        it.next();
-        FadeChannel fc = it.value();
 
-        if (fc.group(doc()) == QLCChannel::Intensity)
-        {
-            fc.setStart(fc.current(intensity()));
-            fc.setTarget(0);
-            fc.setElapsed(0);
-            fc.setReady(false);
-            fc.setFadeTime(fadeOutSpeed());
-            timer->faderAdd(fc);
-        }
-    }
+    timer->faderAdd(*m_fader, intensity(), fadeOutSpeed());
 
     m_currentIndex = -1;
     delete m_fader;

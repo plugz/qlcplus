@@ -31,6 +31,7 @@
 #include "genericfader.h"
 #include "fadechannel.h"
 #include "mastertimer.h"
+#include "fadeoutfader.h"
 #include "universe.h"
 #include "cuestack.h"
 #include "fixture.h"

@@ -35,8 +35,8 @@ class Doc;
 class GenericFader
 {
 public:
-    GenericFader(Doc* doc);
-    ~GenericFader();
+    explicit GenericFader(Doc* doc);
+    virtual ~GenericFader();
 
     /**
      * Add a channel that shall be faded from ch.start() to ch.target() within
@@ -72,7 +72,7 @@ public:
      *
      * @param universes The universe array that receives channel data.
      */
-    void write(QList<Universe *> universes);
+    virtual void write(QList<Universe *> universes);
 
     /**
      * Adjust the intensities of all channels by $fraction
@@ -95,7 +95,7 @@ public:
      */
     void setBlendMode(Universe::BlendMode mode);
 
-private:
+protected:
     QHash <FadeChannel,FadeChannel> m_channels;
     qreal m_intensity;
     Universe::BlendMode m_blendMode;

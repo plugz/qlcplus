@@ -558,6 +558,7 @@ void Scene::writeDMX(MasterTimer* timer, QList<Universe *> ua)
             fc.setFlashing(true);
             // Force add this channel, since it will be removed
             // by MasterTimer once applied
+            // TODO change this to a real run of the function
             timer->faderForceAdd(fc);
         }
     }
@@ -640,38 +641,9 @@ void Scene::postRun(MasterTimer* timer, QList<Universe *> ua)
 {
     Q_ASSERT(m_fader != NULL);
 
-    QHashIterator <FadeChannel,FadeChannel> it(m_fader->channels());
-    while (it.hasNext() == true)
-    {
-        it.next();
-        FadeChannel fc = it.value();
-        // fade out only intensity channels
-        if (fc.group(doc()) != QLCChannel::Intensity)
-            continue;
-
-        bool canFade = true;
-        Fixture *fixture = doc()->fixture(fc.fixture());
-        if (fixture != NULL)
-            canFade = fixture->channelCanFade(fc.channel());
-        fc.setStart(fc.current(getAttributeValue(Intensity)));
-
-        fc.setElapsed(0);
-        fc.setReady(false);
-        if (canFade == false)
-        {
-            fc.setFadeTime(0);
-            fc.setTarget(fc.current(getAttributeValue(Intensity)));
-        }
-        else
-        {
-            if (overrideFadeOutSpeed() == defaultSpeed())
-                fc.setFadeTime(fadeOutSpeed());
-            else
-                fc.setFadeTime(overrideFadeOutSpeed());
-            fc.setTarget(0);
-        }
-        timer->faderAdd(fc);
-    }
+    timer->faderAdd(*m_fader, getAttributeValue(Intensity),
+            overrideFadeOutSpeed() == defaultSpeed() ?
+            fadeOutSpeed() : overrideFadeOutSpeed());
 
     delete m_fader;
     m_fader = NULL;
@@ -683,7 +655,7 @@ void Scene::insertStartValue(FadeChannel& fc, const MasterTimer* timer,
                              const QList<Universe*> ua)
 {
     QMutexLocker channelsLocker(timer->faderMutex());
-    QHash <FadeChannel,FadeChannel> const& channels(timer->faderChannelsRef());
+    QHash <FadeChannel,FadeChannel> const& channels(timer->faderChannels());
     QHash <FadeChannel,FadeChannel>::const_iterator existing_it = channels.find(fc);
     if (existing_it != channels.constEnd())
     {
