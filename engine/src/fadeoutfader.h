@@ -39,8 +39,12 @@ public:
 
     virtual void write(QList<Universe *> universes);
 
+private:
+    void tryToInsert(FadeChannel const& ch);
+    static bool fadeChannelIsBigger(FadeChannel const& left, FadeChannel const& right);
+
 protected:
-    QHash <FadeChannel,FadeChannel> m_fadeOutChannels;
+    QHash <FadeChannel, QList<FadeChannel> > m_fadeOutChannels;
 };
 
 /** @} */

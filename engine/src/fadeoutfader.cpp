@@ -22,6 +22,7 @@
 
 #include "fadeoutfader.h"
 #include "fadechannel.h"
+#include "qlcmacros.h"
 
 FadeOutFader::FadeOutFader(Doc* doc)
     : GenericFader(doc)
@@ -70,9 +71,45 @@ void FadeOutFader::add(GenericFader const& fader, qreal faderIntensity, uint fad
 
     foreach(FadeChannel const& fc, newChannels)
     {
-        // TODO complicated stuff
-        GenericFader::add(fc);
+        if (m_channels.contains(fc))
+        {
+            FadeChannel& currentFc = m_channels[fc];
+            if (fadeChannelIsBigger(fc, currentFc))
+                currentFc = fc;
+            else if (! fadeChannelIsBigger(currentFc, fc))
+            {
+                tryToInsert(fc);
+            }
+        }
+        else
+            GenericFader::add(fc);
     }
+}
+
+void FadeOutFader::tryToInsert(FadeChannel const& fc)
+{
+    if (m_fadeOutChannels.contains(fc))
+    {
+        QList<FadeChannel>::iterator it(m_fadeOutChannels.begin());
+        while (it != m_fadeOutChannels.end())
+        {
+            FadeChannel& currentFc = *it;
+            if (fadeChannelIsBigger(fc, currentFc))
+            {
+                currentFc = fc;
+                return;
+            }
+            if (fadeChannelIsBigger(currentFc, fc))
+                return;
+            ++it;
+        }
+    }
+    m_fadeOutChannels[fc].push_back(fc);
+}
+
+bool FadeOutFader::fadeChannelIsBigger(FadeChannel const& left, FadeChannel const& right)
+{
+    return MIN(left.current(), left.target()) > MAX(right.current(), right.target());
 }
 
 void FadeOutFader::write(QList<Universe *> universes)
