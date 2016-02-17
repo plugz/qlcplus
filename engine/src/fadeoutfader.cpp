@@ -22,7 +22,6 @@
 
 #include "fadeoutfader.h"
 #include "fadechannel.h"
-#include "qlcmacros.h"
 
 FadeOutFader::FadeOutFader(Doc* doc)
     : GenericFader(doc)
@@ -58,7 +57,7 @@ void FadeOutFader::add(GenericFader const& fader, qreal faderIntensity, uint fad
         if (canFade == false)
         {
             fc.setFadeTime(0);
-            fc.setTarget(fc.current(faderIntensity)); // is this an LTP thing ?
+            fc.setTarget(fc.current(faderIntensity)); // TODO understand this. is this an LTP thing ?
         }
         else
         {
@@ -110,11 +109,46 @@ void FadeOutFader::tryToInsert(FadeChannel const& fc)
 
 bool FadeOutFader::fadeChannelIsBigger(FadeChannel const& left, FadeChannel const& right)
 {
-    return MIN(left.current(), left.target()) > MAX(right.current(), right.target());
+    return qMin(left.current(), left.target()) > qMax(right.current(), right.target());
 }
 
 void FadeOutFader::write(QList<Universe *> universes)
 {
-    // TODO complicated stuff
-    return GenericFader::write(universes);
+    // Advance the fades of universe
+    GenericFader::write(universes);
+
+    QMutableHashIterator <FadeChannel, QList<FadeChannel> > it(m_fadeOutChannels);
+    while (it.hasNext())
+    {
+        QList<FadeChannel>& list(it.next().value());
+        QMutableListIterator<FadeChannel> listIt(list);
+        while (listIt.hasNext())
+        {
+            FadeChannel& fc(listIt.next());
+
+            QLCChannel::Group grp = fc.group(m_doc);
+            quint32 addr = fc.addressInUniverse();
+            quint32 universe = fc.universe();
+            bool canFade = fc.canFade(m_doc);
+
+            // Calculate the next step
+            uchar value = fc.nextStep(MasterTimer::tick());
+
+            // Apply intensity to HTP channels
+            if (grp == QLCChannel::Intensity && canFade == true)
+                value = fc.current(intensity());
+
+            if (universe != Universe::invalid())
+            {
+                //qDebug() << "[GenericFader] >>> uni:" << universe << ", address:" << addr << ", value:" << value;
+                universes[universe]->writeBlended(addr, value, m_blendMode);
+            }
+
+            // FadeOutFader: Remove all channels that reach their target _zero_ value.
+            if (fc.current() == 0)
+                listIt.remove();
+        }
+        if (list.size() == 0)
+            it.remove();
+    }
 }

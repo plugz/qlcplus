@@ -74,7 +74,7 @@ const QHash <FadeChannel,FadeChannel>& GenericFader::channels() const
 void GenericFader::write(QList<Universe*> ua)
 {
     QMutableHashIterator <FadeChannel,FadeChannel> it(m_channels);
-    while (it.hasNext() == true)
+    while (it.hasNext())
     {
         FadeChannel& fc(it.next().value());
         QLCChannel::Group grp = fc.group(m_doc);
@@ -86,7 +86,7 @@ void GenericFader::write(QList<Universe*> ua)
         uchar value = fc.nextStep(MasterTimer::tick());
 
         // Apply intensity to HTP channels
-        if (grp == QLCChannel::Intensity && canFade == true)
+        if (grp == QLCChannel::Intensity && canFade)
             value = fc.current(intensity());
 
         if (universe != Universe::invalid())
