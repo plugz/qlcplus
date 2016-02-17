@@ -76,7 +76,7 @@ void FadeOutFader::add(GenericFader const& fader, qreal faderIntensity, uint fad
             FadeChannel& currentFc = m_channels[fc];
             if (fadeChannelIsBigger(fc, currentFc))
                 currentFc = fc;
-            else if (! fadeChannelIsBigger(currentFc, fc))
+            else if (!fadeChannelIsBigger(currentFc, fc))
             {
                 tryToInsert(fc);
             }
@@ -90,8 +90,9 @@ void FadeOutFader::tryToInsert(FadeChannel const& fc)
 {
     if (m_fadeOutChannels.contains(fc))
     {
-        QList<FadeChannel>::iterator it(m_fadeOutChannels.begin());
-        while (it != m_fadeOutChannels.end())
+        QList<FadeChannel>::iterator it(m_fadeOutChannels[fc].begin());
+        QList<FadeChannel>::iterator end(m_fadeOutChannels[fc].end());
+        while (it != end)
         {
             FadeChannel& currentFc = *it;
             if (fadeChannelIsBigger(fc, currentFc))
