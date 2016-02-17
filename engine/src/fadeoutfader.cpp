@@ -64,15 +64,16 @@ void FadeOutFader::add(GenericFader const& fader, qreal faderIntensity, uint fad
         fc.setReady(false);
         if (canFade == false)
         {
+            // TODO understand this. is this an LTP thing ? Should this be removed ?
             fc.setFadeTime(0);
-            fc.setTarget(fc.current(faderIntensity)); // TODO understand this. is this an LTP thing ?
+            fc.setTarget(fc.current(faderIntensity));
         }
         else
         {
-            if (fc.fadeTime() > fadeOutTime)
-                fc.setFadeTime(fadeOutTime);
+            fc.setFadeTime(fadeOutTime);
             fc.setTarget(0);
         }
+
         newChannels << fc;
     }
 
@@ -127,31 +128,23 @@ bool FadeOutFader::fadeChannelIsBigger(FadeChannel const& left, FadeChannel cons
 
 void FadeOutFader::write(QList<Universe *> universes)
 {
-    qDebug() << Q_FUNC_INFO;
     // Advance the fades contained in genericFader
     GenericFader::write(universes);
 
     QMutableHashIterator <FadeChannel, QList<FadeChannel> > it(m_fadeOutChannels);
     while (it.hasNext())
     {
-        qDebug() << Q_FUNC_INFO << "inLoop";
         QList<FadeChannel>& list(it.next().value());
         QMutableListIterator<FadeChannel> listIt(list);
         while (listIt.hasNext())
         {
             FadeChannel& fc(listIt.next());
 
-            QLCChannel::Group grp = fc.group(m_doc);
             quint32 addr = fc.addressInUniverse();
             quint32 universe = fc.universe();
-            bool canFade = fc.canFade(m_doc);
 
             // Calculate the next step
             uchar value = fc.nextStep(MasterTimer::tick());
-
-            // Apply intensity to HTP channels
-            if (grp == QLCChannel::Intensity && canFade == true)
-                value = fc.current(intensity());
 
             if (universe != Universe::invalid())
             {
@@ -161,9 +154,15 @@ void FadeOutFader::write(QList<Universe *> universes)
 
             // FadeOutFader: Remove all channels that reach their target _zero_ value.
             if (fc.current() == 0)
+            {
+                qDebug() << Q_FUNC_INFO << "remove" << fc.fadeTime() << "s";
                 listIt.remove();
+            }
         }
         if (list.size() == 0)
+        {
+            qDebug() << Q_FUNC_INFO << "remove a channel";
             it.remove();
+        }
     }
 }
