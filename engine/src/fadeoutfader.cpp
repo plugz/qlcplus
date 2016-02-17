@@ -34,16 +34,24 @@ FadeOutFader::~FadeOutFader()
 
 void FadeOutFader::add(GenericFader const& fader, qreal faderIntensity, uint fadeOutTime)
 {
+    qDebug() << Q_FUNC_INFO;
+
     QHashIterator <FadeChannel,FadeChannel> it(fader.channels());
     QList<FadeChannel> newChannels;
     while (it.hasNext() == true)
     {
         it.next();
-        FadeChannel fc = it.value();
+        FadeChannel const& fcRef = it.value();
 
         // fade out only intensity channels
-        if (fc.group(m_doc) != QLCChannel::Intensity)
+        if (fcRef.group(m_doc) != QLCChannel::Intensity)
+        {
+            qDebug() << Q_FUNC_INFO << "a channel is not intensity";
             continue;
+        }
+        qDebug() << Q_FUNC_INFO << "a channel is intensity";
+
+        FadeChannel fc(fcRef);
 
         bool canFade = true;
         Fixture *fixture = m_doc->fixture(fc.fixture());
@@ -70,8 +78,10 @@ void FadeOutFader::add(GenericFader const& fader, qreal faderIntensity, uint fad
 
     foreach(FadeChannel const& fc, newChannels)
     {
+        qDebug() << Q_FUNC_INFO << "newFC loop";
         if (m_channels.contains(fc))
         {
+            qDebug() << Q_FUNC_INFO << "contains";
             FadeChannel& currentFc = m_channels[fc];
             if (fadeChannelIsBigger(fc, currentFc))
                 currentFc = fc;
@@ -81,7 +91,10 @@ void FadeOutFader::add(GenericFader const& fader, qreal faderIntensity, uint fad
             }
         }
         else
+        {
+            qDebug() << Q_FUNC_INFO << "no contains: genericfader add";
             GenericFader::add(fc);
+        }
     }
 }
 
@@ -114,12 +127,14 @@ bool FadeOutFader::fadeChannelIsBigger(FadeChannel const& left, FadeChannel cons
 
 void FadeOutFader::write(QList<Universe *> universes)
 {
-    // Advance the fades of universe
+    qDebug() << Q_FUNC_INFO;
+    // Advance the fades contained in genericFader
     GenericFader::write(universes);
 
     QMutableHashIterator <FadeChannel, QList<FadeChannel> > it(m_fadeOutChannels);
     while (it.hasNext())
     {
+        qDebug() << Q_FUNC_INFO << "inLoop";
         QList<FadeChannel>& list(it.next().value());
         QMutableListIterator<FadeChannel> listIt(list);
         while (listIt.hasNext())
