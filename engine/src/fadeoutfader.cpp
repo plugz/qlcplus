@@ -23,81 +23,6 @@
 #include "fadeoutfader.h"
 #include "fadechannel.h"
 
-FadeOutFader::FadeOutFader(Doc* doc)
-    : GenericFader(doc)
-{
-}
-
-FadeOutFader::~FadeOutFader()
-{
-}
-
-void FadeOutFader::add(GenericFader const& fader, qreal faderIntensity, uint fadeOutTime)
-{
-    qDebug() << Q_FUNC_INFO;
-
-    QHashIterator <FadeChannel,FadeChannel> it(fader.channels());
-    QList<FadeChannel> newChannels;
-    while (it.hasNext() == true)
-    {
-        it.next();
-        FadeChannel const& fcRef = it.value();
-
-        // fade out only intensity channels
-        if (fcRef.group(m_doc) != QLCChannel::Intensity)
-        {
-            qDebug() << Q_FUNC_INFO << "a channel is not intensity";
-            continue;
-        }
-        qDebug() << Q_FUNC_INFO << "a channel is intensity";
-
-        FadeChannel fc(fcRef);
-
-        bool canFade = true;
-        Fixture *fixture = m_doc->fixture(fc.fixture());
-        if (fixture != NULL)
-            canFade = fixture->channelCanFade(fc.channel());
-        fc.setStart(fc.current(faderIntensity));
-        fc.setCurrent(fc.current(faderIntensity));
-
-        fc.setElapsed(0);
-        fc.setReady(false);
-        if (canFade == false)
-        {
-            // TODO understand this. is this an LTP thing ? Should this be removed ?
-            fc.setFadeTime(0);
-            fc.setTarget(fc.current(faderIntensity));
-        }
-        else
-        {
-            fc.setFadeTime(fadeOutTime);
-            fc.setTarget(0);
-        }
-
-        newChannels << fc;
-    }
-
-    foreach(FadeChannel const& fc, newChannels)
-    {
-        qDebug() << Q_FUNC_INFO << "newFC loop";
-        if (m_channels.contains(fc))
-        {
-            qDebug() << Q_FUNC_INFO << "contains";
-            FadeChannel& currentFc = m_channels[fc];
-            if (fadeChannelIsBigger(fc, currentFc))
-                currentFc = fc;
-            else if (!fadeChannelIsBigger(currentFc, fc))
-            {
-                tryToInsert(fc);
-            }
-        }
-        else
-        {
-            qDebug() << Q_FUNC_INFO << "no contains: genericfader add";
-            GenericFader::add(fc);
-        }
-    }
-}
 
 void FadeOutFader::tryToInsert(FadeChannel const& fc)
 {
@@ -119,11 +44,6 @@ void FadeOutFader::tryToInsert(FadeChannel const& fc)
         }
     }
     m_fadeOutChannels[fc].push_back(fc);
-}
-
-bool FadeOutFader::fadeChannelIsBigger(FadeChannel const& left, FadeChannel const& right)
-{
-    return qMin(left.current(), left.target()) > qMax(right.current(), right.target());
 }
 
 void FadeOutFader::write(QList<Universe *> universes)

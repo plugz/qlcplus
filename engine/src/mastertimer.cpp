@@ -29,8 +29,8 @@
 #endif
 
 #include "inputoutputmap.h"
-#include "fadeoutfader.h"
 #include "fadechannel.h"
+#include "genericfader.h"
 #include "mastertimer.h"
 #include "dmxsource.h"
 #include "qlcmacros.h"
@@ -59,7 +59,7 @@ MasterTimer::MasterTimer(Doc* doc)
     , m_stopAllFunctions(false)
     , m_dmxSourceListMutex(QMutex::Recursive)
     , m_simpleDeskRegistered(false)
-    , m_fader(new FadeOutFader(doc))
+    , m_fader(new GenericFader(doc))
     , d_ptr(new MasterTimerPrivate(this))
 {
     Q_ASSERT(doc != NULL);
@@ -363,16 +363,16 @@ void MasterTimer::timerTickDMXSources(QList<Universe *> universes)
  * Generic Fader
  ****************************************************************************/
 
-FadeOutFader* MasterTimer::fader() const
+GenericFader* MasterTimer::fader() const
 {
     return m_fader;
 }
 
-void MasterTimer::faderAdd(const GenericFader& f, qreal faderIntensity, uint fadeOutTime)
+void MasterTimer::faderFadeOut(const GenericFader& f, qreal faderIntensity, uint fadeOutTime)
 {
     QMutexLocker faderLocker(&m_faderMutex);
 
-    fader()->add(f, faderIntensity, fadeOutTime);
+    fader()->fadeOut(f, faderIntensity, fadeOutTime);
 }
 
 void MasterTimer::faderForceAdd(const FadeChannel& fc)
@@ -382,14 +382,11 @@ void MasterTimer::faderForceAdd(const FadeChannel& fc)
     fader()->forceAdd(fc);
 }
 
-QHash<FadeChannel,FadeChannel> const& MasterTimer::faderChannels() const
+bool MasterTimer::faderGetCurrentValue(const FadeChannel& fc, uchar& buff)
 {
-    return fader()->channels();
-}
+    QMutexLocker faderLocker(&m_faderMutex);
 
-QMutex* MasterTimer::faderMutex() const
-{
-    return const_cast<QMutex*>(&m_faderMutex);
+    return fader()->getCurrentValue(fc, buff);
 }
 
 void MasterTimer::timerTickFader(QList<Universe *> universes)

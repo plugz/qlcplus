@@ -515,7 +515,7 @@ void CueStack::postRun(MasterTimer* timer)
     Q_ASSERT(m_fader != NULL);
 
     // Bounce all intensity channels to MasterTimer's fader for zeroing
-    timer->faderAdd(*m_fader, intensity(), fadeOutSpeed());
+    timer->faderFadeOut(*m_fader, intensity(), fadeOutSpeed());
 
     m_currentIndex = -1;
     delete m_fader;
@@ -607,13 +607,12 @@ void CueStack::switchCue(int from, int to, const QList<Universe *> ua)
 void CueStack::insertStartValue(FadeChannel& fc, const QList<Universe *> ua)
 {
     qDebug() << Q_FUNC_INFO;
-    const QHash <FadeChannel,FadeChannel>& channels(m_fader->channels());
-    if (channels.contains(fc) == true)
+    uchar currentValue = 0;
+    if (m_fader->getCurrentValue(fc, currentValue))
     {
         // GenericFader contains the channel so grab its current
         // value as the new starting value to get a smoother fade
-        FadeChannel existing = channels[fc];
-        fc.setStart(existing.current());
+        fc.setStart(currentValue);
         fc.setCurrent(fc.start());
     }
     else
@@ -625,7 +624,7 @@ void CueStack::insertStartValue(FadeChannel& fc, const QList<Universe *> ua)
             if (fc.group(doc()) != QLCChannel::Intensity)
                 fc.setStart(ua[uni]->preGMValue(fc.address()));
             else
-                fc.setStart(0); // HTP channels must start at zero
+                fc.setStart(0); // Intensity channels must start at zero
         }
         fc.setCurrent(fc.start());
     }

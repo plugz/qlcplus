@@ -583,7 +583,7 @@ void RGBMatrix::postRun(MasterTimer* timer, QList<Universe *> universes)
 {
     if (m_fader != NULL)
     {
-        timer->faderAdd(*m_fader, getAttributeValue(Intensity),
+        timer->faderFadeOut(*m_fader, getAttributeValue(Intensity),
                 overrideFadeOutSpeed() == defaultSpeed() ?
                 fadeOutSpeed() : overrideFadeOutSpeed());
 
@@ -803,18 +803,19 @@ void RGBMatrix::insertStartValues(FadeChannel& fc, uint fadeTime) const
     // To create a nice and smooth fade, get the starting value from
     // m_fader's existing FadeChannel (if any). Otherwise just assume
     // we're starting from zero.
-    QHash <FadeChannel,FadeChannel>::const_iterator oldChannelIterator = m_fader->channels().find(fc);
-    if (oldChannelIterator != m_fader->channels().end())
+    uchar previousCurrent = 0;
+    uchar previousTarget = 0;
+    int previousElapsed = 0;
+    if (m_fader->getCurrentValues(fc, previousCurrent, previousTarget, previousElapsed))
     {
-        FadeChannel old = oldChannelIterator.value();
-        fc.setCurrent(old.current());
-        if (fc.target() == old.target())
+        fc.setCurrent(previousCurrent);
+        if (fc.target() == previousTarget)
         {
-            fc.setStart(old.start());
-            fc.setElapsed(old.elapsed());
+            fc.setStart(previousStart);
+            fc.setElapsed(previousElapsed);
         }
         else
-            fc.setStart(old.current());
+            fc.setStart(previousCurrent);
     }
     else
     {

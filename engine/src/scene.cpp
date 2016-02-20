@@ -641,7 +641,7 @@ void Scene::postRun(MasterTimer* timer, QList<Universe *> ua)
 {
     Q_ASSERT(m_fader != NULL);
 
-    timer->faderAdd(*m_fader, getAttributeValue(Intensity),
+    timer->faderFadeOut(*m_fader, getAttributeValue(Intensity),
             overrideFadeOutSpeed() == defaultSpeed() ?
             fadeOutSpeed() : overrideFadeOutSpeed());
 
@@ -654,14 +654,12 @@ void Scene::postRun(MasterTimer* timer, QList<Universe *> ua)
 void Scene::insertStartValue(FadeChannel& fc, const MasterTimer* timer,
                              const QList<Universe*> ua)
 {
-    QMutexLocker channelsLocker(timer->faderMutex());
-    QHash <FadeChannel,FadeChannel> const& channels(timer->faderChannels());
-    QHash <FadeChannel,FadeChannel>::const_iterator existing_it = channels.find(fc);
-    if (existing_it != channels.constEnd())
+    uchar currentValue = 0;
+    if (timer->faderGetCurrentValue(fc, currentValue))
     {
         // MasterTimer's GenericFader contains the channel so grab its current
         // value as the new starting value to get a smoother fade
-        fc.setStart(existing_it.value().current());
+        fc.setStart(currentValue);
         fc.setCurrent(fc.start());
     }
     else

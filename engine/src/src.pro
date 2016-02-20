@@ -79,7 +79,6 @@ HEADERS += bus.h \
            efxfixture.h \
            efxuistate.h \
            fadechannel.h \
-           fadeoutfader.h \
            fixture.h \
            fixturegroup.h \
            function.h \
@@ -160,7 +159,6 @@ SOURCES += bus.cpp \
            efxfixture.cpp \
            efxuistate.cpp \
            fadechannel.cpp \
-           fadeoutfader.cpp \
            fixture.cpp \
            fixturegroup.cpp \
            function.cpp \

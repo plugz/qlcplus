@@ -118,7 +118,7 @@ quint32 FadeChannel::fixture() const
     return m_fixture;
 }
 
-quint32 FadeChannel::universe()
+quint32 FadeChannel::universe() const
 {
     if (m_universe == Universe::invalid())
         return address() / UNIVERSE_SIZE;

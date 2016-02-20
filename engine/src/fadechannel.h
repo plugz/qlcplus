@@ -68,7 +68,7 @@ public:
     quint32 fixture() const;
 
     /** Get the universe of the Fixture that is being controlled. */
-    quint32 universe();
+    quint32 universe() const;
 
     /** Set channel within the Fixture. */
     void setChannel(const Doc* doc, quint32 num);

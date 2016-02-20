@@ -32,16 +32,12 @@
 class FadeOutFader : public GenericFader
 {
 public:
-    explicit FadeOutFader(Doc* doc);
-    virtual ~FadeOutFader();
-
     void add(GenericFader const& fader, qreal faderIntensity, uint fadeOutTime);
 
     virtual void write(QList<Universe *> universes);
 
 private:
     void tryToInsert(FadeChannel const& ch);
-    static bool fadeChannelIsBigger(FadeChannel const& left, FadeChannel const& right);
 
 protected:
     QHash <FadeChannel, QList<FadeChannel> > m_fadeOutChannels;

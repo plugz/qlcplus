@@ -36,7 +36,7 @@ class GenericFader
 {
 public:
     explicit GenericFader(Doc* doc);
-    virtual ~GenericFader();
+    ~GenericFader();
 
     /**
      * Add a channel that shall be faded from ch.start() to ch.target() within
@@ -52,6 +52,11 @@ public:
      */
     void add(const FadeChannel& ch);
 
+    /**
+     * TODO desc
+     */
+    void fadeOut(GenericFader const& fader, qreal faderIntensity, uint fadeOutTime);
+
     /** Replace an existing FaderChannel */
     void forceAdd(const FadeChannel& ch);
 
@@ -64,7 +69,27 @@ public:
     void removeAll();
 
     /** Get all channels in a non-modifiable hashmap */
-    const QHash <FadeChannel,FadeChannel>& channels() const;
+    const QHash <FadeChannel, QList<FadeChannel> >& channels() const;
+
+    /**
+     * Get the current value of a channel
+     *
+     * @param ch the channel we want the value of
+     * @param value the buffer in which the value will be put
+     * @return true if the channel exists
+     */
+    bool getCurrentValue(FadeChannel const& ch, uchar& value) const;
+
+    /**
+     * Get the current value of a channel
+     *
+     * @param ch the channel we want the value of
+     * @param current buffer for current
+     * @param target buffer for target
+     * @param elapsed buffer for elapsed
+     * @return true if the channel exists
+     */
+    bool getCurrentValues(FadeChannel const& ch, uchar& start, uchar& current, uchar& target, int& elapsed) const;
 
     /**
      * Run the channels forward by one step and write their current values to
@@ -72,7 +97,7 @@ public:
      *
      * @param universes The universe array that receives channel data.
      */
-    virtual void write(QList<Universe *> universes);
+    void write(QList<Universe *> universes);
 
     /**
      * Adjust the intensities of all channels by $fraction
@@ -96,7 +121,7 @@ public:
     void setBlendMode(Universe::BlendMode mode);
 
 protected:
-    QHash <FadeChannel,FadeChannel> m_channels;
+    QHash <FadeChannel, QList<FadeChannel> > m_channels;
     qreal m_intensity;
     Universe::BlendMode m_blendMode;
     Doc* m_doc;

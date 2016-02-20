@@ -27,7 +27,6 @@
 #include <QTime>
 
 class MasterTimerPrivate;
-class FadeOutFader;
 class GenericFader;
 class FadeChannel;
 class DMXSource;
@@ -169,13 +168,12 @@ private:
      * deleted. The fader can be used e.g. by Scene functions to gracefully fade
      * down such intensity (HTP) channels that are no longer in use.
      */
-    FadeOutFader* fader() const;
+    GenericFader* fader() const;
 public:
-    void faderAdd(const GenericFader& f, qreal faderIntensity, uint fadeOutTime);
+    void faderFadeOut(const GenericFader& f, qreal faderIntensity, uint fadeOutTime);
     // TODO change/remove this (cf scene.cpp)
     void faderForceAdd(const FadeChannel& fc);
-    QHash<FadeChannel,FadeChannel> const& faderChannels() const;
-    QMutex* faderMutex() const;
+    bool faderGetCurrentValue(const FadeChannel& fc, uchar& buff);
 
 private:
     /** Execute one timer tick for the GenericFader */
@@ -183,7 +181,7 @@ private:
 
 private:
     QMutex m_faderMutex;
-    FadeOutFader* m_fader;
+    GenericFader* m_fader;
 
 private:
     MasterTimerPrivate* d_ptr;
