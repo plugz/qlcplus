@@ -111,17 +111,44 @@ void GenericFader_Test::addRemove()
     fc.setTarget(127);
     fader.add(fc);
     QCOMPARE(fader.m_channels.size(), 1);
-    QCOMPARE(fader.m_channels[fc].target(), uchar(127));
+    {
+        FadeChannel currentFc;
+        QCOMPARE(fader.getCurrentValue(fc, currentFc), true);
+        qDebug() << Q_FUNC_INFO << currentFc.start() << currentFc.current() << currentFc.target();
+        QCOMPARE(currentFc.target(), uchar(127));
+    }
+
+    fader.remove(fc);
 
     fc.setTarget(63);
     fader.add(fc);
     QCOMPARE(fader.m_channels.size(), 1);
-    QCOMPARE(fader.m_channels[fc].target(), uchar(63));
+    {
+        FadeChannel currentFc;
+        QCOMPARE(fader.getCurrentValue(fc, currentFc), true);
+        QCOMPARE(currentFc.target(), uchar(63));
+    }
+
+    fader.remove(fc);
 
     fc.setCurrent(63);
     fader.add(fc);
     QCOMPARE(fader.m_channels.size(), 1);
-    QCOMPARE(fader.m_channels[fc].target(), uchar(63));
+    {
+        FadeChannel currentFc;
+        QCOMPARE(fader.getCurrentValue(fc, currentFc), true);
+        QCOMPARE(currentFc.target(), uchar(63));
+    }
+
+    fc.setCurrent(200);
+    fc.setTarget(10);
+    fader.add(fc);
+    QCOMPARE(fader.m_channels.size(), 1);
+    {
+        FadeChannel currentFc;
+        QCOMPARE(fader.getCurrentValue(fc, currentFc), true);
+        QCOMPARE(currentFc.target(), uchar(10));
+    }
 }
 
 void GenericFader_Test::writeZeroFade()

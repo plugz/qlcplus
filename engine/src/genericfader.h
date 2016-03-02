@@ -75,21 +75,10 @@ public:
      * Get the current value of a channel
      *
      * @param ch the channel we want the value of
-     * @param value the buffer in which the value will be put
+     * @param target buffer for current values
      * @return true if the channel exists
      */
-    bool getCurrentValue(FadeChannel const& ch, uchar& value) const;
-
-    /**
-     * Get the current value of a channel
-     *
-     * @param ch the channel we want the value of
-     * @param current buffer for current
-     * @param target buffer for target
-     * @param elapsed buffer for elapsed
-     * @return true if the channel exists
-     */
-    bool getCurrentValues(FadeChannel const& ch, uchar& start, uchar& current, uchar& target, int& elapsed) const;
+    bool getCurrentValue(FadeChannel const& ch, FadeChannel& target) const;
 
     /**
      * Run the channels forward by one step and write their current values to

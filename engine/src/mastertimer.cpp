@@ -382,11 +382,15 @@ void MasterTimer::faderForceAdd(const FadeChannel& fc)
     fader()->forceAdd(fc);
 }
 
-bool MasterTimer::faderGetCurrentValue(const FadeChannel& fc, uchar& buff)
+bool MasterTimer::faderGetCurrentValue(const FadeChannel& fc, uchar& buff) const
 {
     QMutexLocker faderLocker(&m_faderMutex);
 
-    return fader()->getCurrentValue(fc, buff);
+    FadeChannel fcBuff;
+    if (!fader()->getCurrentValue(fc, fcBuff))
+        return false;
+    buff = fcBuff.current();
+    return true;
 }
 
 void MasterTimer::timerTickFader(QList<Universe *> universes)

@@ -593,8 +593,9 @@ QString Script::handleSetFixture(const QList<QStringList>& tokens, QList<Univers
                 // the bowels of GenericFader so get the starting value from there.
                 // Otherwise get it from universes (HTP channels are always 0 then).
                 quint32 uni = fc.universe();
-                if (gf->channels().contains(fc) == true)
-                    fc.setStart(gf->channels()[fc].current());
+                FadeChannel current;
+                if (gf->getCurrentValue(fc, current))
+                    fc.setStart(current.current());
                 else
                     fc.setStart(universes[uni]->preGMValue(address));
                 fc.setCurrent(fc.start());

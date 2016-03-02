@@ -803,19 +803,17 @@ void RGBMatrix::insertStartValues(FadeChannel& fc, uint fadeTime) const
     // To create a nice and smooth fade, get the starting value from
     // m_fader's existing FadeChannel (if any). Otherwise just assume
     // we're starting from zero.
-    uchar previousCurrent = 0;
-    uchar previousTarget = 0;
-    int previousElapsed = 0;
-    if (m_fader->getCurrentValues(fc, previousCurrent, previousTarget, previousElapsed))
+    FadeChannel current;
+    if (m_fader->getCurrentValue(fc, current))
     {
-        fc.setCurrent(previousCurrent);
-        if (fc.target() == previousTarget)
+        fc.setCurrent(current.current());
+        if (fc.target() == current.target())
         {
-            fc.setStart(previousStart);
-            fc.setElapsed(previousElapsed);
+            fc.setStart(current.start());
+            fc.setElapsed(current.elapsed());
         }
         else
-            fc.setStart(previousCurrent);
+            fc.setStart(current.current());
     }
     else
     {

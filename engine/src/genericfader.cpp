@@ -140,40 +140,26 @@ const QHash <FadeChannel,QList<FadeChannel> >& GenericFader::channels() const
     return m_channels;
 }
 
-bool GenericFader::getCurrentValue(FadeChannel const& ch, uchar& value) const
+bool GenericFader::getCurrentValue(FadeChannel const& ch, FadeChannel& target) const
 {
     QHash<FadeChannel,QList<FadeChannel> >::const_iterator hashIt = m_channels.find(ch);
     if (hashIt == m_channels.end())
         return false;
     // TODO LTP: get only last value ?
     QList<FadeChannel> const& list(hashIt.value());
-    value = 0;
-    for (QList<FadeChannel>::const_iterator it = list.begin(), ite = list.end(); it != ite; ++it)
-    {
-        if (it->current() > value)
-            value = it->current();
-    }
-    return true;
-}
-
-bool GenericFader::getCurrentValues(FadeChannel const& ch, uchar& current, uchar& target, int& elapsed) const
-{
-    QHash<FadeChannel,QList<FadeChannel> >::const_iterator hashIt = m_channels.find(ch);
-    if (hashIt == m_channels.end())
-        return false;
-    // TODO LTP: get only last value ?
-    QList<FadeChannel> const& list(hashIt.value());
-    current = 0;
-    target = 0;
-    elapsed = 0;
+    target.setStart(0);
+    target.setCurrent(0);
+    target.setTarget(0);
+    target.setElapsed(0);
     for (QList<FadeChannel>::const_iterator it = list.begin(), ite = list.end(); it != ite; ++it)
     {
         // TODO basing all on current is not ideal
-        if (it->current() > current)
+        if (it->current() > target.current())
         {
-            current = it->current();
-            elapsed = it->elapsed();
-            target = it->target();
+            target.setStart(it->start());
+            target.setCurrent(it->current());
+            target.setElapsed(it->elapsed());
+            target.setTarget(it->target());
         }
     }
     return true;

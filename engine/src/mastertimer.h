@@ -173,14 +173,14 @@ public:
     void faderFadeOut(const GenericFader& f, qreal faderIntensity, uint fadeOutTime);
     // TODO change/remove this (cf scene.cpp)
     void faderForceAdd(const FadeChannel& fc);
-    bool faderGetCurrentValue(const FadeChannel& fc, uchar& buff);
+    bool faderGetCurrentValue(const FadeChannel& fc, uchar& buff) const;
 
 private:
     /** Execute one timer tick for the GenericFader */
     void timerTickFader(QList<Universe *> universes);
 
 private:
-    QMutex m_faderMutex;
+    mutable QMutex m_faderMutex;
     GenericFader* m_fader;
 
 private:
