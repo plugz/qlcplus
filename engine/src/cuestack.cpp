@@ -612,6 +612,8 @@ void CueStack::insertStartValue(FadeChannel& fc, const QList<Universe *> ua)
     {
         // GenericFader contains the channel so grab its current
         // value as the new starting value to get a smoother fade
+        qDebug() << Q_FUNC_INFO << fc.channel() << current.current();
+
         fc.setStart(current.current());
         fc.setCurrent(fc.start());
     }

@@ -36,8 +36,9 @@ GenericFader::~GenericFader()
 {
 }
 
-
 namespace {
+// return true if left is STRICTLY bigger than right
+// this means bigger during its whole life
 static bool fadeChannelIsBigger(FadeChannel const& left, FadeChannel const& right)
 {
     return qMin(left.current(), left.target()) > qMax(right.current(), right.target());
@@ -66,10 +67,14 @@ void GenericFader::add(const FadeChannel& ch)
                 return;
             }
         }
+        qDebug() << Q_FUNC_INFO << "hashIt.value().push_back(" << ch.current() << ")";
         hashIt.value().push_back(ch);
     }
     else
+    {
+        qDebug() << Q_FUNC_INFO << "m_channels[ch].push_back(" << ch.current() << ")";
         m_channels[ch].push_back(ch);
+    }
 }
 
 void GenericFader::fadeOut(GenericFader const& fader, qreal faderIntensity, uint fadeOutTime)
@@ -151,15 +156,19 @@ bool GenericFader::getCurrentValue(FadeChannel const& ch, FadeChannel& target) c
     target.setCurrent(0);
     target.setTarget(0);
     target.setElapsed(0);
+    target.setFadeTime(0);
     for (QList<FadeChannel>::const_iterator it = list.begin(), ite = list.end(); it != ite; ++it)
     {
+        qDebug() << Q_FUNC_INFO << "in loop" << it->current() << target.current();
         // TODO basing all on current is not ideal
-        if (it->current() > target.current())
+        if (it->current() >= target.current())
         {
+            qDebug() << Q_FUNC_INFO << "set current";
             target.setStart(it->start());
             target.setCurrent(it->current());
             target.setElapsed(it->elapsed());
             target.setTarget(it->target());
+            target.setFadeTime(it->fadeTime());
         }
     }
     return true;
