@@ -25,6 +25,12 @@
  * @{
  */
 
+struct Attribute
+{
+    QString name;
+    qreal value;
+};
+
 /**
  * Start/Stop source
  */
@@ -66,6 +72,13 @@ public:
         m_id = quint64((quint64(type) & 0xffffffff) << 32)
             | quint64(id & 0xffffffff);
     }
+
+    explicit FunctionParent(Type type, quint32 id, QList<Attribute> const& attributes)
+        : m_id(quint64((quint64(type) & 0xffffffff) << 32) | quint64(id & 0xffffffff))
+        , m_attributes(attributes)
+    {
+    }
+    QList<Attribute> m_attributes;
 
     bool operator ==(FunctionParent const& right) const
     {

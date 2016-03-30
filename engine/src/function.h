@@ -70,12 +70,6 @@ class FunctionUiState;
 #define KXMLQLCFunctionSpeedFadeOut  "FadeOut"
 #define KXMLQLCFunctionSpeedDuration "Duration"
 
-typedef struct
-{
-    QString name;
-    qreal value;
-} Attribute;
-
 class Function : public QObject
 {
     Q_OBJECT
@@ -113,7 +107,16 @@ public:
      */
     enum Attr
     {
-        Intensity = 0,
+        Intensity,
+        NextAttr,
+    };
+
+    struct Speed
+    {
+        int fadeIn;
+        int hold;
+        int fadeOut;
+        int duration() { return fadeIn + hold; }
     };
 
     /*********************************************************************
@@ -121,7 +124,7 @@ public:
      *********************************************************************/
 public:
     /** Create a new function instance with the given QObject parent. */
-    Function(QObject* parent = 0);
+    explicit Function(QObject* parent = 0);
 
     /**
      * Create a new function
@@ -129,7 +132,7 @@ public:
      * @param doc The parent object that owns this function (Doc)
      * @param t The function type (see enum Type)
      */
-    Function(Doc* doc, Type t);
+    explicit Function(Doc* doc, Type t);
 
     /**
      * Destroy this function
@@ -738,7 +741,7 @@ public:
      *
      * @param fraction Intensity as a fraction (0.0 - 1.0)
      */
-    virtual void adjustAttribute(qreal fraction, int attributeIndex);
+    virtual void adjustAttribute(FunctionParent parent, qreal fraction, int attributeIndex);
 
     /**
      * Reset intensity to the default value (1.0).

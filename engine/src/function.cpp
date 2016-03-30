@@ -890,9 +890,6 @@ void Function::postRun(MasterTimer* timer, QList<Universe *> universes)
     m_stopMutex.lock();
     resetElapsed();
     resetAttributes();
-    // m_overrideFadeInSpeed = defaultSpeed();
-    // m_overrideFadeOutSpeed = defaultSpeed();
-    // m_overrideDuration = defaultSpeed();
     m_functionStopped.wakeAll();
     m_stopMutex.unlock();
 
@@ -1098,10 +1095,14 @@ bool Function::renameAttribute(int idx, QString newName)
     return true;
 }
 
-void Function::adjustAttribute(qreal fraction, int attributeIndex)
+void Function::adjustAttribute(FunctionParent parent, qreal fraction, int attributeIndex)
 {
     if (attributeIndex >= m_attributes.count())
         return;
+
+    if (!m_sources.contains(parent))
+        return;
+    // TODO adjust the attribute in the parent
 
     //qDebug() << Q_FUNC_INFO << "idx:" << attributeIndex << ", val:" << fraction;
     m_attributes[attributeIndex].value = CLAMP(fraction, 0.0, 1.0);

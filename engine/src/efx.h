@@ -80,8 +80,7 @@ class EFX : public Function
 
     enum EFXAttr
     {
-        Intensity = Function::Intensity,
-        Height,
+        Height = Function::NextAttr,
         Width,
         Rotation,
         XOffset,
