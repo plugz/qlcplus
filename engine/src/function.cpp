@@ -43,26 +43,29 @@
 #include "doc.h"
 #include "functionuistate.h"
 
-const QString KSceneString      (      "Scene" );
-const QString KChaserString     (     "Chaser" );
-const QString KEFXString        (        "EFX" );
-const QString KCollectionString ( "Collection" );
-const QString KScriptString     (     "Script" );
-const QString KRGBMatrixString  (  "RGBMatrix" );
-const QString KShowString       (       "Show" );
-const QString KAudioString      (      "Audio" );
+namespace
+{
+    const QString KSceneString      (      "Scene" );
+    const QString KChaserString     (     "Chaser" );
+    const QString KEFXString        (        "EFX" );
+    const QString KCollectionString ( "Collection" );
+    const QString KScriptString     (     "Script" );
+    const QString KRGBMatrixString  (  "RGBMatrix" );
+    const QString KShowString       (       "Show" );
+    const QString KAudioString      (      "Audio" );
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-const QString KVideoString      (      "Video" );
+    const QString KVideoString      (      "Video" );
 #endif
-const QString KUndefinedString  (  "Undefined" );
+    const QString KUndefinedString  (  "Undefined" );
 
-const QString KLoopString       (       "Loop" );
-const QString KPingPongString   (   "PingPong" );
-const QString KSingleShotString ( "SingleShot" );
-const QString KRandomString     (     "Random" );
+    const QString KLoopString       (       "Loop" );
+    const QString KPingPongString   (   "PingPong" );
+    const QString KSingleShotString ( "SingleShot" );
+    const QString KRandomString     (     "Random" );
 
-const QString KBackwardString   (   "Backward" );
-const QString KForwardString    (    "Forward" );
+    const QString KBackwardString   (   "Backward" );
+    const QString KForwardString    (    "Forward" );
+}
 
 /*****************************************************************************
  * Initialization
@@ -890,10 +893,10 @@ void Function::postRun(MasterTimer* timer, QList<Universe *> universes)
     m_stopMutex.lock();
     resetElapsed();
     resetAttributes();
+    m_running = false;
     m_functionStopped.wakeAll();
     m_stopMutex.unlock();
 
-    m_running = false;
     emit stopped(m_id);
 }
 

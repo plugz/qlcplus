@@ -116,6 +116,13 @@ public:
         int fadeIn;
         int hold;
         int fadeOut;
+        Speed(int fadeIn = Function::defaultSpeed(),
+              int hold = defaultSpeed(),
+              int fadeOut = defaultSpeed())
+            : fadeIn(fadeIn)
+            , hold(hold)
+            , fadeOut(fadeOut)
+        {}
         int duration() { return fadeIn + hold; }
     };
 
@@ -629,14 +636,9 @@ public:
      *
      * @param timer The MasterTimer that should run the function
      * @param child Use true if called from another function
-     * @param overrideFadeIn Override the function's default fade in speed
-     * @param overrideFadeOut Override the function's default fade out speed
-     * @param overrideDuration Override the function's default duration
      */
     void start(MasterTimer* timer, FunctionParent parent, quint32 startTime = 0,
-               uint overrideFadeIn = defaultSpeed(),
-               uint overrideFadeOut = defaultSpeed(),
-               uint overrideDuration = defaultSpeed());
+               Speed speed = Speed());
 
     /**
      * Pause a running Function. Subclasses should check the paused state
@@ -700,7 +702,7 @@ private:
     bool m_running;
     bool m_paused;
 
-    QList<FunctionParent> m_sources;
+    QSet<FunctionParent> m_sources;
     QMutex m_sourcesMutex;
 
     QMutex m_stopMutex;
@@ -776,7 +778,7 @@ signals:
     void attributeChanged(int index, qreal fraction);
 
 private:
-    QList <Attribute> m_attributes;
+    QList<Attribute> m_attributes;
 
 public:
     virtual bool contains(quint32 functionId);

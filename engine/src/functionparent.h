@@ -65,6 +65,7 @@ public:
 
 private:
     quint64 m_id;
+    QList<Attribute> m_attributes;
 
 public:
     explicit FunctionParent(Type type, quint32 id)
@@ -78,7 +79,12 @@ public:
         , m_attributes(attributes)
     {
     }
-    QList<Attribute> m_attributes;
+
+    FunctionParent& setAttributes(QList<Attribute> const& attributes)
+    {
+        m_attributes = attributes;
+        return *this;
+    }
 
     bool operator ==(FunctionParent const& right) const
     {
