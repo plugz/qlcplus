@@ -29,6 +29,7 @@ struct Attribute
 {
     QString name;
     qreal value;
+    // TODO add Type (LTP/HTP)
 };
 
 /**
@@ -84,6 +85,11 @@ public:
     {
         m_attributes = attributes;
         return *this;
+    }
+
+    void adjustAttribute(qreal fraction, int attributeIndex)
+    {
+        m_attributes[attributeIndex].value = CLAMP(fraction, 0.0, 1.0);
     }
 
     bool operator ==(FunctionParent const& right) const

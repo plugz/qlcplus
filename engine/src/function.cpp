@@ -1103,6 +1103,7 @@ void Function::adjustAttribute(FunctionParent parent, qreal fraction, int attrib
     if (attributeIndex >= m_attributes.count())
         return;
 
+    if (
     if (!m_sources.contains(parent))
         return;
     // TODO adjust the attribute in the parent
