@@ -21,6 +21,8 @@
 #ifndef FUNCTIONPARENT_H
 #define FUNCTIONPARENT_H
 
+#include "functiontimings.h"
+
 /** @addtogroup engine_functions Functions
  * @{
  */
@@ -67,50 +69,29 @@ public:
 private:
     quint64 m_id;
     QList<Attribute> m_attributes;
+    FunctionTimings m_timings;
 
 public:
-    explicit FunctionParent(Type type, quint32 id)
-    {
-        m_id = quint64((quint64(type) & 0xffffffff) << 32)
-            | quint64(id & 0xffffffff);
-    }
+    explicit FunctionParent(Type type, quint32 id);
+    explicit FunctionParent(Type type, quint32 id, QList<Attribute> const& attributes);
+    explicit FunctionParent(Type type, quint32 id, FunctionTimings const& timings);
+    explicit FunctionParent(Type type, quint32 id, QList<Attribute> const& attributes, FunctionTimings const& timings);
 
-    explicit FunctionParent(Type type, quint32 id, QList<Attribute> const& attributes)
-        : m_id(quint64((quint64(type) & 0xffffffff) << 32) | quint64(id & 0xffffffff))
-        , m_attributes(attributes)
-    {
-    }
+    void setAttributes(QList<Attribute> const& attributes);
+    void adjustAttribute(qreal fraction, int attributeIndex);
+    qreal getAttributeValue(int attributeIndex) const;
 
-    FunctionParent& setAttributes(QList<Attribute> const& attributes)
-    {
-        m_attributes = attributes;
-        return *this;
-    }
+    void setTimings(FunctionTimings const& timings);
+    void setFadeIn(quint32 fadeIn);
+    void setHold(quint32 hold);
+    void setFadeOut(quint32 fadeOut);
+    void setDuration(quint32 duration);
 
-    void adjustAttribute(qreal fraction, int attributeIndex)
-    {
-        m_attributes[attributeIndex].value = CLAMP(fraction, 0.0, 1.0);
-    }
+    bool operator ==(FunctionParent const& right) const;
+    quint32 type() const;
+    quint32 id() const;
 
-    bool operator ==(FunctionParent const& right) const
-    {
-        return m_id == right.m_id;
-    }
-
-    quint32 type() const
-    {
-        return (m_id >> 32) & 0xffffffff;
-    }
-
-    quint32 id() const
-    {
-        return m_id & 0xffffffff;
-    }
-
-    static FunctionParent master()
-    {
-        return FunctionParent(Master, 0);
-    }
+    static FunctionParent master();
 };
 
 /** @} */

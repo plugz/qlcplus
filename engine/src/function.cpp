@@ -528,17 +528,18 @@ quint32 Function::totalDuration()
     return duration();
 }
 
-void Function::setTotalDuration(quint32 msec)
+void Function::setOverrideDuration(FunctionParent parent, quint32 ms)
 {
     Q_UNUSED(msec)
 }
 
-void Function::setOverrideFadeInSpeed(uint ms)
+void Function::setOverrideFadeInSpeed(FunctionParent parent, quint32 ms)
 {
+    // TODO
     m_overrideFadeInSpeed = ms;
 }
 
-uint Function::overrideFadeInSpeed() const
+quint32 Function::overrideFadeInSpeed() const
 {
     return m_overrideFadeInSpeed;
 }
@@ -553,7 +554,7 @@ uint Function::overrideFadeOutSpeed() const
     return m_overrideFadeOutSpeed;
 }
 
-void Function::setOverrideDuration(uint ms)
+void Function::setOverrideHold(uint ms)
 {
     m_overrideDuration = ms;
 }
@@ -561,111 +562,6 @@ void Function::setOverrideDuration(uint ms)
 uint Function::overrideDuration() const
 {
     return m_overrideDuration;
-}
-
-QString Function::speedToString(uint ms)
-{
-    QString str;
-    if (ms == infiniteSpeed())
-    {
-        str = QChar(0x221E); // Infinity symbol
-    }
-    else
-    {
-        uint h, m, s;
-
-        h = ms / MS_PER_HOUR;
-        ms -= (h * MS_PER_HOUR);
-
-        m = ms / MS_PER_MINUTE;
-        ms -= (m * MS_PER_MINUTE);
-
-        s = ms / MS_PER_SECOND;
-        ms -= (s * MS_PER_SECOND);
-
-        if (h != 0)
-            str += QString("%1h").arg(h, 1, 10, QChar('0'));
-        if (m != 0)
-            str += QString("%1m").arg(m, str.size() ? 2 : 1, 10, QChar('0'));
-        if (s != 0)
-            str += QString("%1s").arg(s, str.size() ? 2 : 1, 10, QChar('0'));
-        if (ms != 0 || str.size() == 0)
-            str += QString("%1ms").arg(ms, str.size() ? 3 : 1, 10, QChar('0'));
-    }
-
-    return str;
-}
-
-static uint speedSplit(QString& speedString, QString splitNeedle)
-{
-    QStringList splitResult;
-    // Filter out "ms" because "m" and "s" may wrongly use it
-    splitResult = speedString.split("ms");
-    if (splitResult.count() > 1)
-        splitResult = splitResult.at(0).split(splitNeedle);
-    else
-        splitResult = speedString.split(splitNeedle);
-
-    if (splitResult.count() > 1)
-    {
-        speedString.remove(0, speedString.indexOf(splitNeedle) + 1);
-        return splitResult.at(0).toUInt();
-    }
-    return 0;
-}
-
-uint Function::stringToSpeed(QString speed)
-{
-    uint value = 0;
-
-    if (speed == QChar(0x221E)) // Infinity symbol
-        return infiniteSpeed();
-
-    value += speedSplit(speed, "h") * 1000 * 60 * 60;
-    value += speedSplit(speed, "m") * 1000 * 60;
-    value += speedSplit(speed, "s") * 1000;
-
-    if (speed.contains("."))
-    {
-        // lround avoids toDouble precison issues (.03 transforms to .029)
-        value += lround(speed.toDouble() * 1000.0);
-    }
-    else
-    {
-        if (speed.contains("ms"))
-            speed = speed.split("ms").at(0);
-        value += speed.toUInt();
-    }
-
-    return speedNormalize(value);
-}
-
-uint Function::speedNormalize(uint speed)
-{
-    if ((int)speed < 0)
-        return infiniteSpeed();
-    return speed;
-}
-
-uint Function::speedAdd(uint left, uint right)
-{
-    if (speedNormalize(left) == infiniteSpeed()
-        || speedNormalize(right) == infiniteSpeed())
-        return infiniteSpeed();
-
-    return speedNormalize(left + right);
-}
-
-uint Function::speedSubstract(uint left, uint right)
-{
-    if (right >= left)
-        return 0;
-    if (speedNormalize(right) == infiniteSpeed())
-        return 0;
-    if (speedNormalize(left) == infiniteSpeed())
-        return infiniteSpeed();
-
-    return speedNormalize(left - right);
 }
 
 void Function::tap()
@@ -697,16 +593,6 @@ bool Function::saveXMLSpeed(QXmlStreamWriter *doc) const
     doc->writeEndElement();
 
     return true;
-}
-
-uint Function::infiniteSpeed()
-{
-    return (uint) -2;
-}
-
-uint Function::defaultSpeed()
-{
-    return (uint) -1;
 }
 
 /*****************************************************************************
@@ -1103,7 +989,6 @@ void Function::adjustAttribute(FunctionParent parent, qreal fraction, int attrib
     if (attributeIndex >= m_attributes.count())
         return;
 
-    if (
     if (!m_sources.contains(parent))
         return;
     // TODO adjust the attribute in the parent
