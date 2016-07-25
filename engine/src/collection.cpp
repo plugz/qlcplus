@@ -308,7 +308,7 @@ void Collection::preRun(MasterTimer* timer)
                     this, SLOT(slotChildStarted(quint32)));
 
             function->adjustAttribute(getAttributeValue(Function::Intensity), Function::Intensity);
-            function->start(timer, functionParent(), 0, overrideFadeInSpeed(), overrideFadeOutSpeed(), overrideDuration());
+            function->start(timer, functionParent(), 0, overrideTimings());
         }
         m_tick = 1;
     }

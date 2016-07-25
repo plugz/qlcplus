@@ -355,9 +355,13 @@ bool RGBMatrix::loadXML(QXmlStreamReader &root)
     /* Load matrix contents */
     while (root.readNextStartElement())
     {
-        if (root.name() == KXMLQLCFunctionSpeed)
+        if (root.name() == KXMLQLCFunctionLegacySpeed)
         {
-            loadXMLSpeed(root);
+            m_timings.loadXMLLegacy(root);
+        }
+        else if (root.name() == KXMLQLCFunctionTimings)
+        {
+            m_timings.loadXML(root);
         }
         else if (root.name() == KXMLQLCRGBAlgorithm)
         {
@@ -414,8 +418,8 @@ bool RGBMatrix::saveXML(QXmlStreamWriter *doc)
     /* Common attributes */
     saveXMLCommon(doc);
 
-    /* Speeds */
-    saveXMLSpeed(doc);
+    /* Timings */
+    m_timings.saveXML(doc);
 
     /* Direction */
     saveXMLDirection(doc);
@@ -614,10 +618,10 @@ void RGBMatrix::postRun(MasterTimer* timer, QList<Universe *> universes)
             }
             else
             {
-                if (overrideFadeOutSpeed() == defaultSpeed())
-                    fc.setFadeTime(fadeOutSpeed());
+                if (overrideFadeOut() == FunctionTimings::defaultValue())
+                    fc.setFadeTime(fadeOut());
                 else
-                    fc.setFadeTime(overrideFadeOutSpeed());
+                    fc.setFadeTime(overrideFadeOut());
                 fc.setTarget(0);
             }
             timer->faderAdd(fc);
@@ -733,10 +737,10 @@ void RGBMatrix::updateMapChannels(const RGBMap& map, const FixtureGroup* grp)
     quint32 mdFxi = Fixture::invalidId();
 
     uint fadeTime = 0;
-    if (overrideFadeInSpeed() == defaultSpeed())
-        fadeTime = fadeInSpeed();
+    if (overrideFadeIn() == Functiontimings::defaultValue())
+        fadeTime = fadeIn();
     else
-        fadeTime = overrideFadeInSpeed();
+        fadeTime = overrideFadeIn();
 
     // Create/modify fade channels for ALL pixels in the color map.
     for (int y = 0; y < map.size(); y++)
@@ -861,9 +865,9 @@ void RGBMatrix::insertStartValues(FadeChannel& fc, uint fadeTime) const
     // The channel is not ready yet
     fc.setReady(false);
 
-    // Fade in speed is used for all non-zero targets
+    // Fade in timing is used for all non-zero targets
     if (fc.target() == 0)
-        fc.setFadeTime(fadeOutSpeed());
+        fc.setFadeTime(fadeOut());
     else
         fc.setFadeTime(fadeTime);
 }
