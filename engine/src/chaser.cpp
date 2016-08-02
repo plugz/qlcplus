@@ -109,7 +109,6 @@ bool Chaser::copyFrom(const Function* function)
         return false;
 
     // Copy chaser stuff
-    m_steps.clear();
     m_steps = chaser->m_steps;
     m_fadeInMode = chaser->m_fadeInMode;
     m_fadeOutMode = chaser->m_fadeOutMode;
@@ -142,12 +141,13 @@ bool Chaser::addStep(const ChaserStep& step, int index)
 {
     if (step.fid != this->id())
     {
-        m_stepListMutex.lock();
-        if (index < 0)
-            m_steps.append(step);
-        else if (index <= m_steps.size())
-            m_steps.insert(index, step);
-        m_stepListMutex.unlock();
+        {
+            QMutexLocker stepListLocker(&m_stepListMutex);
+            if (index < 0)
+                m_steps.append(step);
+            else if (index <= m_steps.size())
+                m_steps.insert(index, step);
+        }
 
         emit changed(this->id());
         return true;
@@ -162,9 +162,10 @@ bool Chaser::removeStep(int index)
 {
     if (index >= 0 && index < m_steps.size())
     {
-        m_stepListMutex.lock();
-        m_steps.removeAt(index);
-        m_stepListMutex.unlock();
+        {
+            QMutexLocker stepListLocker(&m_stepListMutex);
+            m_steps.removeAt(index);
+        }
 
         emit changed(this->id());
         return true;
@@ -179,9 +180,10 @@ bool Chaser::replaceStep(const ChaserStep& step, int index)
 {
     if (index >= 0 && index < m_steps.size())
     {
-        m_stepListMutex.lock();
-        m_steps[index] = step;
-        m_stepListMutex.unlock();
+        {
+            QMutexLocker stepListLocker(&m_stepListMutex);
+            m_steps[index] = step;
+        }
 
         emit changed(this->id());
         return true;
@@ -199,11 +201,12 @@ bool Chaser::moveStep(int sourceIdx, int destIdx)
     if (destIdx < 0 || destIdx >= m_steps.size() || destIdx == sourceIdx)
         return false;
 
-    m_stepListMutex.lock();
-    ChaserStep cs = m_steps[sourceIdx];
-    m_steps.removeAt(sourceIdx);
-    m_steps.insert(destIdx, cs);
-    m_stepListMutex.unlock();
+    {
+        QMutexLocker stepListLocker(&m_stepListMutex);
+        ChaserStep cs = m_steps[sourceIdx];
+        m_steps.removeAt(sourceIdx);
+        m_steps.insert(destIdx, cs);
+    }
 
     emit changed(this->id());
 
@@ -240,7 +243,7 @@ void Chaser::setTotalDuration(quint32 msec)
         int stepsCount = m_steps.count();
         if (stepsCount == 0)
             stepsCount = 1;
-        setDuration(msec / stepsCount);
+        setAlternateDuration(0, msec / stepsCount);
     }
     else
     {
@@ -266,7 +269,7 @@ quint32 Chaser::totalDuration()
     quint32 totalDuration = 0;
 
     if (durationMode() == Chaser::Common)
-        totalDuration = duration() * m_steps.count();
+        totalDuration = alternateDuration(0) * m_steps.count();
     else
     {
         foreach (ChaserStep step, m_steps)
@@ -276,11 +279,151 @@ quint32 Chaser::totalDuration()
     return totalDuration;
 }
 
+void Chaser::setAlternateFadeIn(int idx, quint32 ms)
+{
+    if (idx == 0)
+    {
+        m_innerFadeIn = ms;
+        emit changed(id());
+        return;
+    }
+
+    if (idx < 0)
+        return Function::setAlternateFadeIn(idx, ms);
+
+    --idx;
+    QMutexLocker stepListLocker(&m_stepListMutex);
+    if (idx >= m_steps.count())
+        return Function::setAlternateFadeIn(idx, ms);
+
+    m_steps[idx].fadeIn = ms;
+    emit changed(id());
+}
+
+void Chaser::setAlternateFadeOut(int idx, quint32 ms)
+{
+    if (idx == 0)
+    {
+        m_innerFadeOut = ms;
+        emit changed(id());
+        return;
+    }
+
+    if (idx < 0)
+        return Function::setAlternateFadeOut(idx, ms);
+
+    --idx;
+    QMutexLocker stepListLocker(&m_stepListMutex);
+    if (idx >= m_steps.count())
+        return Function::setAlternateFadeOut(idx, ms);
+
+    m_steps[idx].fadeOut = ms;
+    emit changed(id());
+}
+
+void Chaser::setAlternateDuration(int idx, quint32 ms)
+{
+    if (idx == 0)
+    {
+        m_innerDuration = ms;
+        emit changed(id());
+        return;
+    }
+
+    if (idx < 0)
+        return Function::setAlternateDuration(idx, ms);
+
+    --idx;
+    QMutexLocker stepListLocker(&m_stepListMutex);
+    if (idx >= m_steps.count())
+        return Function::setAlternateDuration(idx, ms);
+
+    m_steps[idx].duration = ms;
+    emit changed(id());
+}
+
+quint32 Chaser::alternateFadeIn(int idx) const
+{
+    if (idx == 0)
+        return m_innerFadeIn;
+
+    if (idx < 0)
+        return Function::alternateFadeIn(idx);
+
+    QMutexLocker stepListLocker(&m_stepListMutex);
+    if (idx > m_steps.count())
+        return Function::alternateFadeIn(idx);
+
+    return m_steps[idx].fadeIn;
+}
+
+quint32 Chaser::alternateFadeOut(int idx) const
+{
+    if (idx == 0)
+        return m_innerFadeOut;
+
+    if (idx < 0)
+        return Function::alternateFadeOut(idx);
+
+    QMutexLocker stepListLocker(&m_stepListMutex);
+    if (idx > m_steps.count())
+        return Function::alternateFadeOut(idx);
+
+    return m_steps[idx].fadeOut;
+}
+
+quint32 Chaser::alternateDuration(int idx) const
+{
+    if (idx == 0)
+        return m_innerDuration;
+
+    if (idx < 0)
+        return Function::alternateDuration(idx);
+
+    QMutexLocker stepListLocker(&m_stepListMutex);
+    if (idx > m_steps.count())
+        return Function::alternateDuration(idx);
+
+    return m_steps[idx].duration;
+}
+
+uint Chaser::alternateSpeedCount() const
+{
+    QMutexLocker stepListLocker(&m_stepListMutex);
+    return m_steps.count() + 1;
+}
+
+QString Chaser::alternateSpeedName(int idx) const
+{
+    if (idx == 0)
+        return "inner"; // TODO TR
+
+    if (idx < 0)
+        return Function::alternateSpeedName(idx);
+
+    QMutexLocker stepListLocker(&m_stepListMutex);
+    if (idx > m_steps.count())
+        return Function::alternateSpeedName(idx);
+
+    if (isSequence())
+        return QString("step ") + idx;
+
+    Function* function = doc()->function(m_steps[idx].fid);
+    if (function == NULL)
+    {
+        qWarning() << Q_FUNC_INFO << "Function does not exist";
+        return QString();
+    }
+    return function->name();
+}
+
 void Chaser::slotFunctionRemoved(quint32 fid)
 {
-    m_stepListMutex.lock();
-    int count = m_steps.removeAll(ChaserStep(fid));
-    m_stepListMutex.unlock();
+    int count;
+    {
+        QMutexLocker stepListLocker(&m_stepListMutex);
+        count = m_steps.removeAll(ChaserStep(fid));
+    }
 
     if (count > 0)
         emit changed(this->id());
@@ -538,7 +681,7 @@ void Chaser::postLoad()
     if (m_legacyHoldBus != Bus::invalid())
     {
         quint32 value = Bus::instance()->value(m_legacyHoldBus);
-        setDuration((value / MasterTimer::frequency()) * 1000);
+        setAlternateDuration(0, (value / MasterTimer::frequency()) * 1000);
     }
 
     Doc* doc = this->doc();
