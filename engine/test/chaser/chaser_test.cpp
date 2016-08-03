@@ -435,7 +435,7 @@ void Chaser_Test::loadSuccessLegacy()
 
     // postLoad() removes nonexistent functions so let's check this here
     c.postLoad();
-    QCOMPARE(c.duration(), MasterTimer::frequency() * MasterTimer::tick());
+    QCOMPARE(c.alternateDuration(0), MasterTimer::frequency() * MasterTimer::tick());
 }
 
 void Chaser_Test::loadSuccess()
@@ -447,7 +447,8 @@ void Chaser_Test::loadSuccess()
     xmlWriter.writeStartElement("Function");
     xmlWriter.writeAttribute("Type", "Chaser");
 
-    xmlWriter.writeStartElement("Speed");
+    xmlWriter.writeStartElement("AlternateSpeed");
+    xmlWriter.writeAttribute("Index", "0");
     xmlWriter.writeAttribute("FadeIn", "42");
     xmlWriter.writeAttribute("FadeOut", "69");
     xmlWriter.writeAttribute("Duration", "1337");
@@ -503,9 +504,9 @@ void Chaser_Test::loadSuccess()
 
     Chaser c(m_doc);
     QVERIFY(c.loadXML(xmlReader) == true);
-    QVERIFY(c.fadeInSpeed() == 42);
-    QVERIFY(c.fadeOutSpeed() == 69);
-    QVERIFY(c.duration() == 1337);
+    QVERIFY(c.alternateFadeIn(0) == 42);
+    QVERIFY(c.alternateFadeOut(0) == 69);
+    QVERIFY(c.alternateDuration(0) == 1337);
     QCOMPARE(c.fadeInMode(), Chaser::Common);
     QCOMPARE(c.fadeOutMode(), Chaser::Default);
     QCOMPARE(c.durationMode(), Chaser::PerStep);
@@ -741,9 +742,9 @@ void Chaser_Test::save()
     Chaser c(m_doc);
     c.setDirection(Chaser::Backward);
     c.setRunOrder(Chaser::SingleShot);
-    c.setFadeInSpeed(42);
-    c.setFadeOutSpeed(69);
-    c.setDuration(1337);
+    c.setAlternateFadeIn(0, 42);
+    c.setAlternateFadeOut(0, 69);
+    c.setAlternateDuration(0, 1337);
     c.addStep(ChaserStep(3));
     c.addStep(ChaserStep(1));
     c.addStep(ChaserStep(0));
@@ -768,7 +769,7 @@ void Chaser_Test::save()
     QVERIFY(xmlReader.name().toString() == "Function");
     QVERIFY(xmlReader.attributes().value("Type").toString() == "Chaser");
 
-    int run = 0, dir = 0, speed = 0, fids = 0, speedmodes = 0;
+    int run = 0, dir = 0, speed = 0, alternatespeed = 0, fids = 0, speedmodes = 0;
 
     while (xmlReader.readNextStartElement())
     {
@@ -797,6 +798,11 @@ void Chaser_Test::save()
             speed++;
             xmlReader.skipCurrentElement();
         }
+        else if (xmlReader.name() == "AlternateSpeed")
+        {
+            alternatespeed++;
+            xmlReader.skipCurrentElement();
+        }
         else if (xmlReader.name() == "SpeedModes")
         {
             QCOMPARE(xmlReader.attributes().value("FadeIn").toString(), QString("Default"));
@@ -813,6 +819,7 @@ void Chaser_Test::save()
     }
 
     QCOMPARE(speed, 1);
+    QCOMPARE(alternatespeed, 1);
     QCOMPARE(speedmodes, 1);
     QCOMPARE(dir, 1);
     QCOMPARE(run, 1);
@@ -842,7 +849,7 @@ void Chaser_Test::tap()
 
     c->preRun(m_doc->masterTimer());
     QVERIFY(c->m_runner != NULL);
-    QCOMPARE(c->duration(), uint(0));
+    QCOMPARE(c->alternateDuration(0), uint(0));
     c->write(m_doc->masterTimer(), QList<Universe*>());
     QCOMPARE(c->m_runner->m_next, false);
     c->tap();
@@ -878,7 +885,7 @@ void Chaser_Test::write()
     m_doc->addFixture(fxi);
 
     Chaser* c = new Chaser(m_doc);
-    c->setDuration(MasterTimer::tick() * 10);
+    c->setAlternateDuration(0, MasterTimer::tick() * 10);
     m_doc->addFunction(c);
 
     Scene* s1 = new Scene(m_doc);
@@ -898,7 +905,7 @@ void Chaser_Test::write()
     c->start(&timer, FunctionParent::master());
 
     timer.timerTick();
-    for (uint i = MasterTimer::tick(); i < c->duration(); i += MasterTimer::tick())
+    for (uint i = MasterTimer::tick(); i < c->alternateDuration(0); i += MasterTimer::tick())
     {
         timer.timerTick();
         QVERIFY(c->isRunning() == true);
@@ -907,7 +914,7 @@ void Chaser_Test::write()
         QVERIFY(s2->isRunning() == false);
     }
 
-    for (uint i = 0; i < c->duration(); i += MasterTimer::tick())
+    for (uint i = 0; i < c->alternateDuration(0); i += MasterTimer::tick())
     {
         timer.timerTick();
         QVERIFY(c->isRunning() == true);
@@ -968,7 +975,7 @@ void Chaser_Test::quickChaser()
 
     Chaser* c = new Chaser(m_doc);
     // A really quick chaser
-    c->setDuration(0);
+    c->setAlternateDuration(0, 0);
     m_doc->addFunction(c);
 
     Scene* s1 = new Scene(m_doc);

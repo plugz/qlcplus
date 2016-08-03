@@ -619,7 +619,7 @@ bool Chaser::loadXML(QXmlStreamReader &root)
         }
         else if (root.name() == KXMLQLCFunctionSpeed)
         {
-            loadXMLInnerSpeed(root);
+            loadXMLSpeed(root);
         }
         else if (root.name() == KXMLQLCFunctionAlternateSpeed)
         {
