@@ -64,11 +64,13 @@ class FunctionUiState;
 
 #define KXMLQLCFunctionEnabled "Enabled"
 
-#define KXMLQLCFunctionSpeed         "Speed"
-#define KXMLQLCFunctionSpeedFadeIn   "FadeIn"
-#define KXMLQLCFunctionSpeedHold     "Hold"
-#define KXMLQLCFunctionSpeedFadeOut  "FadeOut"
-#define KXMLQLCFunctionSpeedDuration "Duration"
+#define KXMLQLCFunctionSpeed          "Speed"
+#define KXMLQLCFunctionAlternateSpeed "AlternateSpeed"
+#define KXMLQLCFunctionAlternateIndex "Index"
+#define KXMLQLCFunctionSpeedFadeIn    "FadeIn"
+#define KXMLQLCFunctionSpeedHold      "Hold"
+#define KXMLQLCFunctionSpeedFadeOut   "FadeOut"
+#define KXMLQLCFunctionSpeedDuration  "Duration"
 
 typedef struct
 {
@@ -457,6 +459,9 @@ protected:
     /** Save function's speed values in $doc */
     bool saveXMLSpeed(QXmlStreamWriter *doc) const;
 
+    bool loadXMLAlternateSpeed(QXmlStreamReader &alternateSpeedRoot);
+    bool saveXMLAlternateSpeed(QXmlStreamWriter *doc, int idx) const;
+
 private:
     uint m_fadeInSpeed;
     uint m_fadeOutSpeed;
@@ -500,7 +505,6 @@ public:
     /**
      * Read this function's contents from an XML document
      *
-     * @param doc An XML document to load from
      * @param root An XML root element of a function
      */
     virtual bool loadXML(QXmlStreamReader &root);

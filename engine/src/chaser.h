@@ -277,10 +277,10 @@ private:
      * Save & Load
      *********************************************************************/
 public:
-    /** Save this function to an XML document */
+    /** @reimp */
     bool saveXML(QXmlStreamWriter *doc);
 
-    /** Load this function contents from an XML document */
+    /** @reimp */
     bool loadXML(QXmlStreamReader &root);
 
     /** @reimp */

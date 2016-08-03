@@ -750,6 +750,35 @@ bool Function::saveXMLSpeed(QXmlStreamWriter *doc) const
     return true;
 }
 
+bool Function::loadXMLAlternateSpeed(QXmlStreamReader &speedRoot)
+{
+    if (speedRoot.name() != KXMLQLCFunctionAlternateSpeed)
+        return false;
+
+    QXmlStreamAttributes attrs = speedRoot.attributes();
+
+    int idx = attrs.value(KXMLQLCFunctionAlternateIndex).toString().toUInt();
+    setAlternateFadeIn(idx, attrs.value(KXMLQLCFunctionSpeedFadeIn).toString().toUInt());
+    setAlternateFadeOut(idx, attrs.value(KXMLQLCFunctionSpeedFadeOut).toString().toUInt());
+    setAlternateDuration(idx, attrs.value(KXMLQLCFunctionSpeedDuration).toString().toUInt());
+
+    speedRoot.skipCurrentElement();
+
+    return true;
+}
+
+bool Function::saveXMLAlternateSpeed(QXmlStreamWriter *doc, int idx) const
+{
+    doc->writeStartElement(KXMLQLCFunctionAlternateSpeed);
+    doc->writeAttribute(KXMLQLCFunctionAlternateIndex, QString::number(idx));
+    doc->writeAttribute(KXMLQLCFunctionSpeedFadeIn, QString::number(alternateFadeIn(idx)));
+    doc->writeAttribute(KXMLQLCFunctionSpeedFadeOut, QString::number(alternateFadeOut(idx)));
+    doc->writeAttribute(KXMLQLCFunctionSpeedDuration, QString::number(alternateDuration(idx)));
+    doc->writeEndElement();
+
+    return true;
+}
+
 uint Function::infiniteSpeed()
 {
     return (uint) -2;

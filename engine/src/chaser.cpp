@@ -553,6 +553,9 @@ bool Chaser::saveXML(QXmlStreamWriter *doc)
     /* Speed */
     saveXMLSpeed(doc);
 
+    /* Inner speed */
+    saveXMLAlternateSpeed(doc, 0);
+
     /* Direction */
     saveXMLDirection(doc);
 
@@ -613,6 +616,10 @@ bool Chaser::loadXML(QXmlStreamReader &root)
         else if (root.name() == KXMLQLCFunctionSpeed)
         {
             loadXMLSpeed(root);
+        }
+        else if (root.name() == KXMLQLCFunctionAlternateSpeed)
+        {
+            loadXMLAlternateSpeed(root);
         }
         else if (root.name() == KXMLQLCFunctionDirection)
         {
