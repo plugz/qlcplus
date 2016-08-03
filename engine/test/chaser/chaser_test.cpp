@@ -248,9 +248,9 @@ void Chaser_Test::copyFrom()
     c1.setName("First");
     c1.setDirection(Chaser::Backward);
     c1.setRunOrder(Chaser::PingPong);
-    c1.setFadeInSpeed(42);
-    c1.setFadeOutSpeed(69);
-    c1.setDuration(1337);
+    c1.setAlternateFadeIn(0, 42);
+    c1.setAlternateFadeOut(0, 69);
+    c1.setAlternateDuration(0, 1337);
     c1.addStep(ChaserStep(2));
     c1.addStep(ChaserStep(0));
     c1.addStep(ChaserStep(1));
@@ -262,9 +262,9 @@ void Chaser_Test::copyFrom()
     QVERIFY(c2.copyFrom(&c1) == true);
     QCOMPARE(spy.size(), 1);
     QVERIFY(c2.name() == c1.name());
-    QVERIFY(c2.fadeInSpeed() == 42);
-    QVERIFY(c2.fadeOutSpeed() == 69);
-    QVERIFY(c2.duration() == 1337);
+    QVERIFY(c2.alternateFadeIn(0) == 42);
+    QVERIFY(c2.alternateFadeOut(0) == 69);
+    QVERIFY(c2.alternateDuration(0) == 1337);
     QVERIFY(c2.direction() == Chaser::Backward);
     QVERIFY(c2.runOrder() == Chaser::PingPong);
     QVERIFY(c2.steps().size() == 4);
@@ -280,9 +280,9 @@ void Chaser_Test::copyFrom()
     /* Make a third Chaser */
     Chaser c3(m_doc);
     c3.setName("Third");
-    c3.setFadeInSpeed(142);
-    c3.setFadeOutSpeed(169);
-    c3.setDuration(11337);
+    c3.setAlternateFadeIn(0, 142);
+    c3.setAlternateFadeOut(0, 169);
+    c3.setAlternateDuration(0, 11337);
     c3.setDirection(Chaser::Forward);
     c3.setRunOrder(Chaser::Loop);
     c3.addStep(ChaserStep(15));
@@ -293,9 +293,9 @@ void Chaser_Test::copyFrom()
        that steps are not appended but replaced completely. */
     QVERIFY(c2.copyFrom(&c3) == true);
     QVERIFY(c2.name() == c3.name());
-    QVERIFY(c2.fadeInSpeed() == 142);
-    QVERIFY(c2.fadeOutSpeed() == 169);
-    QVERIFY(c2.duration() == 11337);
+    QVERIFY(c2.alternateFadeIn(0) == 142);
+    QVERIFY(c2.alternateFadeOut(0) == 169);
+    QVERIFY(c2.alternateDuration(0) == 11337);
     QVERIFY(c2.direction() == Chaser::Forward);
     QVERIFY(c2.runOrder() == Chaser::Loop);
     QVERIFY(c2.steps().size() == 3);
@@ -310,9 +310,9 @@ void Chaser_Test::createCopy()
 
     Chaser* c1 = new Chaser(m_doc);
     c1->setName("First");
-    c1->setFadeInSpeed(42);
-    c1->setFadeOutSpeed(69);
-    c1->setDuration(1337);
+    c1->setAlternateFadeIn(0, 42);
+    c1->setAlternateFadeOut(0, 69);
+    c1->setAlternateDuration(0, 1337);
     c1->setDirection(Chaser::Backward);
     c1->setRunOrder(Chaser::SingleShot);
     c1->addStep(ChaserStep(20));
@@ -329,9 +329,9 @@ void Chaser_Test::createCopy()
 
     Chaser* copy = qobject_cast<Chaser*> (f);
     QVERIFY(copy != NULL);
-    QVERIFY(copy->fadeInSpeed() == 42);
-    QVERIFY(copy->fadeOutSpeed() == 69);
-    QVERIFY(copy->duration() == 1337);
+    QVERIFY(copy->alternateFadeIn(0) == 42);
+    QVERIFY(copy->alternateFadeOut(0) == 69);
+    QVERIFY(copy->alternateDuration(0) == 1337);
     QVERIFY(copy->direction() == Chaser::Backward);
     QVERIFY(copy->runOrder() == Chaser::SingleShot);
     QVERIFY(copy->steps().size() == 3);

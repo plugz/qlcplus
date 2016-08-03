@@ -118,6 +118,10 @@ bool Chaser::copyFrom(const Function* function)
     m_startTime = chaser->m_startTime;
     m_color = chaser->m_color;
 
+    m_innerFadeIn = chaser->m_innerFadeIn;
+    m_innerFadeOut = chaser->m_innerFadeOut;
+    m_innerDuration = chaser->m_innerDuration;
+
     // Copy common function stuff
     return Function::copyFrom(function);
 }
@@ -615,7 +619,7 @@ bool Chaser::loadXML(QXmlStreamReader &root)
         }
         else if (root.name() == KXMLQLCFunctionSpeed)
         {
-            loadXMLSpeed(root);
+            loadXMLInnerSpeed(root);
         }
         else if (root.name() == KXMLQLCFunctionAlternateSpeed)
         {

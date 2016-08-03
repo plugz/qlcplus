@@ -225,6 +225,10 @@ bool RGBMatrix::copyFrom(const Function* function)
     setStartColor(mtx->startColor());
     setEndColor(mtx->endColor());
 
+    m_innerFadeIn = mtx->m_innerFadeIn;
+    m_innerFadeOut = mtx->m_innerFadeOut;
+    m_innerDuration = mtx->m_innerDuration;
+
     return Function::copyFrom(function);
 }
 
