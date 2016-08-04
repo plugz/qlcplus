@@ -71,7 +71,7 @@ RGBMatrix::RGBMatrix(Doc* doc)
     , m_innerDuration(0)
 {
     setName(tr("New RGB Matrix"));
-    setDuration(500);
+    setAlternateDuration(0, 500);
 
     RGBScript scr = doc->rgbScriptsCache()->script("Stripes");
     setAlgorithm(scr.clone());
@@ -95,7 +95,7 @@ void RGBMatrix::setTotalDuration(quint32 msec)
     if (grp != NULL)
     {
         int steps = m_algorithm->rgbMapStepCount(grp->size());
-        setDuration(msec / steps);
+        setAlternateDuration(0, msec / steps);
     }
 }
 
