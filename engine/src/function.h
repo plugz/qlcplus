@@ -384,16 +384,6 @@ public:
     /** Get the duration in milliseconds */
     uint duration() const;
 
-    // TODO forward this shit to
-    // RGB matrix (1 alternate speed)
-    // Chaser (1 + numberofstep)
-    // ???
-    // THEN
-    // test
-    // !!!!!!! RGBmatrix seems OK
-    // !!!!!!! CHASER seems fucked up -> TODO CHASERRUNNER update
-    // THEN
-    // add stuff in vcspeeddial
     virtual void setAlternateFadeIn(int idx, quint32 ms);
     virtual quint32 alternateFadeIn(int idx) const;
     virtual void setAlternateFadeOut(int idx, quint32 ms);
@@ -401,7 +391,6 @@ public:
     virtual void setAlternateDuration(int idx, quint32 ms);
     virtual quint32 alternateDuration(int idx) const;
     virtual uint alternateSpeedCount() const;
-    // TODO impl in function, RGBMat, Chaser
     virtual QString alternateSpeedName(int idx) const;
 
     /** Get the total duration in milliseconds.
