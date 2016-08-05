@@ -298,10 +298,10 @@ void Chaser::setAlternateFadeIn(int idx, quint32 ms)
     if (idx < 0)
         return Function::setAlternateFadeIn(idx, ms);
 
-    --idx;
     QMutexLocker stepListLocker(&m_stepListMutex);
-    if (idx >= m_steps.count())
+    if (idx > m_steps.count())
         return Function::setAlternateFadeIn(idx, ms);
+    --idx;
 
     m_steps[idx].fadeIn = ms;
     emit changed(id());
@@ -319,10 +319,10 @@ void Chaser::setAlternateFadeOut(int idx, quint32 ms)
     if (idx < 0)
         return Function::setAlternateFadeOut(idx, ms);
 
-    --idx;
     QMutexLocker stepListLocker(&m_stepListMutex);
-    if (idx >= m_steps.count())
+    if (idx > m_steps.count())
         return Function::setAlternateFadeOut(idx, ms);
+    --idx;
 
     m_steps[idx].fadeOut = ms;
     emit changed(id());
@@ -340,10 +340,10 @@ void Chaser::setAlternateDuration(int idx, quint32 ms)
     if (idx < 0)
         return Function::setAlternateDuration(idx, ms);
 
-    --idx;
     QMutexLocker stepListLocker(&m_stepListMutex);
-    if (idx >= m_steps.count())
+    if (idx > m_steps.count())
         return Function::setAlternateDuration(idx, ms);
+    --idx;
 
     m_steps[idx].duration = ms;
     emit changed(id());
@@ -360,6 +360,7 @@ quint32 Chaser::alternateFadeIn(int idx) const
     QMutexLocker stepListLocker(&m_stepListMutex);
     if (idx > m_steps.count())
         return Function::alternateFadeIn(idx);
+    --idx;
 
     return m_steps[idx].fadeIn;
 }
@@ -375,6 +376,7 @@ quint32 Chaser::alternateFadeOut(int idx) const
     QMutexLocker stepListLocker(&m_stepListMutex);
     if (idx > m_steps.count())
         return Function::alternateFadeOut(idx);
+    --idx;
 
     return m_steps[idx].fadeOut;
 }
@@ -390,6 +392,7 @@ quint32 Chaser::alternateDuration(int idx) const
     QMutexLocker stepListLocker(&m_stepListMutex);
     if (idx > m_steps.count())
         return Function::alternateDuration(idx);
+    --idx;
 
     return m_steps[idx].duration;
 }
@@ -411,6 +414,7 @@ QString Chaser::alternateSpeedName(int idx) const
     QMutexLocker stepListLocker(&m_stepListMutex);
     if (idx > m_steps.count())
         return Function::alternateSpeedName(idx);
+    --idx;
 
     if (isSequence())
         return QString("step ") + idx;
