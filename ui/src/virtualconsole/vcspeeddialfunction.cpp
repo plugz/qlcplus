@@ -89,14 +89,14 @@ bool VCSpeedDialFunction::saveXML(QXmlStreamWriter *doc) const
     /* Multipliers */
     doc->writeAttribute(KXMLQLCFunctionSpeedFadeIn, QString::number(fadeInMultiplier));
     doc->writeAttribute(KXMLQLCFunctionSpeedFadeOut, QString::number(fadeOutMultiplier));
-    doc->writeAttribute(KXMLQLCFunctionSpeedDuration,QString::number( durationMultiplier));
-
-    /* Function ID */
-    doc->writeCharacters(QString::number(functionId));
+    doc->writeAttribute(KXMLQLCFunctionSpeedDuration,QString::number(durationMultiplier));
 
     /* Alternate speed (no need for base speed) */
     if (alternateSpeedIdx != Function::baseSpeedIdx())
         doc->writeAttribute(KXMLQLCVCSpeedDialFunctionAlternateSpeedIdx, QString::number(alternateSpeedIdx));
+
+    /* Function ID */
+    doc->writeCharacters(QString::number(functionId));
 
     /* Close the <Function> tag */
     doc->writeEndElement();
