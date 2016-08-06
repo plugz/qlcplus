@@ -298,12 +298,14 @@ void Chaser::setAlternateFadeIn(int idx, quint32 ms)
     if (idx < 0)
         return Function::setAlternateFadeIn(idx, ms);
 
-    QMutexLocker stepListLocker(&m_stepListMutex);
-    if (idx > m_steps.count())
-        return Function::setAlternateFadeIn(idx, ms);
-    --idx;
+    {
+        QMutexLocker stepListLocker(&m_stepListMutex);
+        if (idx > m_steps.count())
+            return Function::setAlternateFadeIn(idx, ms);
+        --idx;
 
-    m_steps[idx].fadeIn = ms;
+        m_steps[idx].fadeIn = ms;
+    }
     emit changed(id());
 }
 
@@ -319,12 +321,14 @@ void Chaser::setAlternateFadeOut(int idx, quint32 ms)
     if (idx < 0)
         return Function::setAlternateFadeOut(idx, ms);
 
-    QMutexLocker stepListLocker(&m_stepListMutex);
-    if (idx > m_steps.count())
-        return Function::setAlternateFadeOut(idx, ms);
-    --idx;
+    {
+        QMutexLocker stepListLocker(&m_stepListMutex);
+        if (idx > m_steps.count())
+            return Function::setAlternateFadeOut(idx, ms);
+        --idx;
 
-    m_steps[idx].fadeOut = ms;
+        m_steps[idx].fadeOut = ms;
+    }
     emit changed(id());
 }
 
@@ -340,12 +344,14 @@ void Chaser::setAlternateDuration(int idx, quint32 ms)
     if (idx < 0)
         return Function::setAlternateDuration(idx, ms);
 
-    QMutexLocker stepListLocker(&m_stepListMutex);
-    if (idx > m_steps.count())
-        return Function::setAlternateDuration(idx, ms);
-    --idx;
+    {
+        QMutexLocker stepListLocker(&m_stepListMutex);
+        if (idx > m_steps.count())
+            return Function::setAlternateDuration(idx, ms);
+        --idx;
 
-    m_steps[idx].duration = ms;
+        m_steps[idx].duration = ms;
+    }
     emit changed(id());
 }
 
