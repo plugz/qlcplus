@@ -377,12 +377,15 @@ void FunctionSelection::refillTree()
             {
                 item->setSelected(selection.contains(function->id()));
                 if (item->parent() != NULL)
+                {
                     item->parent()->setFlags(item->parent()->flags() | Qt::ItemIsEnabled);
+                    item->setFlags(item->flags() | Qt::ItemIsEnabled);
+                }
             }
         }
     }
 
-    // And now we add the alternate speeds if necessary
+    // Now we add the alternate speeds if necessary
     if (m_showAlternateSpeed)
     {
         foreach(Function* function, m_doc->functions())
@@ -396,7 +399,14 @@ void FunctionSelection::refillTree()
                 if (m_disabledAlternateSpeed.contains(qMakePair(function->id(), i)))
                     item->setFlags(0); // Disables the item
                 else
+                {
                     item->setSelected(alternateSpeedSelection.contains(qMakePair(function->id(), i)));
+                    if (item->parent() != NULL)
+                    {
+                        item->parent()->setFlags(item->parent()->flags() | Qt::ItemIsEnabled);
+                        item->setFlags(item->flags() | Qt::ItemIsEnabled);
+                    }
+                }
             }
         }
     }
