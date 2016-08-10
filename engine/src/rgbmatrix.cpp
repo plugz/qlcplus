@@ -159,10 +159,6 @@ bool RGBMatrix::copyFrom(const Function* function)
     setStartColor(mtx->startColor());
     setEndColor(mtx->endColor());
 
-    setFadeInSpeed(mtx->fadeInSpeed());
-    setFadeOutSpeed(mtx->fadeOutSpeed());
-    setDuration(mtx->duration());
-
     return Function::copyFrom(function);
 }
 
